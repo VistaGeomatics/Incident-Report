@@ -5,7 +5,7 @@
   <title>Vista Geomatics – Incident Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Fonts -->
+  <!-- Modern fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
@@ -13,6 +13,7 @@
       --vista-blue: #165f7d;
       --vista-blue-light: #2a7fa3;
       --vista-blue-dark: #0b3045;
+
       --bg-body: #eef3f9;
       --bg-card: #ffffff;
       --border-soft: #d6e2f0;
@@ -20,222 +21,664 @@
       --text-muted: #6b7280;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: "Inter", sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       padding: 24px;
-      background: radial-gradient(circle at top, #f4f8fc, #dde6f3);
+      background: radial-gradient(circle at top, #f4f8fc 0, #e4edf6 40%, #dde6f3 100%);
       color: var(--text-main);
     }
 
-    .page-wrap { max-width: 1200px; margin: 0 auto; }
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     .container {
       background: var(--bg-card);
       border-radius: 18px;
-      padding-bottom: 30px;
-      box-shadow: 0 18px 40px rgba(5,41,66,0.18);
+      box-shadow:
+        0 18px 40px rgba(5, 41, 66, 0.18),
+        0 0 0 1px rgba(5, 41, 66, 0.04);
+      overflow: hidden;
       position: relative;
     }
 
+    .container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at top right, rgba(22,95,125,0.18), transparent 55%);
+      opacity: 0.9;
+    }
+
+    /* Header */
     .header-bar {
+      position: relative;
+      z-index: 1;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 18px 28px;
-      background: linear-gradient(120deg, #2a7fa3, #165f7d, #0b3045);
-      color: white;
+      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .header-bar::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.07) 0,
+        transparent 40%
+      );
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .header-left {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .header-left h1 {
-      margin: 0;
       font-size: 1.7rem;
-      letter-spacing: .12em;
-      font-family: "Montserrat";
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 400;
     }
 
-    form { padding: 24px 28px; }
+    .vista-bold {
+      font-weight: 700;
+    }
+
+    .geomatics-regular {
+      font-weight: 400;
+    }
+
+    .header-left p {
+      margin: 0;
+      font-size: 0.96rem;
+      opacity: 0.92;
+    }
+
+    .header-logo {
+      position: relative;
+      z-index: 1;
+      height: 90px;
+      width: auto;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+    }
+
+    /* Form body */
+    form {
+      position: relative;
+      z-index: 2;
+      padding: 24px 28px 26px;
+      background: radial-gradient(circle at top left, rgba(226,240,246,0.55), transparent 55%) #ffffff;
+    }
 
     .section {
-      padding: 18px;
       margin-bottom: 20px;
+      padding: 16px 18px 18px;
       border-radius: 14px;
-      background: #fbfdff;
       border: 1px solid var(--border-soft);
+      background: linear-gradient(135deg, #fbfdff 0%, #f4f8fd 60%, #eff5fb 100%);
+      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--vista-blue-light), var(--vista-blue-dark));
     }
 
     .section-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 1.02rem;
       color: var(--vista-blue-dark);
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(22,95,125,0.09), rgba(11,48,69,0.05));
+      box-shadow: 0 0 0 1px rgba(22,95,125,0.12);
+      position: relative;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #ffffff 0, var(--vista-blue-light) 50%, var(--vista-blue-dark) 100%);
+      box-shadow: 0 0 0 4px rgba(22,95,125,0.25);
+    }
+
+    .section-subtext {
+      font-size: 0.82rem;
+      color: var(--text-muted);
       margin-bottom: 8px;
     }
 
-    .grid-2, .grid-3 {
+    .grid-2,
+    .grid-3 {
       display: grid;
       gap: 12px;
     }
-    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
-    input, textarea, select {
-      width: 100%;
-      padding: 7px 10px;
-      font-size: .9rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-soft);
-      background: #f9fbff;
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     }
 
-    textarea { min-height: 90px; }
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border-soft);
+      border-radius: 9px;
+      background: #f9fbff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.08s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--vista-blue-light);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(38,132,168,0.22);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .inline-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin-top: 6px;
+      font-size: 0.86rem;
+    }
+
+    .inline-options label {
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 0;
+    }
+
+    .inline-options input[type="checkbox"],
+    .inline-options input[type="radio"] {
+      margin: 0;
+    }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 6px;
-      font-size: .85rem;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     th, td {
       border: 1px solid #d7e2f1;
       padding: 8px 10px;
+      vertical-align: top;
     }
 
     th {
-      background: #e6f1fb;
+      background: linear-gradient(90deg, #e6f1fb, #dde9f7);
+      text-align: left;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      font-size: .8rem;
+      letter-spacing: 0.04em;
+      color: #4b5563;
     }
 
-    .options-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 20px;
-      margin-top: 6px;
+    tbody tr:nth-child(even) {
+      background: #f7faff;
     }
 
     .btn-row {
-      margin-top: 20px;
+      margin-top: 22px;
       display: flex;
-      justify-content: flex-end;
       gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
     }
 
     button {
       padding: 9px 20px;
+      font-size: 0.9rem;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       font-weight: 600;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      font-size: .9rem;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
     }
 
     .btn-primary {
-      background: linear-gradient(120deg, #2a7fa3, #165f7d, #0b3045);
-      color: white;
+      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(5, 41, 66, 0.55);
     }
 
     .btn-secondary {
       background: #f3f4f6;
-      color: black;
-      border: 1px solid #ccc;
+      color: var(--text-main);
+      border: 1px solid #d4d7dd;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 12px;
+      }
+
+      form {
+        padding: 18px 16px 20px;
+      }
+
+      .header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .header-logo {
+        align-self: flex-end;
+        height: 56px;
+      }
     }
   </style>
 </head>
-
 <body>
   <div class="page-wrap">
     <div class="container" id="pdfArea">
-
-      <!-- HEADER -->
+      <!-- Header -->
       <div class="header-bar">
         <div class="header-left">
-          <h1><span style="font-weight:700">VISTA</span><span style="font-weight:400">GEOMATICS</span></h1>
+          <h1><span class="vista-bold">VISTA</span><span class="geomatics-regular">GEOMATICS</span></h1>
           <p>Incident Report Form</p>
         </div>
-        <img src="vista-geomatics.png" class="header-logo" style="height:85px;">
+        <!-- Make sure vista-geomatics.png is in the SAME folder as this HTML file -->
+        <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo">
       </div>
 
-      <!-- FORM CONTENT -->
-      <form>
-
-        <!-- Example section (the full form stays the same) -->
+      <form action="#" method="post">
+        <!-- Section: Basic Incident Info -->
         <div class="section">
-          <div class="section-title">Employee Information</div>
-          <div class="grid-2">
+          <div class="section-title">Incident Information</div>
+          <p class="section-subtext">Record basic details about the incident and when it was reported.</p>
+          <div class="grid-3">
             <div>
-              <label>Employee Name</label>
-              <input type="text">
+              <label for="incident_date">Date of Incident</label>
+              <input type="date" id="incident_date" name="incident_date">
             </div>
             <div>
-              <label>Branch</label>
-              <input type="text">
+              <label for="incident_time">Time of Incident</label>
+              <input type="time" id="incident_time" name="incident_time">
+            </div>
+            <div>
+              <label for="report_date">Date Reported</label>
+              <input type="date" id="report_date" name="report_date">
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 10px;">
+            <div>
+              <label for="incident_location">Location of Incident</label>
+              <input type="text" id="incident_location" name="incident_location">
+            </div>
+            <div>
+              <label for="supervisor_name">Supervisor</label>
+              <input type="text" id="supervisor_name" name="supervisor_name">
             </div>
           </div>
         </div>
 
-        <!-- … ALL OTHER FORM SECTIONS (kept exactly as before) … -->
+        <!-- Section: Person Involved -->
+        <div class="section">
+          <div class="section-title">Person Involved</div>
+          <p class="section-subtext">Details for the worker or individual directly involved in the incident.</p>
+          <div class="grid-3">
+            <div>
+              <label for="employee_name">Employee Name</label>
+              <input type="text" id="employee_name" name="employee_name">
+            </div>
+            <div>
+              <label for="employee_position">Position / Job Title</label>
+              <input type="text" id="employee_position" name="employee_position">
+            </div>
+            <div>
+              <label for="employee_branch">Branch / Office</label>
+              <input type="text" id="employee_branch" name="employee_branch">
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 10px;">
+            <div>
+              <label for="employee_phone">Phone Number</label>
+              <input type="text" id="employee_phone" name="employee_phone">
+            </div>
+            <div>
+              <label>Employment Type</label>
+              <div class="inline-options">
+                <label><input type="radio" name="employment_type" value="full_time"> Full-time</label>
+                <label><input type="radio" name="employment_type" value="part_time"> Part-time</label>
+                <label><input type="radio" name="employment_type" value="contractor"> Contractor</label>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- BUTTONS -->
+        <!-- Section: Incident Type / Classification -->
+        <div class="section">
+          <div class="section-title">Incident Classification</div>
+          <p class="section-subtext">Select all categories that apply to the incident.</p>
+          <label>Type of Incident</label>
+          <div class="inline-options">
+            <label><input type="checkbox" name="incident_type" value="injury"> Injury / Illness</label>
+            <label><input type="checkbox" name="incident_type" value="first_aid"> First Aid Only</label>
+            <label><input type="checkbox" name="incident_type" value="near_miss"> Near Miss</label>
+            <label><input type="checkbox" name="incident_type" value="property_damage"> Property Damage</label>
+            <label><input type="checkbox" name="incident_type" value="vehicle"> Vehicle / Motor Vehicle</label>
+            <label><input type="checkbox" name="incident_type" value="environmental"> Environmental</label>
+            <label><input type="checkbox" name="incident_type" value="other"> Other</label>
+          </div>
+
+          <div class="grid-3" style="margin-top: 12px;">
+            <div>
+              <label>Medical Treatment Required?</label>
+              <div class="inline-options">
+                <label><input type="radio" name="medical_treatment" value="yes"> Yes</label>
+                <label><input type="radio" name="medical_treatment" value="no"> No</label>
+              </div>
+            </div>
+            <div>
+              <label>Lost Time from Work?</label>
+              <div class="inline-options">
+                <label><input type="radio" name="lost_time" value="yes"> Yes</label>
+                <label><input type="radio" name="lost_time" value="no"> No</label>
+              </div>
+            </div>
+            <div>
+              <label>Restricted Duties?</label>
+              <div class="inline-options">
+                <label><input type="radio" name="modified_duty" value="yes"> Yes</label>
+                <label><input type="radio" name="modified_duty" value="no"> No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Description of Incident -->
+        <div class="section">
+          <div class="section-title">Description of Incident</div>
+          <p class="section-subtext">Describe what happened in clear, factual terms. Include events leading up to the incident.</p>
+          <textarea id="incident_description" name="incident_description"></textarea>
+        </div>
+
+        <!-- Section: Injury Details (if applicable) -->
+        <div class="section">
+          <div class="section-title">Injury Details (if applicable)</div>
+          <p class="section-subtext">Complete this section if an injury or illness occurred.</p>
+          <div class="grid-3">
+            <div>
+              <label for="body_part">Body Part(s) Affected</label>
+              <input type="text" id="body_part" name="body_part">
+            </div>
+            <div>
+              <label for="nature_of_injury">Nature of Injury (e.g., strain, cut)</label>
+              <input type="text" id="nature_of_injury" name="nature_of_injury">
+            </div>
+            <div>
+              <label for="first_aid_by">First Aid Provided By</label>
+              <input type="text" id="first_aid_by" name="first_aid_by">
+            </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <label for="first_aid_description">First Aid / Medical Treatment Details</label>
+            <textarea id="first_aid_description" name="first_aid_description"></textarea>
+          </div>
+        </div>
+
+        <!-- Section: Equipment / Property / Vehicle Involved -->
+        <div class="section">
+          <div class="section-title">Equipment / Vehicle / Property Involved</div>
+          <p class="section-subtext">List any tools, equipment, vehicles, or property involved in the incident.</p>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 30%;">Item / Equipment / Vehicle</th>
+                <th style="width: 25%;">Unit / Plate / ID</th>
+                <th style="width: 45%;">Description of Damage or Role in Incident</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" name="equip_1_name"></td>
+                <td><input type="text" name="equip_1_id"></td>
+                <td><input type="text" name="equip_1_desc"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="equip_2_name"></td>
+                <td><input type="text" name="equip_2_id"></td>
+                <td><input type="text" name="equip_2_desc"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="equip_3_name"></td>
+                <td><input type="text" name="equip_3_id"></td>
+                <td><input type="text" name="equip_3_desc"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section: Witnesses -->
+        <div class="section">
+          <div class="section-title">Witnesses</div>
+          <p class="section-subtext">List anyone who directly witnessed the incident or events leading up to it.</p>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 35%;">Witness Name</th>
+                <th style="width: 30%;">Contact Information</th>
+                <th style="width: 35%;">Brief Statement / Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" name="wit_1_name"></td>
+                <td><input type="text" name="wit_1_contact"></td>
+                <td><input type="text" name="wit_1_notes"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="wit_2_name"></td>
+                <td><input type="text" name="wit_2_contact"></td>
+                <td><input type="text" name="wit_2_notes"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="wit_3_name"></td>
+                <td><input type="text" name="wit_3_contact"></td>
+                <td><input type="text" name="wit_3_notes"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section: Immediate Actions -->
+        <div class="section">
+          <div class="section-title">Immediate Corrective Actions</div>
+          <p class="section-subtext">Describe any immediate actions taken to make the area safe or prevent further harm.</p>
+          <textarea id="immediate_actions" name="immediate_actions"></textarea>
+        </div>
+
+        <!-- Section: Root Cause / Contributing Factors -->
+        <div class="section">
+          <div class="section-title">Root Cause / Contributing Factors</div>
+          <p class="section-subtext">Identify underlying causes (e.g., procedures, equipment, environment, human factors).</p>
+          <textarea id="root_cause" name="root_cause"></textarea>
+        </div>
+
+        <!-- Section: Recommended / Planned Corrective Actions -->
+        <div class="section">
+          <div class="section-title">Recommended / Planned Corrective Actions</div>
+          <p class="section-subtext">Outline corrective or preventative actions, responsibilities, and timelines.</p>
+          <textarea id="corrective_actions" name="corrective_actions"></textarea>
+        </div>
+
+        <!-- Section: Sign-Off -->
+        <div class="section">
+          <div class="section-title">Sign-Off</div>
+          <p class="section-subtext">Confirm review and follow-up responsibilities.</p>
+          <div class="grid-3">
+            <div>
+              <label for="employee_signature">Employee Name / Signature</label>
+              <input type="text" id="employee_signature" name="employee_signature">
+            </div>
+            <div>
+              <label for="employee_date">Date</label>
+              <input type="date" id="employee_date" name="employee_date">
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top: 10px;">
+            <div>
+              <label for="supervisor_signature">Supervisor Name / Signature</label>
+              <input type="text" id="supervisor_signature" name="supervisor_signature">
+            </div>
+            <div>
+              <label for="supervisor_date">Date</label>
+              <input type="date" id="supervisor_date" name="supervisor_date">
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top: 10px;">
+            <div>
+              <label for="hse_signature">HSE Review (Name / Signature)</label>
+              <input type="text" id="hse_signature" name="hse_signature">
+            </div>
+            <div>
+              <label for="hse_date">Date</label>
+              <input type="date" id="hse_date" name="hse_date">
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
         <div class="btn-row">
           <button type="reset" class="btn-secondary">Reset</button>
           <button type="button" id="downloadPdfBtn" class="btn-primary">Download PDF</button>
         </div>
-
       </form>
     </div>
   </div>
 
-  <!-- PDF LIBRARIES -->
+  <!-- PDF Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    document.getElementById("downloadPdfBtn").addEventListener("click", async () => {
+    const downloadBtn = document.getElementById('downloadPdfBtn');
 
-      const { jsPDF } = window.jspdf;
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', async () => {
+        const { jsPDF } = window.jspdf;
 
-      const pdf = new jsPDF({
-        orientation: "p",
-        unit: "pt",
-        format: "a4",
-        compress: true
-      });
+        const pdf = new jsPDF({
+          orientation: 'p',
+          unit: 'pt',
+          format: 'a4',
+          compress: true
+        });
 
-      const element = document.getElementById("pdfArea");
+        const element = document.getElementById('pdfArea');
 
-      window.scrollTo(0, 0);
+        // Ensure top of page is on screen for consistent capture
+        window.scrollTo(0, 0);
 
-      const canvas = await html2canvas(element, { scale: 2 });
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
 
-      const imgData = canvas.toDataURL("image/png");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // shrink slightly for better margins
-      const scale = 0.94;
-      const imgWidth = pageWidth * scale;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const xOffset = (pageWidth - imgWidth) / 2;
+        // Slightly shrink overall image so there is comfortable padding
+        const scaleFactor = 0.94;
+        const imgWidth = pageWidth * scaleFactor;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        const xOffset = (pageWidth - imgWidth) / 2;
 
-      let heightLeft = imgHeight;
-      let position = 0;
+        let heightLeft = imgHeight;
+        let position = 0;
 
-      pdf.addImage(imgData, "PNG", xOffset, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        pdf.addPage();
-        position = heightLeft - imgHeight;
-        pdf.addImage(imgData, "PNG", xOffset, position, imgWidth, imgHeight);
+        // First page
+        pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
-      }
 
-      pdf.save("Vista-Incident-Report.pdf");
-    });
+        // Additional pages if needed
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save('Vista-Incident-Report.pdf');
+      });
+    }
   </script>
 </body>
 </html>
