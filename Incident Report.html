@@ -325,6 +325,48 @@
       transform: translateY(-1px);
     }
 
+    /* Photo preview section */
+    .photos-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .photo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+
+      max-width: 160px;
+    }
+
+    .photo-item img {
+      max-width: 140px;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #d1e0f0;
+      box-shadow: 0 6px 14px rgba(5, 41, 66, 0.18);
+      display: block;
+    }
+
+    .photo-item a {
+      text-decoration: none;
+    }
+
+    .photo-item input[type="text"] {
+      font-size: 0.78rem;
+      padding: 4px 6px;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
     @media (max-width: 720px) {
       body {
         padding: 12px;
@@ -356,12 +398,11 @@
           <h1><span class="vista-bold">VISTA</span><span class="geomatics-regular">GEOMATICS</span></h1>
           <p>Incident Report Form</p>
         </div>
-        <!-- Make sure vista-geomatics.png is in the SAME folder as this HTML file -->
         <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo">
       </div>
 
       <form action="#" method="post">
-        <!-- Section: Basic Incident Info -->
+        <!-- Section: Incident Information -->
         <div class="section">
           <div class="section-title">Incident Information</div>
           <p class="section-subtext">Record basic details about the incident and when it was reported.</p>
@@ -425,7 +466,7 @@
           </div>
         </div>
 
-        <!-- Section: Incident Type / Classification -->
+        <!-- Section: Incident Classification -->
         <div class="section">
           <div class="section-title">Incident Classification</div>
           <p class="section-subtext">Select all categories that apply to the incident.</p>
@@ -472,7 +513,7 @@
           <textarea id="incident_description" name="incident_description"></textarea>
         </div>
 
-        <!-- Section: Injury Details (if applicable) -->
+        <!-- Section: Injury Details -->
         <div class="section">
           <div class="section-title">Injury Details (if applicable)</div>
           <p class="section-subtext">Complete this section if an injury or illness occurred.</p>
@@ -496,7 +537,7 @@
           </div>
         </div>
 
-        <!-- Section: Equipment / Property / Vehicle Involved -->
+        <!-- Section: Equipment / Vehicle / Property Involved -->
         <div class="section">
           <div class="section-title">Equipment / Vehicle / Property Involved</div>
           <p class="section-subtext">List any tools, equipment, vehicles, or property involved in the incident.</p>
@@ -527,6 +568,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- 60px blank buffer after equipment/vehicle section -->
+        <div style="height: 80;"></div>
 
         <!-- Section: Witnesses -->
         <div class="section">
@@ -567,14 +611,14 @@
           <textarea id="immediate_actions" name="immediate_actions"></textarea>
         </div>
 
-        <!-- Section: Root Cause / Contributing Factors -->
+        <!-- Section: Root Cause -->
         <div class="section">
           <div class="section-title">Root Cause / Contributing Factors</div>
           <p class="section-subtext">Identify underlying causes (e.g., procedures, equipment, environment, human factors).</p>
           <textarea id="root_cause" name="root_cause"></textarea>
         </div>
 
-        <!-- Section: Recommended / Planned Corrective Actions -->
+        <!-- Section: Recommended Actions -->
         <div class="section">
           <div class="section-title">Recommended / Planned Corrective Actions</div>
           <p class="section-subtext">Outline corrective or preventative actions, responsibilities, and timelines.</p>
@@ -617,6 +661,22 @@
           </div>
         </div>
 
+        <!-- Incident Photos -->
+        <div class="section">
+          <div class="section-title">Incident Photos</div>
+          <p class="section-subtext">Attach photos related to the incident. Thumbnails and descriptions are shown for review.</p>
+          <label for="photos">Upload incident photos (you can select multiple):</label>
+          <input
+            type="file"
+            id="photos"
+            name="photos[]"
+            accept="image/*"
+            multiple
+          >
+          <p class="hint">Accepted: JPG, PNG, HEIC. Large files may take longer to process.</p>
+          <div id="photosPreview" class="photos-preview"></div>
+        </div>
+
         <!-- Buttons -->
         <div class="btn-row">
           <button type="reset" class="btn-secondary">Reset</button>
@@ -631,6 +691,95 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
+    const photosInput = document.getElementById('photos');
+    const photosPreview = document.getElementById('photosPreview');
+
+    // We'll track each photo and its description
+    let photoItems = [];
+
+    // Helper: read a File as data URL (base64)
+    function fileToDataURL(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Helper: compress image (resize + JPEG quality)
+    async function compressImage(file, maxDim = 1600, quality = 0.7) {
+      const baseUrl = await fileToDataURL(file);
+
+      const img = new Image();
+      img.src = baseUrl;
+      await new Promise(res => { img.onload = res; });
+
+      let width = img.width;
+      let height = img.height;
+
+      const scale = Math.min(maxDim / width, maxDim / height, 1);
+      width = width * scale;
+      height = height * scale;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+      return { dataUrl, width, height };
+    }
+
+    // Thumbnail preview + description inputs
+    if (photosInput) {
+      photosInput.addEventListener('change', function () {
+        photosPreview.innerHTML = '';
+        photoItems = [];
+
+        const files = Array.from(this.files);
+
+        files.forEach((file, index) => {
+          if (!file.type.startsWith('image/')) return;
+
+          // Create a record in photoItems
+          const item = { file, description: "" };
+          photoItems.push(item);
+
+          const reader = new FileReader();
+          reader.onload = e => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'photo-item';
+
+            const link = document.createElement('a');
+            link.href = e.target.result;
+            link.target = "_blank";
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+
+            link.appendChild(img);
+            wrapper.appendChild(link);
+
+            const descInput = document.createElement('input');
+            descInput.type = 'text';
+            descInput.placeholder = 'Photo description';
+            descInput.addEventListener('input', function () {
+              item.description = this.value || "";
+            });
+
+            wrapper.appendChild(descInput);
+
+            photosPreview.appendChild(wrapper);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+
+    // Download form as PDF + photos (4 per page, with descriptions)
     const downloadBtn = document.getElementById('downloadPdfBtn');
 
     if (downloadBtn) {
@@ -664,16 +813,90 @@
         let heightLeft = imgHeight;
         let position = 0;
 
-        // First page
+        // First page(s): incident report form
         pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
-        // Additional pages if needed
         while (heightLeft > 0) {
           position = heightLeft - imgHeight;
           pdf.addPage();
           pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
+        }
+
+        // Use photoItems if we have them; otherwise fall back to raw files (no description)
+        let itemsToUse = photoItems;
+        if ((!itemsToUse || itemsToUse.length === 0) && photosInput && photosInput.files.length > 0) {
+          const fallbackFiles = Array.from(photosInput.files).filter(f => f.type.startsWith('image/'));
+          itemsToUse = fallbackFiles.map(f => ({ file: f, description: "" }));
+        }
+
+        // Extra pages with COMPRESSED photos, 4 per page (2x2 grid) with descriptions
+        if (itemsToUse && itemsToUse.length > 0) {
+          let pageStarted = false;
+          let col = 0;
+          let row = 0;
+
+          const marginX = 40;
+          const marginY = 70;
+          const gutterX = 20;
+          const gutterY = 20;
+
+          const pageW = pdf.internal.pageSize.getWidth();
+          const pageH = pdf.internal.pageSize.getHeight();
+
+          const availableWidth = pageW - marginX * 2 - gutterX;
+          const availableHeight = pageH - marginY * 2 - gutterY;
+
+          const cellW = availableWidth / 2;
+          const cellH = availableHeight / 2;
+
+          for (let i = 0; i < itemsToUse.length; i++) {
+            const item = itemsToUse[i];
+            const file = item.file;
+
+            if (!pageStarted) {
+              pdf.addPage();
+              pdf.setFontSize(14);
+              pdf.text("Incident Photos", marginX, 40);
+              pageStarted = true;
+              col = 0;
+              row = 0;
+            }
+
+            const { dataUrl, width, height } = await compressImage(file, 1600, 0.7);
+
+            // Leave some vertical room for description text under the image
+            const reservedForText = 28; // points
+            const ratio = Math.min(cellW / width, (cellH - reservedForText) / height);
+            const drawW = width * ratio;
+            const drawH = height * ratio;
+
+            const x = marginX + col * (cellW + gutterX) + (cellW - drawW) / 2;
+            const y = marginY + row * (cellH + gutterY);
+
+            pdf.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
+
+            // Description text
+            const desc = item.description ? String(item.description) : "";
+            if (desc.trim() !== "") {
+              pdf.setFontSize(9);
+              const textY = y + drawH + 12;
+              pdf.text(desc, x, textY, { maxWidth: cellW - 8 });
+            }
+
+            // Move to next cell
+            col++;
+            if (col >= 2) {
+              col = 0;
+              row++;
+            }
+
+            // If we've placed 4 (2x2), reset for next page
+            if (row >= 2 && i < itemsToUse.length - 1) {
+              pageStarted = false;
+            }
+          }
         }
 
         pdf.save('Vista-Incident-Report.pdf');
