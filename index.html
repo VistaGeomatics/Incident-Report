@@ -1038,11 +1038,20 @@
       btn.disabled = true;
 
       try {
-      // Guard: ensure jsPDF loaded successfully
-      if (!window.jspdf || !window.jspdf.jsPDF) {
-        throw new Error('PDF library (jsPDF) failed to load. Please check your internet connection and try again.');
-      }
-      const { jsPDF } = window.jspdf;
+      // Wait for jsPDF to finish loading (CDN may still be in flight)
+      const jsPDF = await new Promise((resolve, reject) => {
+        const deadline = Date.now() + 12000; // 12 second timeout
+        function check() {
+          if (window.jspdf && window.jspdf.jsPDF) {
+            resolve(window.jspdf.jsPDF);
+          } else if (window._jspdfLoadError || Date.now() > deadline) {
+            reject(new Error('PDF library failed to load. Please check your internet connection and try again.'));
+          } else {
+            setTimeout(check, 100);
+          }
+        }
+        check();
+      });
 
       // Page dimensions in points  (1 pt = 1/72 in)
       const PW = 612, PH = 792;          // 8.5 × 11
@@ -1611,7 +1620,8 @@
 
       } catch (err) {
         console.error('PDF generation error:', err);
-        alert('Could not generate PDF: ' + (err.message || err));
+        const detail = (err && err.stack) ? err.stack : (err && err.message) ? err.message : String(err);
+        alert('Could not generate PDF:\n\n' + detail);
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
