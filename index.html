@@ -813,7 +813,29 @@
   </div>
 
   <!-- PDF Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <!-- jsPDF with multiple CDN fallbacks -->
+  <script>
+  (function() {
+    var cdns = [
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+      'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ];
+    var idx = 0;
+    function tryNext() {
+      if (idx >= cdns.length) {
+        window._jspdfLoadError = 'All jsPDF CDNs failed to load.';
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = cdns[idx++];
+      s.onload = function() { window._jspdfLoaded = true; };
+      s.onerror = function() { tryNext(); };
+      document.head.appendChild(s);
+    }
+    tryNext();
+  })();
+  </script>
 
   <script>
     /* ============================================================
@@ -1016,6 +1038,10 @@
       btn.disabled = true;
 
       try {
+      // Guard: ensure jsPDF loaded successfully
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error('PDF library (jsPDF) failed to load. Please check your internet connection and try again.');
+      }
       const { jsPDF } = window.jspdf;
 
       // Page dimensions in points  (1 pt = 1/72 in)
