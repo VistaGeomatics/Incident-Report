@@ -813,7 +813,7 @@
   </div>
 
   <!-- PDF Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 
   <script>
     /* ============================================================
@@ -1034,7 +1034,7 @@
       const TEXT_MUTED = [120, 130, 145];
       const TEXT_LABEL = [90,  105, 120];
 
-      const pdf = new jsPDF({ unit: 'pt', format: [PW, PH], compress: true });
+      const pdf = new jsPDF({ unit: 'pt', format: [PW, PH], compress: false });
 
       /* ---- helpers -------------------------------------------- */
       function setFont(bold, size, color) {
@@ -1085,7 +1085,7 @@
       // Draw a filled rounded rect (approximated with rect since jsPDF doesn't natively round)
       function filledRect(x, y, w, h, r, rgb) {
         pdf.setFillColor(...rgb);
-        pdf.roundedRect(x, y, w, h, r, r, 'F');
+        pdf.rect(x, y, w, h, 'F');
       }
 
       function line(x1, y1, x2, y2, rgb, lw) {
@@ -1124,7 +1124,7 @@
         pdf.setFillColor(...FIELD_BG);
         pdf.setDrawColor(...RULE);
         pdf.setLineWidth(0.35);
-        pdf.roundedRect(x, y + 8, w, blockH, 1.5, 1.5, 'FD');
+        pdf.rect(x, y + 8, w, blockH, 'FD');
 
         // value text
         setFont(false, fontSize, TEXT_MAIN);
@@ -1269,13 +1269,16 @@
         // Right block — logo (if available), else date/page
         const logoSlot = 48; // max height for logo inside bar
         if (_logoDataUrl) {
-          // Scale logo to fit within right slot
-          const maxH = BAR_H - 10;
-          const scale = Math.min(maxH / _logoH, 90 / _logoW);
-          const dw = _logoW * scale, dh = _logoH * scale;
-          const lx = PW - MR - dw;
-          const ly = (BAR_H - dh) / 2;
-          pdf.addImage(_logoDataUrl, 'PNG', lx, ly, dw, dh);
+          try {
+            const maxH = BAR_H - 10;
+            const scale = Math.min(maxH / _logoH, 90 / _logoW);
+            const dw = _logoW * scale, dh = _logoH * scale;
+            const lx = PW - MR - dw;
+            const ly = (BAR_H - dh) / 2;
+            pdf.addImage(_logoDataUrl, 'PNG', lx, ly, dw, dh);
+          } catch(e) {
+            _logoDataUrl = null; // mark as unavailable so fallback text shows
+          }
         }
 
         // Date + page always shown, right-aligned below logo or at right
@@ -1458,7 +1461,7 @@
       function sigBlock(bx, by, bw, nameLabel, nameVal, dateVal) {
         setFont(false, 6, TEXT_LABEL);
         pdf.text(nameLabel.toUpperCase(), bx, by + 7);
-        pdf.setFillColor(...FIELD_BG); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.35); pdf.roundedRect(bx, by + 9, bw, 22, 1.5, 1.5, 'FD');
+        pdf.setFillColor(...FIELD_BG); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.35); pdf.rect(bx, by + 9, bw, 22, 'FD');
         setFont(false, 8, TEXT_MAIN);
         pdf.text(nameVal || '—', bx + 5, by + 23);
 
@@ -1483,7 +1486,7 @@
 
       // ── Certification bar ─────────────────────────────────────
       y += 8;
-      pdf.setFillColor(245, 248, 252); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4); pdf.roundedRect(ML, y, CW, 28, 2, 2, 'FD');
+      pdf.setFillColor(245, 248, 252); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4); pdf.rect(ML, y, CW, 28, 'FD');
       setFont(false, 7, TEXT_MUTED);
       const certText = 'By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.';
       const certLines = pdf.splitTextToSize(certText, CW - 16);
@@ -1525,9 +1528,9 @@
             const imgAreaH = cellH - IMG_LABEL_H;
 
             // cell bg
-            pdf.setFillColor(...FIELD_BG); pdf.roundedRect(cx, cy, cellW, cellH, 3, 3, 'F');
+            pdf.setFillColor(...FIELD_BG); pdf.rect(cx, cy, cellW, cellH, 'F');
             pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4);
-            pdf.roundedRect(cx, cy, cellW, cellH, 3, 3, 'S');
+            pdf.rect(cx, cy, cellW, cellH, 'S');
 
             try {
               const { dataUrl, width, height } = await compressImage(item.file, 1800, 0.82);
@@ -1535,7 +1538,11 @@
               const dw = width * ratio, dh = height * ratio;
               const ix = cx + (cellW - dw) / 2;
               const iy = cy + (imgAreaH - dh) / 2 + 4;
-              pdf.addImage(dataUrl, 'JPEG', ix, iy, dw, dh);
+              try {
+                pdf.addImage(dataUrl, 'JPEG', ix, iy, dw, dh);
+              } catch(imgErr) {
+                throw new Error('Photo image could not be added: ' + (item.file ? item.file.name : '') + ' — ' + imgErr.message);
+              }
             } catch(e) {
               setFont(false, 7, TEXT_MUTED);
               pdf.text('[Image unavailable]', cx + 6, cy + imgAreaH / 2);
