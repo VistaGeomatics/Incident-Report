@@ -997,6 +997,12 @@
         return;
       }
 
+      const btn = document.getElementById('downloadPdfBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Generating…';
+      btn.disabled = true;
+
+      try {
       const { jsPDF } = window.jspdf;
 
       // Page dimensions in points  (1 pt = 1/72 in)
@@ -1502,7 +1508,37 @@
         }
       }
 
-      pdf.save('Vista-Incident-Report.pdf');
+      // ── iPad / Safari-safe save ──────────────────────────────
+      // pdf.save() uses a synthetic <a> click which Safari blocks inside
+      // async functions. Instead get a blob and open/download it directly.
+      const blob = pdf.output('blob');
+      const url  = URL.createObjectURL(blob);
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      if (isIOS) {
+        // iOS Safari: open in new tab — user can then use Share → Save to Files
+        window.open(url, '_blank');
+      } else {
+        // All other browsers: trigger download normally
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Vista-Incident-Report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+
+      } catch (err) {
+        console.error('PDF generation error:', err);
+        alert('Could not generate PDF: ' + (err.message || err));
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
     });
   </script>
 </body>
