@@ -607,654 +607,841 @@
   </div>
 
   <script>
+  // ================================================================
+  // SIGNATURE PADS
+  // ================================================================
+  var sigPads = {};
 
-    // Photo preview
-    var photosInput = document.getElementById('photos');
-    var photosPreview = document.getElementById('photosPreview');
-    var photoItems = [];
+  function initSigPad(id) {
+    var canvas = document.getElementById(id);
+    if (!canvas) return;
 
-    if (photosInput) {
-      photosInput.addEventListener('change', function() {
-        photosPreview.innerHTML = '';
-        photoItems = [];
-        var files = Array.prototype.slice.call(this.files);
-        files.forEach(function(file) {
-          if (!file.type || file.type.indexOf('image/') !== 0) return;
-          var item = { file: file, description: '' };
-          photoItems.push(item);
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            var wrap = document.createElement('div');
-            wrap.className = 'photo-item';
-            var a = document.createElement('a');
-            a.href = e.target.result;
-            a.target = '_blank';
-            var img = document.createElement('img');
-            img.src = e.target.result;
-            a.appendChild(img);
-            wrap.appendChild(a);
-            var inp = document.createElement('input');
-            inp.type = 'text';
-            inp.placeholder = 'Photo description';
-            inp.addEventListener('input', function() { item.description = this.value; });
-            wrap.appendChild(inp);
-            photosPreview.appendChild(wrap);
-          };
-          reader.readAsDataURL(file);
-        });
+    // Set canvas pixel dimensions to match its CSS display size * devicePixelRatio
+    function resize() {
+      var rect = canvas.getBoundingClientRect();
+      var dpr  = window.devicePixelRatio || 1;
+      // Only resize if dimensions actually changed to avoid clearing on scroll
+      var newW = Math.round(rect.width  * dpr);
+      var newH = Math.round(rect.height * dpr);
+      if (canvas.width === newW && canvas.height === newH) return;
+      // Save current drawing, resize, restore
+      var snap = canvas.toDataURL();
+      canvas.width  = newW;
+      canvas.height = newH;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      if (pad.hasDrawing) {
+        var img = new Image();
+        img.onload = function() { ctx.drawImage(img, 0, 0, rect.width, rect.height); };
+        img.src = snap;
+      }
+    }
+
+    var pad = {
+      canvas: canvas,
+      hasDrawing: false,
+      drawing: false,
+      lastX: 0,
+      lastY: 0
+    };
+
+    var ctx = canvas.getContext('2d');
+
+    // Initial size - use a timeout so layout is complete
+    setTimeout(function() {
+      var rect = canvas.getBoundingClientRect();
+      var dpr  = window.devicePixelRatio || 1;
+      canvas.width  = Math.round(rect.width  * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.scale(dpr, dpr);
+      ctx.strokeStyle = '#1a2535';
+      ctx.lineWidth   = 2.5;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+    }, 50);
+
+    window.addEventListener('resize', resize);
+
+    function getXY(e) {
+      var r   = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+
+    function onStart(e) {
+      e.preventDefault();
+      pad.drawing = true;
+      var p = getXY(e);
+      pad.lastX = p.x; pad.lastY = p.y;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      canvas.parentElement.classList.add('active');
+    }
+
+    function onMove(e) {
+      if (!pad.drawing) return;
+      e.preventDefault();
+      var p = getXY(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      pad.lastX = p.x; pad.lastY = p.y;
+      pad.hasDrawing = true;
+      // Hide placeholder
+      var ph = document.getElementById('sig-ph-' + id.replace('sig-', ''));
+      if (ph) ph.style.display = 'none';
+      // Clear error state
+      var block = canvas.closest('.sig-block');
+      if (block) block.classList.remove('field-error');
+    }
+
+    function onEnd(e) {
+      if (!pad.drawing) return;
+      e.preventDefault();
+      pad.drawing = false;
+      ctx.beginPath();
+      canvas.parentElement.classList.remove('active');
+    }
+
+    // Mouse events
+    canvas.addEventListener('mousedown',  onStart, false);
+    canvas.addEventListener('mousemove',  onMove,  false);
+    canvas.addEventListener('mouseup',    onEnd,   false);
+    canvas.addEventListener('mouseleave', onEnd,   false);
+    // Touch events - passive:false so we can preventDefault (stops page scroll while signing)
+    canvas.addEventListener('touchstart', onStart, { passive: false });
+    canvas.addEventListener('touchmove',  onMove,  { passive: false });
+    canvas.addEventListener('touchend',   onEnd,   { passive: false });
+    canvas.addEventListener('touchcancel',onEnd,   { passive: false });
+
+    pad.clear = function() {
+      var r   = canvas.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      ctx.clearRect(0, 0, r.width * dpr, r.height * dpr);
+      pad.hasDrawing = false;
+      var ph = document.getElementById('sig-ph-' + id.replace('sig-', ''));
+      if (ph) ph.style.display = '';
+    };
+
+    pad.toDataURL = function() {
+      // Render onto a white background canvas before exporting
+      var off = document.createElement('canvas');
+      off.width  = canvas.width;
+      off.height = canvas.height;
+      var octx = off.getContext('2d');
+      octx.fillStyle = '#ffffff';
+      octx.fillRect(0, 0, off.width, off.height);
+      octx.drawImage(canvas, 0, 0);
+      return off.toDataURL('image/jpeg', 0.92);
+    };
+
+    sigPads[id] = pad;
+  }
+
+  // Init after DOM is painted
+  window.addEventListener('load', function() {
+    initSigPad('sig-emp');
+    initSigPad('sig-sup');
+    initSigPad('sig-hse');
+  });
+
+  // Clear buttons
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('sig-clear')) {
+      var target = e.target.getAttribute('data-target');
+      if (sigPads[target]) sigPads[target].clear();
+    }
+  });
+
+  // ================================================================
+  // PHOTO PREVIEW  (store dataURLs so PDF can access them)
+  // ================================================================
+  var photosInput   = document.getElementById('photos');
+  var photosPreview = document.getElementById('photosPreview');
+  var photoItems    = [];   // [{dataUrl, description}]
+
+  if (photosInput) {
+    photosInput.addEventListener('change', function() {
+      photosPreview.innerHTML = '';
+      photoItems = [];
+      var files = Array.prototype.slice.call(this.files);
+      files.forEach(function(file) {
+        if (!file.type || file.type.indexOf('image/') !== 0) return;
+        var item = { dataUrl: null, description: '' };
+        photoItems.push(item);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          item.dataUrl = e.target.result;   // keep the dataURL for PDF export
+          var wrap = document.createElement('div');
+          wrap.className = 'photo-item';
+          var a = document.createElement('a');
+          a.href = e.target.result; a.target = '_blank';
+          var img = document.createElement('img');
+          img.src = e.target.result;
+          a.appendChild(img); wrap.appendChild(a);
+          var inp = document.createElement('input');
+          inp.type = 'text'; inp.placeholder = 'Photo description';
+          inp.addEventListener('input', function() { item.description = this.value; });
+          wrap.appendChild(inp);
+          photosPreview.appendChild(wrap);
+        };
+        reader.readAsDataURL(file);
       });
+    });
+  }
+
+  // ================================================================
+  // MODAL
+  // ================================================================
+  document.getElementById('modalCloseBtn').addEventListener('click', function() {
+    document.getElementById('validationModal').classList.remove('active');
+  });
+  document.getElementById('validationModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+
+  // Clear field error on correction
+  document.getElementById('incidentForm').addEventListener('input', function(e) {
+    var wrap = e.target.closest && e.target.closest('div');
+    if (wrap) wrap.classList.remove('field-error');
+  });
+  document.getElementById('incidentForm').addEventListener('change', function(e) {
+    var wrap = e.target.closest && e.target.closest('div');
+    if (wrap) wrap.classList.remove('field-error');
+  });
+
+  // Reset button
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    setTimeout(function() {
+      ['sig-emp','sig-sup','sig-hse'].forEach(function(id) {
+        if (sigPads[id]) sigPads[id].clear();
+      });
+      photoItems = [];
+      photosPreview.innerHTML = '';
+    }, 0);
+  });
+
+  // ================================================================
+  // VALIDATION
+  // ================================================================
+  function clearFieldErrors() {
+    var els = document.querySelectorAll('.field-error');
+    for (var i = 0; i < els.length; i++) els[i].classList.remove('field-error');
+  }
+  function markError(ids) {
+    for (var i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (el && el.closest) { var p = el.closest('div'); if (p) p.classList.add('field-error'); }
+    }
+  }
+  function g(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  function validateForm() {
+    clearFieldErrors();
+    var errors = [];
+
+    var incMissing = [];
+    if (!g('incident_date'))     incMissing.push('incident_date');
+    if (!g('incident_time'))     incMissing.push('incident_time');
+    if (!g('incident_location')) incMissing.push('incident_location');
+    if (!g('supervisor_name'))   incMissing.push('supervisor_name');
+    if (incMissing.length) { markError(incMissing); errors.push('Incident Information: date, time, location and supervisor are required'); }
+
+    var perMissing = [];
+    if (!g('employee_name'))     perMissing.push('employee_name');
+    if (!g('employee_position')) perMissing.push('employee_position');
+    if (!g('employee_branch'))   perMissing.push('employee_branch');
+    if (perMissing.length) { markError(perMissing); errors.push('Person Involved: employee name, position and division are required'); }
+
+    var typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
+    var medChecked  = document.querySelector('input[name="medical_treatment"]:checked');
+    var lostChecked = document.querySelector('input[name="lost_time"]:checked');
+    var restChecked = document.querySelector('input[name="modified_duty"]:checked');
+    if (!typeChecked || !medChecked || !lostChecked || !restChecked) {
+      errors.push('Incident Classification: type, medical treatment, lost time and restricted duties must all be selected');
     }
 
-    // Modal
-    document.getElementById('modalCloseBtn').addEventListener('click', function() {
-      document.getElementById('validationModal').classList.remove('active');
-    });
-    document.getElementById('validationModal').addEventListener('click', function(e) {
-      if (e.target === this) this.classList.remove('active');
-    });
+    if (!g('incident_description')) { markError(['incident_description']); errors.push('Description of Incident is required'); }
+    if (!g('immediate_actions'))    { markError(['immediate_actions']);    errors.push('Immediate Corrective Actions is required'); }
+    if (!g('root_cause'))           { markError(['root_cause']);           errors.push('Root Cause / Contributing Factors is required'); }
+    if (!g('corrective_actions'))   { markError(['corrective_actions']);   errors.push('Recommended / Planned Corrective Actions is required'); }
 
-    // Clear error highlights on input
-    document.getElementById('incidentForm').addEventListener('input', function(e) {
-      var wrap = e.target.closest('div');
-      if (wrap) wrap.classList.remove('field-error');
-    });
-    document.getElementById('incidentForm').addEventListener('change', function(e) {
-      var wrap = e.target.closest('div');
-      if (wrap) wrap.classList.remove('field-error');
-      var opts = e.target.closest('.inline-options');
-      if (opts) opts.classList.remove('field-error');
-    });
-
-    // Validation
-    function clearFieldErrors() {
-      var els = document.querySelectorAll('.field-error');
-      for (var i = 0; i < els.length; i++) els[i].classList.remove('field-error');
+    var empSigned = (sigPads['sig-emp'] && sigPads['sig-emp'].hasDrawing) || !!g('employee_signature');
+    var supSigned = (sigPads['sig-sup'] && sigPads['sig-sup'].hasDrawing) || !!g('supervisor_signature');
+    var hseSigned = (sigPads['sig-hse'] && sigPads['sig-hse'].hasDrawing) || !!g('hse_signature');
+    if (!empSigned && !supSigned && !hseSigned) {
+      ['sig-block-emp','sig-block-sup','sig-block-hse'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('field-error');
+      });
+      errors.push('Sign-Off: at least one signature or printed name is required');
     }
 
-    function markError(ids) {
-      for (var i = 0; i < ids.length; i++) {
-        var el = document.getElementById(ids[i]);
-        if (el && el.closest('div')) el.closest('div').classList.add('field-error');
+    return errors;
+  }
+
+  // ================================================================
+  // PDF GENERATOR  (pure JS, no external libraries)
+  // ================================================================
+  function createPDFGenerator() {
+    var streams = [];
+    var pages   = [];
+    var objs    = [];
+    var imageXObjs = {};   // name -> {objIdx, w, h, jpegBytes}
+
+    function addObj(content) {
+      var n = objs.length + 1;
+      objs.push({ type: 'text', content: n + ' 0 obj\n' + content + '\nendobj' });
+      return n;
+    }
+
+    function pdfStr(s) {
+      s = (s || '').substring(0, 500);
+      return '(' + s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/\r?\n/g,' ') + ')';
+    }
+
+    var PW = 612, PH = 792, ML = 45, MR = 45, MT = 45, MB = 40;
+    var CW = PW - ML - MR;
+
+    function rgb(r,g,b) { return (r/255).toFixed(3)+' '+(g/255).toFixed(3)+' '+(b/255).toFixed(3); }
+    var C = {
+      navy:    rgb(15,40,60),   accent: rgb(22,95,125),
+      white:   '1 1 1',         fieldBg:rgb(250,251,253),
+      rule:    rgb(214,226,238),textMain:rgb(30,35,45),
+      textMute:rgb(110,120,135),textLbl:rgb(90,105,120),
+      rowAlt:  rgb(247,249,252)
+    };
+
+    var curPage = -1, ops = [], curY = 0;
+
+    function newPage() {
+      if (curPage >= 0) flushPage();
+      curPage++;
+      ops = [];
+      curY = PH - MT - 56;
+    }
+
+    function flushPage() {
+      var content = ops.join('\n');
+      var streamId = addObj('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream');
+      pages.push(streamId);
+    }
+
+    function checkSpace(needed) {
+      if (curY - needed < MB + 20) {
+        newPage();
+        drawPageHeader(curPage);
+        drawPageFooter();
       }
     }
 
-    function g(id) {
-      var el = document.getElementById(id);
-      return el ? el.value.trim() : '';
+    function rect(x, y, w, h, fill, stroke, lw) {
+      var s = '';
+      if (fill)   s += fill + ' rg ';
+      if (stroke) s += stroke + ' RG ' + (lw||0.4) + ' w ';
+      s += x.toFixed(1)+' '+y.toFixed(1)+' '+w.toFixed(1)+' '+h.toFixed(1);
+      if (fill && stroke) s += ' re B';
+      else if (fill)      s += ' re f';
+      else                s += ' re S';
+      ops.push(s);
     }
 
-    function validateForm() {
-      clearFieldErrors();
-      var errors = [];
-
-      // Incident Information
-      var incMissing = [];
-      if (!g('incident_date')) incMissing.push('incident_date');
-      if (!g('incident_time')) incMissing.push('incident_time');
-      if (!g('incident_location')) incMissing.push('incident_location');
-      if (!g('supervisor_name')) incMissing.push('supervisor_name');
-      if (incMissing.length) { markError(incMissing); errors.push('Incident Information: date, time, location and supervisor are required'); }
-
-      // Person Involved
-      var perMissing = [];
-      if (!g('employee_name')) perMissing.push('employee_name');
-      if (!g('employee_position')) perMissing.push('employee_position');
-      if (!g('employee_branch')) perMissing.push('employee_branch');
-      if (perMissing.length) { markError(perMissing); errors.push('Person Involved: employee name, position and division are required'); }
-
-      // Classification
-      var typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
-      var medChecked = document.querySelector('input[name="medical_treatment"]:checked');
-      var lostChecked = document.querySelector('input[name="lost_time"]:checked');
-      var restChecked = document.querySelector('input[name="modified_duty"]:checked');
-      if (!typeChecked || !medChecked || !lostChecked || !restChecked) {
-        errors.push('Incident Classification: type, medical treatment, lost time and restricted duties must all be selected');
-      }
-
-      // Description
-      if (!g('incident_description')) { markError(['incident_description']); errors.push('Description of Incident is required'); }
-
-      // Actions
-      if (!g('immediate_actions')) { markError(['immediate_actions']); errors.push('Immediate Corrective Actions is required'); }
-      if (!g('root_cause')) { markError(['root_cause']); errors.push('Root Cause / Contributing Factors is required'); }
-      if (!g('corrective_actions')) { markError(['corrective_actions']); errors.push('Recommended / Planned Corrective Actions is required'); }
-
-      // Sign-off: need at least one drawn signature OR printed name
-      var empSigned  = (sigPads['sig-emp'] && !sigPads['sig-emp'].isEmpty()) || !!g('employee_signature');
-      var supSigned  = (sigPads['sig-sup'] && !sigPads['sig-sup'].isEmpty()) || !!g('supervisor_signature');
-      var hseSigned  = (sigPads['sig-hse'] && !sigPads['sig-hse'].isEmpty()) || !!g('hse_signature');
-      if (!empSigned && !supSigned && !hseSigned) {
-        ['sig-block-emp','sig-block-sup','sig-block-hse'].forEach(function(id) {
-          var el = document.getElementById(id);
-          if (el) el.classList.add('field-error');
-        });
-        errors.push('Sign-Off: at least one signature (drawn or printed name) is required');
-      }
-
-      return errors;
+    function line(x1,y1,x2,y2,color,lw) {
+      ops.push(color+' RG '+(lw||0.4)+' w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l S');
     }
 
-
-    // ================================================================
-    // PURE JS PDF GENERATOR - no external libraries
-    // ================================================================
-function createPDFGenerator() {
-
-  // PDF state ------------------------------------------------------
-  var streams = [];    // {pageIdx, content}
-  var pages   = [];    // page object ids
-  var objs    = [];    // all object strings
-  var images  = [];    // {id, width, height, dataRGB, name}
-
-  function addObj(content) {
-    var n = objs.length + 1;
-    objs.push(n + ' 0 obj\n' + content + '\nendobj');
-    return n;
-  }
-
-  // Encode string for PDF (Latin-1 safe, escape parens/backslash)
-  function pdfStr(s) {
-    s = (s || '').substring(0, 500);  // cap length
-    return '(' + s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/\r/g,'').replace(/\n/g,'\\n') + ')';
-  }
-
-  // Page geometry --------------------------------------------------
-  var PW = 612, PH = 792;
-  var ML = 45, MR = 45, MT = 45, MB = 40;
-  var CW = PW - ML - MR;
-
-  // Colour helpers (PDF uses 0-1) ----------------------------------
-  function rgb(r,g,b) { return (r/255).toFixed(3)+' '+(g/255).toFixed(3)+' '+(b/255).toFixed(3); }
-
-  var C = {
-    navy:    rgb(15,40,60),
-    accent:  rgb(22,95,125),
-    white:   '1 1 1',
-    fieldBg: rgb(250,251,253),
-    rule:    rgb(214,226,238),
-    textMain:rgb(30,35,45),
-    textMute:rgb(110,120,135),
-    textLbl: rgb(90,105,120),
-    rowAlt:  rgb(247,249,252),
-  };
-
-  // Per-page stream builder ----------------------------------------
-  var curPage = -1;
-  var ops = [];   // current page ops array
-
-  function newPage() {
-    if (curPage >= 0) flushPage();
-    curPage++;
-    ops = [];
-    curY = PH - MT - 56;  // start below header
-  }
-
-  function flushPage() {
-    var content = ops.join('\n');
-    var streamId = addObj('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream');
-    pages.push(streamId);
-  }
-
-  // Current Y position --------------------------------------------
-  var curY = 0;
-
-  function checkSpace(needed) {
-    if (curY - needed < MB + 20) {
-      newPage();
-      drawPageHeader(curPage);
-      drawPageFooter();
+    function text(str, x, y, size, color, bold) {
+      if (!str) return;
+      ops.push('BT '+(bold?'/FB':'/F1')+' '+size+' Tf '+color+' rg '+x.toFixed(1)+' '+y.toFixed(1)+' Td '+pdfStr(str)+' Tj ET');
     }
-  }
 
-  // Drawing primitives --------------------------------------------
-  function rect(x, y, w, h, fillColor, strokeColor, lw) {
-    var s = '';
-    if (fillColor) s += fillColor + ' rg ';
-    if (strokeColor) { s += strokeColor + ' RG ' + (lw||0.4) + ' w '; }
-    s += x.toFixed(1) + ' ' + y.toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1);
-    if (fillColor && strokeColor) s += ' re B';
-    else if (fillColor) s += ' re f';
-    else s += ' re S';
-    ops.push(s);
-  }
-
-  function line(x1,y1,x2,y2,color,lw) {
-    ops.push(color+' RG '+(lw||0.4)+' w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l S');
-  }
-
-  function text(str, x, y, size, color, bold) {
-    if (!str) return;
-    var font = bold ? '/FB' : '/F1';
-    ops.push('BT '+font+' '+size+' Tf '+color+' rg '+x.toFixed(1)+' '+y.toFixed(1)+' Td '+pdfStr(str)+' Tj ET');
-  }
-
-  // Wrap text into lines fitting maxW at given font size (approx: 0.55 * size per char)
-  function wrapText(str, maxW, size) {
-    var charW = size * 0.52;
-    var charsPerLine = Math.floor(maxW / charW);
-    var words = (str || '').split(' ');
-    var lines = [], cur = '';
-    words.forEach(function(w) {
-      if ((cur + ' ' + w).trim().length <= charsPerLine) {
-        cur = (cur + ' ' + w).trim();
-      } else {
-        if (cur) lines.push(cur);
-        // Handle very long words
-        while (w.length > charsPerLine) {
-          lines.push(w.substring(0, charsPerLine));
-          w = w.substring(charsPerLine);
+    function wrapText(str, maxW, size) {
+      var cpl   = Math.floor(maxW / (size * 0.52));
+      var words = (str || '').split(' ');
+      var lines = [], cur = '';
+      words.forEach(function(w) {
+        if ((cur+' '+w).trim().length <= cpl) { cur = (cur+' '+w).trim(); }
+        else {
+          if (cur) lines.push(cur);
+          while (w.length > cpl) { lines.push(w.substring(0,cpl)); w = w.substring(cpl); }
+          cur = w;
         }
-        cur = w;
-      }
-    });
-    if (cur) lines.push(cur);
-    return lines.length ? lines : [''];
-  }
-
-  // Page header ---------------------------------------------------
-  function drawPageHeader(pageNum) {
-    var BAR_H = 46;
-    // Navy bar
-    rect(0, PH - BAR_H, PW, BAR_H, C.navy, null, 0);
-    // Accent line at bottom of bar
-    rect(0, PH - BAR_H - 1.5, PW, 1.5, C.accent, null, 0);
-
-    // VISTA (bold) GEOMATICS (regular)
-    text('VISTA', ML, PH - 28, 14, C.white, true);
-    var vistaW = 14 * 0.52 * 5;
-    text('GEOMATICS', ML + vistaW + 3, PH - 28, 14, '0.63 0.76 0.85', false);
-
-    // Incident Report subtitle
-    text('Incident Report', ML, PH - 14, 9, '0.75 0.85 0.92', false);
-
-    // Right side: date + page
-    var today = new Date().toLocaleDateString('en-CA');
-    var dateX = PW - MR - today.length * 6.5;
-    text(today, dateX, PH - 20, 7, '0.63 0.76 0.85', false);
-    var pgStr = 'Page ' + (pageNum + 1);
-    text(pgStr, PW - MR - pgStr.length * 6, PH - 32, 7, '0.51 0.65 0.74', false);
-  }
-
-  // Page footer ---------------------------------------------------
-  function drawPageFooter() {
-    line(ML, MB + 10, PW - MR, MB + 10, C.rule, 0.5);
-    text('CONFIDENTIAL -- Vista Geomatics Incident Report', ML, MB, 6.5, C.textMute, false);
-    var r = 'For internal use only';
-    text(r, PW - MR - r.length * 3.4, MB, 6.5, C.textMute, false);
-  }
-
-  // Section heading -----------------------------------------------
-  function sectionHeading(title) {
-    checkSpace(22);
-    // Accent left bar
-    rect(ML, curY - 11, 3, 13, C.accent, null, 0);
-    text(title.toUpperCase(), ML + 8, curY - 2, 8, C.navy, true);
-    line(ML, curY - 13, PW - MR, curY - 13, C.rule, 0.5);
-    curY -= 20;
-  }
-
-  // Labelled field ------------------------------------------------
-  // Returns height used
-  function drawField(x, y, w, label, value, fontSize) {
-    fontSize = fontSize || 8;
-    var lines = wrapText(value || 'N/A', w - 8, fontSize);
-    var lineH = fontSize * 1.45;
-    var blockH = Math.max(16, lines.length * lineH + 6);
-
-    // Label
-    text(label.toUpperCase(), x, y - 7, 6, C.textLbl, false);
-
-    // Field box
-    rect(x, y - 7 - blockH, w, blockH, C.fieldBg, C.rule, 0.35);
-
-    // Value text
-    lines.forEach(function(ln, i) {
-      text(ln, x + 4, y - 7 - blockH + blockH - lineH * (i + 1) + 4, fontSize, C.textMain, false);
-    });
-
-    return 7 + blockH + 5;
-  }
-
-  // Row of fields -------------------------------------------------
-  function fieldRow(fields, gutter) {
-    gutter = gutter || 8;
-    var totalFlex = fields.reduce(function(s,f){return s+(f.flex||1);}, 0);
-    var unit = (CW - gutter * (fields.length - 1)) / totalFlex;
-    var maxH = 0;
-    var x = ML;
-    fields.forEach(function(f) {
-      var w = unit * (f.flex || 1);
-      var h = drawField(x, curY, w, f.label, f.value, f.size);
-      if (h > maxH) maxH = h;
-      x += w + gutter;
-    });
-    curY -= maxH;
-  }
-
-  // Table ---------------------------------------------------------
-  function drawTable(headers, rows, colWidths) {
-    var ROW_H = 16, HEAD_H = 13;
-    var tableW = colWidths.reduce(function(a,b){return a+b;}, 0);
-    checkSpace(HEAD_H + ROW_H * Math.max(rows.length, 1) + 8);
-
-    var ty = curY;
-
-    // Header
-    rect(ML, ty - HEAD_H, tableW, HEAD_H, '0.93 0.96 0.98', C.rule, 0.4);
-    var x = ML;
-    headers.forEach(function(h, i) {
-      text(h.toUpperCase(), x + 4, ty - HEAD_H + 4, 6.5, C.textLbl, true);
-      x += colWidths[i];
-      if (i < headers.length - 1) line(x, ty, x, ty - HEAD_H, C.rule, 0.3);
-    });
-    ty -= HEAD_H;
-
-    var dataRows = rows.length ? rows : [headers.map(function(){return '';})];
-    var isEmpty = !rows.length;
-
-    dataRows.forEach(function(row, ri) {
-      if (ri % 2 === 1) rect(ML, ty - ROW_H, tableW, ROW_H, C.rowAlt, null, 0);
-      rect(ML, ty - ROW_H, tableW, ROW_H, null, C.rule, 0.3);
-      var cx = ML;
-      row.forEach(function(cell, ci) {
-        var display = isEmpty && ci === 0 ? 'None recorded' : (cell || '');
-        text(display.substring(0, 50), cx + 4, ty - ROW_H + 5, 7, isEmpty ? C.textMute : C.textMain, false);
-        cx += colWidths[ci];
-        if (ci < row.length - 1) line(cx, ty, cx, ty - ROW_H, C.rule, 0.3);
       });
-      ty -= ROW_H;
-      if (ri < dataRows.length - 1) line(ML, ty, ML + tableW, ty, C.rule, 0.3);
-    });
+      if (cur) lines.push(cur);
+      return lines.length ? lines : [''];
+    }
 
-    curY = ty - 6;
-  }
+    function drawPageHeader(pageNum) {
+      var BAR_H = 46;
+      rect(0, PH-BAR_H, PW, BAR_H, C.navy, null, 0);
+      rect(0, PH-BAR_H-1.5, PW, 1.5, C.accent, null, 0);
+      text('VISTA', ML, PH-28, 14, C.white, true);
+      text('GEOMATICS', ML+14*0.52*5+3, PH-28, 14, '0.63 0.76 0.85', false);
+      text('Incident Report', ML, PH-14, 9, '0.75 0.85 0.92', false);
+      var today = new Date().toLocaleDateString('en-CA');
+      text(today, PW-MR-today.length*6.5, PH-20, 7, '0.63 0.76 0.85', false);
+      var pg = 'Page '+(pageNum+1);
+      text(pg, PW-MR-pg.length*6, PH-32, 7, '0.51 0.65 0.74', false);
+    }
 
-  // Sign-off blocks -----------------------------------------------
-  function drawSignOff(blocks) {
-    checkSpace(70);
-    var gutter = 10;
-    var bw = (CW - gutter * (blocks.length - 1)) / blocks.length;
-    var bx = ML;
-    blocks.forEach(function(b) {
-      text(b.label.toUpperCase(), bx, curY - 7, 6, C.textLbl, false);
-      rect(bx, curY - 7 - 22, bw, 22, C.fieldBg, C.rule, 0.35);
-      text(b.name || '', bx + 5, curY - 7 - 22 + 8, 8, C.textMain, false);
-      // Signature line
-      ops.push(C.accent+' RG 0.6 w '+(bx+5).toFixed(1)+' '+(curY-36).toFixed(1)+' m '+(bx+bw-5).toFixed(1)+' '+(curY-36).toFixed(1)+' l S');
-      text('DATE', bx, curY - 42, 6, C.textLbl, false);
-      text(b.date || '', bx, curY - 52, 7.5, C.textMain, false);
-      bx += bw + gutter;
-    });
-    curY -= 60;
-  }
+    function drawPageFooter() {
+      line(ML, MB+10, PW-MR, MB+10, C.rule, 0.5);
+      text('CONFIDENTIAL -- Vista Geomatics Incident Report', ML, MB, 6.5, C.textMute, false);
+      var r = 'For internal use only';
+      text(r, PW-MR-r.length*3.4, MB, 6.5, C.textMute, false);
+    }
 
-  // Public API ----------------------------------------------------
-  function generate(data) {
-    newPage();
-    drawPageHeader(0);
-    drawPageFooter();
+    function sectionHeading(title) {
+      checkSpace(22);
+      rect(ML, curY-11, 3, 13, C.accent, null, 0);
+      text(title.toUpperCase(), ML+8, curY-2, 8, C.navy, true);
+      line(ML, curY-13, PW-MR, curY-13, C.rule, 0.5);
+      curY -= 20;
+    }
 
-    var gap = 8;
+    function drawField(x, y, w, label, value, fontSize) {
+      fontSize = fontSize || 8;
+      var lines   = wrapText(value || 'N/A', w-8, fontSize);
+      var lineH   = fontSize * 1.45;
+      var blockH  = Math.max(16, lines.length * lineH + 6);
+      text(label.toUpperCase(), x, y-7, 6, C.textLbl, false);
+      rect(x, y-7-blockH, w, blockH, C.fieldBg, C.rule, 0.35);
+      lines.forEach(function(ln, i) {
+        text(ln, x+4, y-7-blockH + blockH - lineH*(i+1)+4, fontSize, C.textMain, false);
+      });
+      return 7 + blockH + 5;
+    }
 
-    sectionHeading('Incident Information');
-    checkSpace(60);
-    fieldRow([{label:'Date of Incident',value:data.incidentDate},{label:'Time of Incident',value:data.incidentTime},{label:'Date Reported',value:data.reportDate}]);
-    curY -= gap;
-    fieldRow([{label:'Location of Incident',value:data.location,flex:2},{label:'Supervisor',value:data.supervisor,flex:1}]);
-    curY -= gap;
+    function fieldRow(fields, gutter) {
+      gutter = gutter || 8;
+      var total = fields.reduce(function(s,f){return s+(f.flex||1);},0);
+      var unit  = (CW - gutter*(fields.length-1)) / total;
+      var maxH  = 0, x = ML;
+      fields.forEach(function(f) {
+        var w = unit*(f.flex||1);
+        var h = drawField(x, curY, w, f.label, f.value, f.size);
+        if (h > maxH) maxH = h;
+        x += w + gutter;
+      });
+      curY -= maxH;
+    }
 
-    sectionHeading('Person Involved');
-    checkSpace(60);
-    fieldRow([{label:'Employee Name',value:data.empName},{label:'Position / Title',value:data.empPosition},{label:'Division',value:data.empBranch}]);
-    curY -= gap;
-    fieldRow([{label:'Phone Number',value:data.empPhone,flex:1},{label:'Employment Type',value:data.empType,flex:2}]);
-    curY -= gap;
+    function drawTable(headers, rows, colWidths) {
+      var ROW_H = 16, HEAD_H = 13;
+      var tableW = colWidths.reduce(function(a,b){return a+b;},0);
+      checkSpace(HEAD_H + ROW_H * Math.max(rows.length,1) + 8);
+      var ty = curY;
+      rect(ML, ty-HEAD_H, tableW, HEAD_H, '0.93 0.96 0.98', C.rule, 0.4);
+      var x = ML;
+      headers.forEach(function(h,i) {
+        text(h.toUpperCase(), x+4, ty-HEAD_H+4, 6.5, C.textLbl, true);
+        x += colWidths[i];
+        if (i < headers.length-1) line(x, ty, x, ty-HEAD_H, C.rule, 0.3);
+      });
+      ty -= HEAD_H;
+      var dataRows = rows.length ? rows : [['None recorded','','']];
+      var isEmpty  = !rows.length;
+      dataRows.forEach(function(row, ri) {
+        if (ri%2===1) rect(ML, ty-ROW_H, tableW, ROW_H, C.rowAlt, null, 0);
+        rect(ML, ty-ROW_H, tableW, ROW_H, null, C.rule, 0.3);
+        var cx = ML;
+        row.forEach(function(cell, ci) {
+          text((cell||'').substring(0,50), cx+4, ty-ROW_H+5, 7, isEmpty&&ci===0?C.textMute:C.textMain, false);
+          cx += colWidths[ci];
+          if (ci < row.length-1) line(cx, ty, cx, ty-ROW_H, C.rule, 0.3);
+        });
+        if (ri < dataRows.length-1) line(ML, ty-ROW_H, ML+tableW, ty-ROW_H, C.rule, 0.3);
+        ty -= ROW_H;
+      });
+      curY = ty - 6;
+    }
 
-    sectionHeading('Incident Classification');
-    checkSpace(50);
-    fieldRow([{label:'Type of Incident',value:data.incidentTypes}]);
-    curY -= gap;
-    fieldRow([{label:'Medical Treatment Required?',value:data.medTreatment},{label:'Lost Time from Work?',value:data.lostTime},{label:'Restricted Duties?',value:data.restrictedDuty}]);
-    curY -= gap;
+    // -- Embed image (JPEG dataURL) as PDF XObject ------------------
+    function addImage(name, jpegDataUrl) {
+      if (!jpegDataUrl) return;
+      var b64 = jpegDataUrl.replace(/^data:image\/jpeg;base64,/, '');
+      try {
+        var bin = atob(b64);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        // Read JPEG dimensions from SOF marker
+        var w = 100, h = 50;
+        for (var p = 2; p < bytes.length-9; p++) {
+          if (bytes[p]===0xFF && (bytes[p+1]===0xC0||bytes[p+1]===0xC2)) {
+            h = (bytes[p+5]<<8)|bytes[p+6];
+            w = (bytes[p+7]<<8)|bytes[p+8];
+            break;
+          }
+        }
+        var objNum = objs.length + 1;
+        imageXObjs[name] = { objNum: objNum, w: w, h: h, bytes: bytes };
+        objs.push({ type: 'img', name: name });
+      } catch(e) { /* skip bad image */ }
+    }
 
-    sectionHeading('Description of Incident');
-    checkSpace(40);
-    fieldRow([{label:'Description',value:data.description,size:7.5}]);
-    curY -= gap;
+    // Draw an embedded image in the PDF stream
+    function drawImage(name, x, y, drawW, drawH) {
+      var info = imageXObjs[name];
+      if (!info) return;
+      ops.push('q '+drawW.toFixed(1)+' 0 0 '+drawH.toFixed(1)+' '+x.toFixed(1)+' '+(y-drawH).toFixed(1)+' cm /Img'+info.objNum+' Do Q');
+    }
 
-    sectionHeading('Injury Details (if applicable)');
-    checkSpace(60);
-    fieldRow([{label:'Body Part(s) Affected',value:data.bodyPart},{label:'Nature of Injury',value:data.natureInjury},{label:'First Aid Provided By',value:data.firstAidBy}]);
-    curY -= gap;
-    fieldRow([{label:'First Aid / Medical Treatment Details',value:data.firstAidDesc,size:7.5}]);
-    curY -= gap;
+    // -- Sign-off blocks --------------------------------------------
+    function drawSignOff(blocks) {
+      checkSpace(90);
+      var gutter = 10;
+      var bw = (CW - gutter*(blocks.length-1)) / blocks.length;
+      var bx = ML;
+      var sigH = 38;
 
-    sectionHeading('Equipment / Vehicle / Property Involved');
-    drawTable(['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'], data.equipRows, [170, 130, CW-300]);
-    curY -= gap;
+      blocks.forEach(function(b) {
+        text(b.label.toUpperCase(), bx, curY-7, 6, C.textLbl, false);
+        // Signature box
+        rect(bx, curY-7-sigH, bw, sigH, C.fieldBg, C.rule, 0.35);
+        if (b.imgName && imageXObjs[b.imgName]) {
+          drawImage(b.imgName, bx+2, curY-7, bw-4, sigH-4);
+        }
+        // Underline
+        ops.push(C.accent+' RG 0.6 w '+(bx+4).toFixed(1)+' '+(curY-7-sigH-2).toFixed(1)+' m '+(bx+bw-4).toFixed(1)+' '+(curY-7-sigH-2).toFixed(1)+' l S');
+        // Printed name
+        text('PRINTED NAME', bx, curY-7-sigH-11, 5.5, C.textLbl, false);
+        text(b.name||'', bx, curY-7-sigH-20, 7.5, C.textMain, false);
+        // Date
+        text('DATE', bx, curY-7-sigH-31, 5.5, C.textLbl, false);
+        text(b.date||'', bx, curY-7-sigH-40, 7.5, C.textMain, false);
+        bx += bw + gutter;
+      });
+      curY -= (7 + sigH + 48);
+    }
 
-    sectionHeading('Witnesses');
-    drawTable(['Witness Name','Contact Information','Brief Statement / Notes'], data.witnessRows, [175, 145, CW-320]);
-    curY -= gap;
+    // -- Generate --------------------------------------------------
+    function generate(data) {
+      // Register signature images
+      if (data.empSigImg) addImage('emp', data.empSigImg);
+      if (data.supSigImg) addImage('sup', data.supSigImg);
+      if (data.hseSigImg) addImage('hse', data.hseSigImg);
+      // Register photo images
+      if (data.photos) {
+        data.photos.forEach(function(p, i) {
+          if (p.jpegDataUrl) addImage('photo'+i, p.jpegDataUrl);
+        });
+      }
 
-    // Page 2
-    newPage();
-    drawPageHeader(1);
-    drawPageFooter();
+      newPage();
+      drawPageHeader(0);
+      drawPageFooter();
+      var gap = 8;
 
-    sectionHeading('Immediate Corrective Actions');
-    checkSpace(40);
-    fieldRow([{label:'Actions Taken',value:data.immediateActions,size:7.5}]);
-    curY -= gap;
+      sectionHeading('Incident Information');
+      checkSpace(60);
+      fieldRow([{label:'Date of Incident',value:data.incidentDate},{label:'Time of Incident',value:data.incidentTime},{label:'Date Reported',value:data.reportDate}]);
+      curY -= gap;
+      fieldRow([{label:'Location of Incident',value:data.location,flex:2},{label:'Supervisor',value:data.supervisor,flex:1}]);
+      curY -= gap;
 
-    sectionHeading('Root Cause / Contributing Factors');
-    checkSpace(40);
-    fieldRow([{label:'Root Cause',value:data.rootCause,size:7.5}]);
-    curY -= gap;
+      sectionHeading('Person Involved');
+      checkSpace(60);
+      fieldRow([{label:'Employee Name',value:data.empName},{label:'Position / Title',value:data.empPosition},{label:'Division',value:data.empBranch}]);
+      curY -= gap;
+      fieldRow([{label:'Phone Number',value:data.empPhone,flex:1},{label:'Employment Type',value:data.empType,flex:2}]);
+      curY -= gap;
 
-    sectionHeading('Recommended / Planned Corrective Actions');
-    checkSpace(40);
-    fieldRow([{label:'Corrective Actions',value:data.correctiveActions,size:7.5}]);
-    curY -= gap;
+      sectionHeading('Incident Classification');
+      checkSpace(50);
+      fieldRow([{label:'Type of Incident',value:data.incidentTypes}]);
+      curY -= gap;
+      fieldRow([{label:'Medical Treatment Required?',value:data.medTreatment},{label:'Lost Time from Work?',value:data.lostTime},{label:'Restricted Duties?',value:data.restrictedDuty}]);
+      curY -= gap;
 
-    sectionHeading('Sign-Off');
-    if (data.empSigImg) registerSigImage('emp', data.empSigImg, 400, 100);
-    if (data.supSigImg) registerSigImage('sup', data.supSigImg, 400, 100);
-    if (data.hseSigImg) registerSigImage('hse', data.hseSigImg, 400, 100);
-    drawSignOff([
-      {label:'Employee Name / Signature',     name:data.empSig, date:data.empSigDate, imgName: data.empSigImg ? 'emp' : null},
-      {label:'Supervisor Name / Signature',   name:data.supSig, date:data.supSigDate, imgName: data.supSigImg ? 'sup' : null},
-      {label:'HSE Review (Name / Signature)', name:data.hseSig, date:data.hseSigDate, imgName: data.hseSigImg ? 'hse' : null},
-    ]);
+      sectionHeading('Description of Incident');
+      checkSpace(40);
+      fieldRow([{label:'Description',value:data.description,size:7.5}]);
+      curY -= gap;
 
-    // Certification note
-    checkSpace(30);
-    rect(ML, curY - 26, CW, 26, '0.96 0.98 0.99', C.rule, 0.4);
-    text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge.', ML + 6, curY - 9, 7, C.textMute, false);
-    curY -= 32;
+      sectionHeading('Injury Details (if applicable)');
+      checkSpace(60);
+      fieldRow([{label:'Body Part(s) Affected',value:data.bodyPart},{label:'Nature of Injury',value:data.natureInjury},{label:'First Aid Provided By',value:data.firstAidBy}]);
+      curY -= gap;
+      fieldRow([{label:'First Aid / Medical Treatment Details',value:data.firstAidDesc,size:7.5}]);
+      curY -= gap;
 
-    // Flush last page
-    flushPage();
+      sectionHeading('Equipment / Vehicle / Property Involved');
+      drawTable(['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'],
+        data.equipRows, [170,130,CW-300]);
+      curY -= gap;
 
-    function assemblePDF() {
+      sectionHeading('Witnesses');
+      drawTable(['Witness Name','Contact Information','Brief Statement / Notes'],
+        data.witnessRows, [175,145,CW-320]);
+      curY -= gap;
+
+      // Page 2
+      newPage(); drawPageHeader(1); drawPageFooter();
+
+      sectionHeading('Immediate Corrective Actions');
+      fieldRow([{label:'Actions Taken',value:data.immediateActions,size:7.5}]);
+      curY -= gap;
+
+      sectionHeading('Root Cause / Contributing Factors');
+      fieldRow([{label:'Root Cause',value:data.rootCause,size:7.5}]);
+      curY -= gap;
+
+      sectionHeading('Recommended / Planned Corrective Actions');
+      fieldRow([{label:'Corrective Actions',value:data.correctiveActions,size:7.5}]);
+      curY -= gap;
+
+      sectionHeading('Sign-Off');
+      drawSignOff([
+        {label:'Employee Signature',        name:data.empSig, date:data.empSigDate, imgName:data.empSigImg?'emp':null},
+        {label:'Supervisor Signature',      name:data.supSig, date:data.supSigDate, imgName:data.supSigImg?'sup':null},
+        {label:'HSE Review Signature',      name:data.hseSig, date:data.hseSigDate, imgName:data.hseSigImg?'hse':null},
+      ]);
+
+      rect(ML, curY-26, CW, 26, '0.96 0.98 0.99', C.rule, 0.4);
+      text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge.', ML+6, curY-9, 7, C.textMute, false);
+      curY -= 32;
+
+      // Photo pages
+      if (data.photos && data.photos.length) {
+        var perPage = 4;
+        for (var p = 0; p < data.photos.length; p += perPage) {
+          newPage(); drawPageHeader(curPage); drawPageFooter();
+          text('INCIDENT PHOTOS', ML, curY, 10, C.navy, true);
+          line(ML, curY-4, PW-MR, curY-4, C.rule, 0.5);
+          curY -= 14;
+
+          var slice = data.photos.slice(p, p+perPage);
+          var cellW = (CW - 10) / 2;
+          var cellH = Math.min(180, (curY - MB - 20) / 2);
+
+          slice.forEach(function(photo, i) {
+            var col = i % 2, row = Math.floor(i/2);
+            var cx  = ML + col*(cellW+10);
+            var cy  = curY - row*(cellH+10);
+            // Border
+            rect(cx, cy-cellH, cellW, cellH, C.fieldBg, C.rule, 0.35);
+            // Image
+            var imgName = 'photo'+(p+i);
+            if (imageXObjs[imgName]) {
+              drawImage(imgName, cx+2, cy-2, cellW-4, cellH-18);
+            }
+            // Caption bar
+            rect(cx, cy-cellH, cellW, 16, '0.91 0.95 0.99', C.rule, 0.3);
+            var cap = (photo.description || ('Photo '+(p+i+1))).substring(0,60);
+            text(cap, cx+4, cy-cellH+5, 7, C.textMain, false);
+          });
+        }
+      }
+
+      flushPage();
+
+      // ---- Build PDF binary ----------------------------------------
       var fontId  = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
       var fontBId = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
-      var fontResource = '<< /F1 ' + fontId + ' 0 R /FB ' + fontBId + ' 0 R >>';
+      var fontRes = '<< /F1 '+fontId+' 0 R /FB '+fontBId+' 0 R >>';
 
-      // Build XObject resource dict for images
-      var xobjResource = '';
+      var xobjRes = '';
       var imgNames = Object.keys(imageXObjs);
       if (imgNames.length) {
-        var xparts = imgNames.map(function(n) { return '/Img' + imageXObjs[n].objNum + ' ' + imageXObjs[n].objNum + ' 0 R'; });
-        xobjResource = ' /XObject << ' + xparts.join(' ') + ' >>';
+        xobjRes = ' /XObject << ' + imgNames.map(function(n){
+          return '/Img'+imageXObjs[n].objNum+' '+imageXObjs[n].objNum+' 0 R';
+        }).join(' ') + ' >>';
       }
 
-      var pageObjIds = pages.map(function(streamId) {
-        return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents ' + streamId + ' 0 R /Resources << /Font ' + fontResource + xobjResource + ' >> >>');
+      var pageObjIds = pages.map(function(sid) {
+        return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents '+sid+' 0 R /Resources << /Font '+fontRes+xobjRes+' >> >>');
       });
 
       var pagesId = objs.length + 1;
       pageObjIds.forEach(function(pid) {
-        objs[pid - 1] = objs[pid - 1].replace('/Parent 0 /', '/Parent ' + pagesId + ' 0 R /');
+        if (objs[pid-1].type === 'text') {
+          objs[pid-1].content = objs[pid-1].content.replace('/Parent 0 /', '/Parent '+pagesId+' 0 R /');
+        }
       });
 
-      var kidsStr = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
-      var pagesObjId = addObj('<< /Type /Pages /Kids [' + kidsStr + '] /Count ' + pageObjIds.length + ' >>');
-      var catId = addObj('<< /Type /Catalog /Pages ' + pagesObjId + ' 0 R >>');
+      var kids = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
+      var pagesObjId = addObj('<< /Type /Pages /Kids ['+kids+'] /Count '+pageObjIds.length+' >>');
+      var catId      = addObj('<< /Type /Catalog /Pages '+pagesObjId+' 0 R >>');
 
-      // Build as Uint8Array to handle binary JPEG data correctly
-      // First pass: build text portions, track offsets
-      var parts   = [];  // {type:'str'|'bytes', data}
+      // Assemble bytes
+      var parts   = [];
       var offsets = [];
       var byteLen = 0;
 
       function pushStr(s) {
-        var arr = new Uint8Array(s.length);
-        for (var i = 0; i < s.length; i++) arr[i] = s.charCodeAt(i) & 0xff;
-        parts.push(arr);
-        byteLen += arr.length;
+        var a = new Uint8Array(s.length);
+        for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 0xff;
+        parts.push(a); byteLen += a.length;
       }
+      function pushBytes(b) { parts.push(b); byteLen += b.length; }
 
       pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
 
-      objs.forEach(function(o, i) {
+      objs.forEach(function(obj) {
         offsets.push(byteLen);
-        if (o.indexOf('__IMG__') === 0) {
-          // Binary image object
-          var name = o.replace('__IMG__', '');
-          var imgInfo = imageXObjs[name];
-          var header = (imgInfo.objNum) + ' 0 obj\n' + imgInfo.dict + '\nstream\n';
-          pushStr(header);
-          parts.push(imgInfo.bytes);
-          byteLen += imgInfo.bytes.length;
+        if (obj.type === 'img') {
+          var info = imageXObjs[obj.name];
+          pushStr(info.objNum+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+info.w+' /Height '+info.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+info.bytes.length+' >>\nstream\n');
+          pushBytes(info.bytes);
           pushStr('\nendstream\nendobj\n');
         } else {
-          pushStr(o + '\n');
+          pushStr(obj.content + '\n');
         }
       });
 
       var xrefPos = byteLen;
-      var xrefStr = 'xref\n0 ' + (objs.length + 1) + '\n';
-      xrefStr += '0000000000 65535 f \n';
-      offsets.forEach(function(o) {
-        xrefStr += ('0000000000' + o).slice(-10) + ' 00000 n \n';
-      });
-      xrefStr += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catId + ' 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
-      pushStr(xrefStr);
+      var xref = 'xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n';
+      offsets.forEach(function(o) { xref += ('0000000000'+o).slice(-10)+' 00000 n \n'; });
+      xref += 'trailer\n<< /Size '+(objs.length+1)+' /Root '+catId+' 0 R >>\nstartxref\n'+xrefPos+'\n%%EOF';
+      pushStr(xref);
 
-      // Concatenate all parts into one Uint8Array
-      var total = new Uint8Array(byteLen);
-      var offset = 0;
-      parts.forEach(function(p) { total.set(p, offset); offset += p.length; });
-      return total;
+      var out = new Uint8Array(byteLen);
+      var pos = 0;
+      parts.forEach(function(p){ out.set(p,pos); pos+=p.length; });
+      return out;
     }
 
-    // Flush last page then assemble
-    flushPage();
+    return { generate: generate };
+  }
 
-    return new Promise(function(resolve) {
-      flushImages(function() {
-        resolve(assemblePDF());
+  // ================================================================
+  // HELPERS for data collection
+  // ================================================================
+  function radioVal(name) {
+    var el = document.querySelector('input[name="'+name+'"]:checked');
+    return el ? el.value : 'N/A';
+  }
+  function checkVals(name) {
+    var els = document.querySelectorAll('input[name="'+name+'"]:checked');
+    if (!els.length) return 'N/A';
+    return Array.prototype.map.call(els, function(e){return e.value;}).join(', ');
+  }
+  function tableRows(prefix, cols, count) {
+    var rows = [];
+    for (var r = 1; r <= count; r++) {
+      var cells = cols.map(function(c) {
+        var el = document.querySelector('input[name="'+prefix+r+'_'+c+'"]');
+        return el ? el.value.trim() : '';
       });
+      if (cells.some(function(c){return c;})) rows.push(cells);
+    }
+    return rows;
+  }
+
+  // Convert any image dataURL to JPEG via offscreen canvas
+  function toJpeg(dataUrl, maxW, maxH) {
+    return new Promise(function(resolve) {
+      if (!dataUrl) { resolve(null); return; }
+      var img = new Image();
+      img.onload = function() {
+        var scale = Math.min(maxW/img.width, maxH/img.height, 1);
+        var w = Math.round(img.width*scale);
+        var h = Math.round(img.height*scale);
+        var cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        var ctx = cv.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        resolve(cv.toDataURL('image/jpeg', 0.88));
+      };
+      img.onerror = function() { resolve(null); };
+      img.src = dataUrl;
     });
   }
 
-  return { generate: generate };
-}
+  // ================================================================
+  // DOWNLOAD HANDLER
+  // ================================================================
+  document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+    var errors = validateForm();
+    if (errors.length) {
+      var list = document.getElementById('validationList');
+      list.innerHTML = errors.map(function(e){ return '<li>'+e+'</li>'; }).join('');
+      document.getElementById('validationModal').classList.add('active');
+      return;
+    }
 
-    // Download handler
-    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-      var errors = validateForm();
-      if (errors.length) {
-        var list = document.getElementById('validationList');
-        list.innerHTML = errors.map(function(e) { return '<li>' + e + '</li>'; }).join('');
-        document.getElementById('validationModal').classList.add('active');
-        return;
-      }
+    var btn = document.getElementById('downloadPdfBtn');
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
 
-      function g(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
-      function radioVal(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : 'N/A'; }
-      function checkVals(name) {
-        var els = document.querySelectorAll('input[name="' + name + '"]:checked');
-        if (!els.length) return 'N/A';
-        return Array.prototype.map.call(els, function(e) { return e.value; }).join(', ');
-      }
-      function tableRows(prefix, cols, count) {
-        var rows = [];
-        for (var r = 1; r <= count; r++) {
-          var cells = cols.map(function(c) {
-            var el = document.querySelector('input[name="' + prefix + r + '_' + c + '"]');
-            return el ? el.value.trim() : '';
-          });
-          if (cells.some(function(c) { return c; })) rows.push(cells);
-        }
-        return rows;
-      }
+    // Collect signature images
+    var empSigJpeg = (sigPads['sig-emp'] && sigPads['sig-emp'].hasDrawing) ? sigPads['sig-emp'].toDataURL() : null;
+    var supSigJpeg = (sigPads['sig-sup'] && sigPads['sig-sup'].hasDrawing) ? sigPads['sig-sup'].toDataURL() : null;
+    var hseSigJpeg = (sigPads['sig-hse'] && sigPads['sig-hse'].hasDrawing) ? sigPads['sig-hse'].toDataURL() : null;
+
+    // Convert all photos to JPEG (handles PNG, HEIC, etc)
+    var photoPromises = photoItems.map(function(item) {
+      return toJpeg(item.dataUrl, 1200, 1200).then(function(jpeg) {
+        return { jpegDataUrl: jpeg, description: item.description };
+      });
+    });
+
+    // Convert signatures to JPEG too (they come back as PNG from canvas)
+    var sigPromises = [
+      toJpeg(empSigJpeg, 400, 100),
+      toJpeg(supSigJpeg, 400, 100),
+      toJpeg(hseSigJpeg, 400, 100)
+    ];
+
+    Promise.all([Promise.all(photoPromises), Promise.all(sigPromises)]).then(function(results) {
+      var photos   = results[0];
+      var sigJpegs = results[1];
 
       var data = {
-        incidentDate: g('incident_date'),     incidentTime: g('incident_time'),
-        reportDate:   g('report_date'),        location:     g('incident_location'),
-        supervisor:   g('supervisor_name'),    empName:      g('employee_name'),
-        empPosition:  g('employee_position'),  empBranch:    g('employee_branch'),
-        empPhone:     g('employee_phone'),     empType:      radioVal('employment_type'),
-        incidentTypes:checkVals('incident_type'),
-        medTreatment: radioVal('medical_treatment'),
-        lostTime:     radioVal('lost_time'),
-        restrictedDuty: radioVal('modified_duty'),
-        description:  g('incident_description'),
-        bodyPart:     g('body_part'),          natureInjury: g('nature_of_injury'),
-        firstAidBy:   g('first_aid_by'),       firstAidDesc: g('first_aid_description'),
-        equipRows:    tableRows('equip_', ['name','id','desc'], 3),
-        witnessRows:  tableRows('wit_', ['name','contact','notes'], 3),
+        incidentDate:  g('incident_date'),      incidentTime: g('incident_time'),
+        reportDate:    g('report_date'),         location:     g('incident_location'),
+        supervisor:    g('supervisor_name'),     empName:      g('employee_name'),
+        empPosition:   g('employee_position'),   empBranch:    g('employee_branch'),
+        empPhone:      g('employee_phone'),      empType:      radioVal('employment_type'),
+        incidentTypes: checkVals('incident_type'),
+        medTreatment:  radioVal('medical_treatment'),
+        lostTime:      radioVal('lost_time'),
+        restrictedDuty:radioVal('modified_duty'),
+        description:   g('incident_description'),
+        bodyPart:      g('body_part'),           natureInjury: g('nature_of_injury'),
+        firstAidBy:    g('first_aid_by'),        firstAidDesc: g('first_aid_description'),
+        equipRows:     tableRows('equip_', ['name','id','desc'], 3),
+        witnessRows:   tableRows('wit_', ['name','contact','notes'], 3),
         immediateActions:  g('immediate_actions'),
         rootCause:         g('root_cause'),
         correctiveActions: g('corrective_actions'),
-        empSig:     g('employee_signature'),   empSigDate: g('employee_date'),
-        supSig:     g('supervisor_signature'), supSigDate: g('supervisor_date'),
-        hseSig:     g('hse_signature'),        hseSigDate: g('hse_date'),
-        empSigImg:  (sigPads['sig-emp'] && !sigPads['sig-emp'].isEmpty()) ? sigPads['sig-emp'].toDataURL() : null,
-        supSigImg:  (sigPads['sig-sup'] && !sigPads['sig-sup'].isEmpty()) ? sigPads['sig-sup'].toDataURL() : null,
-        hseSigImg:  (sigPads['sig-hse'] && !sigPads['sig-hse'].isEmpty()) ? sigPads['sig-hse'].toDataURL() : null,
+        empSig:     g('employee_signature'),     empSigDate: g('employee_date'),
+        supSig:     g('supervisor_signature'),   supSigDate: g('supervisor_date'),
+        hseSig:     g('hse_signature'),          hseSigDate: g('hse_date'),
+        empSigImg:  sigJpegs[0],
+        supSigImg:  sigJpegs[1],
+        hseSigImg:  sigJpegs[2],
+        photos:     photos.filter(function(p){ return p.jpegDataUrl; })
       };
 
-      var btn = document.getElementById('downloadPdfBtn');
-      btn.textContent = 'Generating...';
-      btn.disabled = true;
-
       try {
-        var gen = createPDFGenerator();
-        // generate() returns a Promise<Uint8Array>
-        gen.generate(data).then(function(pdfBytes) {
-          var blob = new Blob([pdfBytes], { type: 'application/pdf' });
-          var url = URL.createObjectURL(blob);
-
-          var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-          if (isIOS) {
-            window.open(url, '_blank');
-          } else {
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'Vista-Incident-Report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-          }
-          setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
-          btn.textContent = 'Download PDF';
-          btn.disabled = false;
-        }).catch(function(err) {
-          alert('Could not generate PDF: ' + (err.message || err));
-          btn.textContent = 'Download PDF';
-          btn.disabled = false;
-        });
+        var pdfBytes = createPDFGenerator().generate(data);
+        var blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        var url  = URL.createObjectURL(blob);
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+          window.open(url, '_blank');
+        } else {
+          var a = document.createElement('a');
+          a.href = url; a.download = 'Vista-Incident-Report.pdf';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
       } catch(err) {
-        alert('Could not generate PDF: ' + (err.message || err));
-        btn.textContent = 'Download PDF';
-        btn.disabled = false;
+        alert('Could not generate PDF: ' + (err.message || String(err)));
       }
+      btn.textContent = 'Download PDF';
+      btn.disabled = false;
+    }).catch(function(err) {
+      alert('Could not prepare images: ' + (err.message || String(err)));
+      btn.textContent = 'Download PDF';
+      btn.disabled = false;
     });
-
+  });
   </script>
 </body>
 </html>
