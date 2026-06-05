@@ -1695,46 +1695,26 @@
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
+        // On all platforms, try <a download> first.
+        // On iOS Safari, blob URL + window.open is the most reliable way to get
+        // the native PDF viewer, from which the user can share/save.
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Vista-Incident-Report.pdf';
+        a.type = 'application/pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
         if (isIOS) {
-          // iOS Safari: show an in-page fullscreen overlay with the PDF in an iframe
-          // This avoids all popup-blocker issues since we never leave the page
-          var reader2 = new FileReader();
-          reader2.onload = function() {
-            var dataUri = reader2.result;
-
-            // Build overlay
-            var overlay = document.createElement('div');
-            overlay.id = 'pdfOverlay';
-            overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#1a1a2e;display:flex;flex-direction:column;';
-
-            // Top bar with instructions + close button
-            var bar = document.createElement('div');
-            bar.style.cssText = 'background:#0f283c;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;';
-            bar.innerHTML =
-              '<p style="margin:0;color:#c8dde8;font-family:sans-serif;font-size:13px;line-height:1.4">' +
-              'Tap <b style="color:#fff">&#x2B06; Share</b> then <b style="color:#fff">Save to Files</b> to save your PDF.' +
-              '</p>' +
-              '<button id="pdfOverlayClose" ' +
-              'style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:sans-serif;">Close</button>';
-
-            // iframe
-            var frame = document.createElement('iframe');
-            frame.src = dataUri;
-            frame.style.cssText = 'flex:1;width:100%;border:none;background:#fff;';
-
-            overlay.appendChild(bar);
-            overlay.appendChild(frame);
-            document.body.appendChild(overlay);
-            document.getElementById('pdfOverlayClose').addEventListener('click', function() {
-              var ov = document.getElementById('pdfOverlay');
-              if (ov) ov.remove();
-            });
-          };
-          reader2.readAsDataURL(blob);
+          // <a download> is ignored by iOS Safari -- it won't trigger a save dialog.
+          // Instead open the blob URL in the current window so Safari shows the
+          // native PDF viewer with its own Share sheet (Share > Save to Files).
+          // We do this AFTER the click() above so desktop browsers already handled it.
+          setTimeout(function() {
+            window.location.href = url;
+          }, 100);
         } else {
-          var a = document.createElement('a');
-          a.href = url; a.download = 'Vista-Incident-Report.pdf';
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
           setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
         }
       } catch(err) {
