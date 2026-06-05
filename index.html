@@ -232,6 +232,35 @@
       font-family: inherit;
     }
 
+
+    /* Signature pads */
+    .sig-block { display: flex; flex-direction: column; gap: 4px; }
+    .sig-label-row { display: flex; justify-content: space-between; align-items: center; }
+    .sig-clear {
+      font-size: 0.72rem; color: var(--blue); background: none; border: none;
+      cursor: pointer; padding: 0; font-family: inherit; text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .sig-clear:hover { color: var(--blue-dark); }
+    .sig-canvas-wrap {
+      position: relative; border-radius: 10px; overflow: hidden;
+      border: 1.5px solid var(--border); background: #fff;
+      touch-action: none;
+    }
+    .sig-canvas-wrap.active { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(38,132,168,0.18); }
+    .sig-canvas-wrap canvas { display: block; width: 100%; height: 100px; cursor: crosshair; }
+    .sig-placeholder {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      color: #c0ccd8; font-size: 0.82rem; pointer-events: none; gap: 6px;
+      transition: opacity 0.15s;
+    }
+    .sig-placeholder svg { opacity: 0.5; }
+    .sig-name-row { display: flex; flex-direction: column; gap: 4px; }
+    .sig-name-input { margin-top: 2px; }
+
+    /* Error state */
+    .field-error .sig-canvas-wrap { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important; }
+
     @media (max-width: 720px) {
       body { padding: 12px; }
       form { padding: 18px 16px 20px; }
@@ -471,26 +500,69 @@
         <!-- Sign Off -->
         <div class="section">
           <div class="section-title">Sign-Off</div>
-          <p class="section-subtext">Confirm review and follow-up responsibilities.</p>
+          <p class="section-subtext">Sign using your finger or mouse. Enter your printed name below each signature.</p>
           <div class="grid-3">
-            <div>
-              <label for="employee_signature">Employee Name / Signature</label>
-              <input type="text" id="employee_signature" name="employee_signature">
-              <label for="employee_date" style="margin-top:8px">Date</label>
+
+            <div class="sig-block" id="sig-block-emp">
+              <div class="sig-label-row">
+                <label>Employee Signature</label>
+                <button type="button" class="sig-clear" data-target="sig-emp">Clear</button>
+              </div>
+              <div class="sig-canvas-wrap" id="sig-wrap-emp">
+                <canvas id="sig-emp" width="400" height="100"></canvas>
+                <div class="sig-placeholder" id="sig-ph-emp">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Sign here
+                </div>
+              </div>
+              <div class="sig-name-row">
+                <label for="employee_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
+                <input type="text" id="employee_signature" name="employee_signature" class="sig-name-input" placeholder="Full name">
+              </div>
+              <label for="employee_date" style="margin-top:4px">Date</label>
               <input type="date" id="employee_date" name="employee_date">
             </div>
-            <div>
-              <label for="supervisor_signature">Supervisor Name / Signature</label>
-              <input type="text" id="supervisor_signature" name="supervisor_signature">
-              <label for="supervisor_date" style="margin-top:8px">Date</label>
+
+            <div class="sig-block" id="sig-block-sup">
+              <div class="sig-label-row">
+                <label>Supervisor Signature</label>
+                <button type="button" class="sig-clear" data-target="sig-sup">Clear</button>
+              </div>
+              <div class="sig-canvas-wrap" id="sig-wrap-sup">
+                <canvas id="sig-sup" width="400" height="100"></canvas>
+                <div class="sig-placeholder" id="sig-ph-sup">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Sign here
+                </div>
+              </div>
+              <div class="sig-name-row">
+                <label for="supervisor_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
+                <input type="text" id="supervisor_signature" name="supervisor_signature" class="sig-name-input" placeholder="Full name">
+              </div>
+              <label for="supervisor_date" style="margin-top:4px">Date</label>
               <input type="date" id="supervisor_date" name="supervisor_date">
             </div>
-            <div>
-              <label for="hse_signature">HSE Review (Name / Signature)</label>
-              <input type="text" id="hse_signature" name="hse_signature">
-              <label for="hse_date" style="margin-top:8px">Date</label>
+
+            <div class="sig-block" id="sig-block-hse">
+              <div class="sig-label-row">
+                <label>HSE Review Signature</label>
+                <button type="button" class="sig-clear" data-target="sig-hse">Clear</button>
+              </div>
+              <div class="sig-canvas-wrap" id="sig-wrap-hse">
+                <canvas id="sig-hse" width="400" height="100"></canvas>
+                <div class="sig-placeholder" id="sig-ph-hse">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Sign here
+                </div>
+              </div>
+              <div class="sig-name-row">
+                <label for="hse_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
+                <input type="text" id="hse_signature" name="hse_signature" class="sig-name-input" placeholder="Full name">
+              </div>
+              <label for="hse_date" style="margin-top:4px">Date</label>
               <input type="date" id="hse_date" name="hse_date">
             </div>
+
           </div>
         </div>
 
@@ -647,10 +719,16 @@
       if (!g('root_cause')) { markError(['root_cause']); errors.push('Root Cause / Contributing Factors is required'); }
       if (!g('corrective_actions')) { markError(['corrective_actions']); errors.push('Recommended / Planned Corrective Actions is required'); }
 
-      // Sign-off
-      if (!g('employee_signature') && !g('supervisor_signature') && !g('hse_signature')) {
-        markError(['employee_signature', 'supervisor_signature', 'hse_signature']);
-        errors.push('Sign-Off: at least one signature is required');
+      // Sign-off: need at least one drawn signature OR printed name
+      var empSigned  = (sigPads['sig-emp'] && !sigPads['sig-emp'].isEmpty()) || !!g('employee_signature');
+      var supSigned  = (sigPads['sig-sup'] && !sigPads['sig-sup'].isEmpty()) || !!g('supervisor_signature');
+      var hseSigned  = (sigPads['sig-hse'] && !sigPads['sig-hse'].isEmpty()) || !!g('hse_signature');
+      if (!empSigned && !supSigned && !hseSigned) {
+        ['sig-block-emp','sig-block-sup','sig-block-hse'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.add('field-error');
+        });
+        errors.push('Sign-Off: at least one signature (drawn or printed name) is required');
       }
 
       return errors;
@@ -980,10 +1058,13 @@ function createPDFGenerator() {
     curY -= gap;
 
     sectionHeading('Sign-Off');
+    if (data.empSigImg) registerSigImage('emp', data.empSigImg, 400, 100);
+    if (data.supSigImg) registerSigImage('sup', data.supSigImg, 400, 100);
+    if (data.hseSigImg) registerSigImage('hse', data.hseSigImg, 400, 100);
     drawSignOff([
-      {label:'Employee Name / Signature', name:data.empSig,    date:data.empSigDate},
-      {label:'Supervisor Name / Signature', name:data.supSig,  date:data.supSigDate},
-      {label:'HSE Review (Name / Signature)', name:data.hseSig,date:data.hseSigDate},
+      {label:'Employee Name / Signature',     name:data.empSig, date:data.empSigDate, imgName: data.empSigImg ? 'emp' : null},
+      {label:'Supervisor Name / Signature',   name:data.supSig, date:data.supSigDate, imgName: data.supSigImg ? 'sup' : null},
+      {label:'HSE Review (Name / Signature)', name:data.hseSig, date:data.hseSigDate, imgName: data.hseSigImg ? 'hse' : null},
     ]);
 
     // Certification note
@@ -995,42 +1076,87 @@ function createPDFGenerator() {
     // Flush last page
     flushPage();
 
-    // Build PDF objects
-    var fontId  = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
-    var fontBId = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
-    var fontResource = '<< /F1 ' + fontId + ' 0 R /FB ' + fontBId + ' 0 R >>';
+    function assemblePDF() {
+      var fontId  = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+      var fontBId = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+      var fontResource = '<< /F1 ' + fontId + ' 0 R /FB ' + fontBId + ' 0 R >>';
 
-    var pageObjIds = pages.map(function(streamId) {
-      return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents ' + streamId + ' 0 R /Resources << /Font ' + fontResource + ' >> >>');
+      // Build XObject resource dict for images
+      var xobjResource = '';
+      var imgNames = Object.keys(imageXObjs);
+      if (imgNames.length) {
+        var xparts = imgNames.map(function(n) { return '/Img' + imageXObjs[n].objNum + ' ' + imageXObjs[n].objNum + ' 0 R'; });
+        xobjResource = ' /XObject << ' + xparts.join(' ') + ' >>';
+      }
+
+      var pageObjIds = pages.map(function(streamId) {
+        return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents ' + streamId + ' 0 R /Resources << /Font ' + fontResource + xobjResource + ' >> >>');
+      });
+
+      var pagesId = objs.length + 1;
+      pageObjIds.forEach(function(pid) {
+        objs[pid - 1] = objs[pid - 1].replace('/Parent 0 /', '/Parent ' + pagesId + ' 0 R /');
+      });
+
+      var kidsStr = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
+      var pagesObjId = addObj('<< /Type /Pages /Kids [' + kidsStr + '] /Count ' + pageObjIds.length + ' >>');
+      var catId = addObj('<< /Type /Catalog /Pages ' + pagesObjId + ' 0 R >>');
+
+      // Build as Uint8Array to handle binary JPEG data correctly
+      // First pass: build text portions, track offsets
+      var parts   = [];  // {type:'str'|'bytes', data}
+      var offsets = [];
+      var byteLen = 0;
+
+      function pushStr(s) {
+        var arr = new Uint8Array(s.length);
+        for (var i = 0; i < s.length; i++) arr[i] = s.charCodeAt(i) & 0xff;
+        parts.push(arr);
+        byteLen += arr.length;
+      }
+
+      pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+
+      objs.forEach(function(o, i) {
+        offsets.push(byteLen);
+        if (o.indexOf('__IMG__') === 0) {
+          // Binary image object
+          var name = o.replace('__IMG__', '');
+          var imgInfo = imageXObjs[name];
+          var header = (imgInfo.objNum) + ' 0 obj\n' + imgInfo.dict + '\nstream\n';
+          pushStr(header);
+          parts.push(imgInfo.bytes);
+          byteLen += imgInfo.bytes.length;
+          pushStr('\nendstream\nendobj\n');
+        } else {
+          pushStr(o + '\n');
+        }
+      });
+
+      var xrefPos = byteLen;
+      var xrefStr = 'xref\n0 ' + (objs.length + 1) + '\n';
+      xrefStr += '0000000000 65535 f \n';
+      offsets.forEach(function(o) {
+        xrefStr += ('0000000000' + o).slice(-10) + ' 00000 n \n';
+      });
+      xrefStr += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catId + ' 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
+      pushStr(xrefStr);
+
+      // Concatenate all parts into one Uint8Array
+      var total = new Uint8Array(byteLen);
+      var offset = 0;
+      parts.forEach(function(p) { total.set(p, offset); offset += p.length; });
+      return total;
+    }
+
+    // Flush last page then assemble
+    flushPage();
+
+    return new Promise(function(resolve) {
+      flushImages(function() {
+        resolve(assemblePDF());
+      });
     });
-
-    // Fix parent references
-    var pagesId = objs.length + 1;
-    pageObjIds.forEach(function(pid) {
-      objs[pid - 1] = objs[pid - 1].replace('/Parent 0 /', '/Parent ' + pagesId + ' 0 R /');
-    });
-
-    var kidsStr = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
-    var pagesObjId = addObj('<< /Type /Pages /Kids [' + kidsStr + '] /Count ' + pageObjIds.length + ' >>');
-    var catId = addObj('<< /Type /Catalog /Pages ' + pagesObjId + ' 0 R >>');
-
-    // Build body
-    var body = '%PDF-1.4\n%\xFF\xFF\xFF\xFF\n';
-    var offsets = [];
-    objs.forEach(function(o) {
-      offsets.push(body.length);
-      body += o + '\n';
-    });
-
-    var xrefPos = body.length;
-    body += 'xref\n0 ' + (objs.length + 1) + '\n';
-    body += '0000000000 65535 f \n';
-    offsets.forEach(function(o) {
-      body += ('0000000000' + o).slice(-10) + ' 00000 n \n';
-    });
-    body += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catId + ' 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
-
-    return body;
   }
 
   return { generate: generate };
@@ -1086,36 +1212,46 @@ function createPDFGenerator() {
         empSig:     g('employee_signature'),   empSigDate: g('employee_date'),
         supSig:     g('supervisor_signature'), supSigDate: g('supervisor_date'),
         hseSig:     g('hse_signature'),        hseSigDate: g('hse_date'),
+        empSigImg:  (sigPads['sig-emp'] && !sigPads['sig-emp'].isEmpty()) ? sigPads['sig-emp'].toDataURL() : null,
+        supSigImg:  (sigPads['sig-sup'] && !sigPads['sig-sup'].isEmpty()) ? sigPads['sig-sup'].toDataURL() : null,
+        hseSigImg:  (sigPads['sig-hse'] && !sigPads['sig-hse'].isEmpty()) ? sigPads['sig-hse'].toDataURL() : null,
       };
+
+      var btn = document.getElementById('downloadPdfBtn');
+      btn.textContent = 'Generating...';
+      btn.disabled = true;
 
       try {
         var gen = createPDFGenerator();
-        var pdfStr = gen.generate(data);
+        // generate() returns a Promise<Uint8Array>
+        gen.generate(data).then(function(pdfBytes) {
+          var blob = new Blob([pdfBytes], { type: 'application/pdf' });
+          var url = URL.createObjectURL(blob);
 
-        // Convert string to Uint8Array for binary-safe Blob
-        var bytes = new Uint8Array(pdfStr.length);
-        for (var i = 0; i < pdfStr.length; i++) {
-          bytes[i] = pdfStr.charCodeAt(i) & 0xff;
-        }
-        var blob = new Blob([bytes], { type: 'application/pdf' });
-        var url = URL.createObjectURL(blob);
-
-        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        if (isIOS) {
-          window.open(url, '_blank');
-        } else {
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'Vista-Incident-Report.pdf';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
-        setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+          var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+          if (isIOS) {
+            window.open(url, '_blank');
+          } else {
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'Vista-Incident-Report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+          setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+          btn.textContent = 'Download PDF';
+          btn.disabled = false;
+        }).catch(function(err) {
+          alert('Could not generate PDF: ' + (err.message || err));
+          btn.textContent = 'Download PDF';
+          btn.disabled = false;
+        });
       } catch(err) {
         alert('Could not generate PDF: ' + (err.message || err));
+        btn.textContent = 'Download PDF';
+        btn.disabled = false;
       }
     });
 
