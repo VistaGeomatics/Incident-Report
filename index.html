@@ -610,6 +610,25 @@
     </div>
   </div>
 
+  <!-- iOS PDF download overlay -->
+  <div id="iosDownloadOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,25,40,0.92);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:88%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+      <div style="width:56px;height:56px;background:#eef6fb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#165f7d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <h2 style="margin:0 0 8px;font-family:sans-serif;font-size:17px;font-weight:700;color:#0b3045;">Your PDF is ready</h2>
+      <p style="margin:0 0 20px;font-family:sans-serif;font-size:14px;color:#6b7280;line-height:1.5;">Tap the button below to open it, then use <strong>Share &rarr; Save to Files</strong> to save it.</p>
+      <a id="iosDownloadLink" href="#" target="_blank"
+        style="display:block;background:linear-gradient(120deg,#2a7fa3,#0b3045);color:#fff;text-decoration:none;padding:14px 20px;border-radius:12px;font-family:sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;">
+        Open PDF
+      </a>
+      <button id="iosOverlayClose"
+        style="background:none;border:none;color:#9ca3af;font-family:sans-serif;font-size:14px;cursor:pointer;padding:8px;">
+        Cancel
+      </button>
+    </div>
+  </div>
+
   <script>
   // ================================================================
   // SIGNATURE PADS
@@ -1735,25 +1754,6 @@
     });
   });
   </script>
-
-  <!-- iOS PDF download overlay -->
-  <div id="iosDownloadOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,25,40,0.92);align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:88%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-      <div style="width:56px;height:56px;background:#eef6fb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#165f7d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </div>
-      <h2 style="margin:0 0 8px;font-family:sans-serif;font-size:17px;font-weight:700;color:#0b3045;">Your PDF is ready</h2>
-      <p style="margin:0 0 20px;font-family:sans-serif;font-size:14px;color:#6b7280;line-height:1.5;">Tap the button below to open it, then use <strong>Share &rarr; Save to Files</strong> to save it.</p>
-      <a id="iosDownloadLink" href="#" target="_blank"
-        style="display:block;background:linear-gradient(120deg,#2a7fa3,#0b3045);color:#fff;text-decoration:none;padding:14px 20px;border-radius:12px;font-family:sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;">
-        Open PDF
-      </a>
-      <button id="iosOverlayClose"
-        style="background:none;border:none;color:#9ca3af;font-family:sans-serif;font-size:14px;cursor:pointer;padding:8px;">
-        Cancel
-      </button>
-    </div>
-  </div>
 
 </body>
 </html>
