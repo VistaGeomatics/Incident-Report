@@ -2,153 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vista Geomatics – Incident Report</title>
+  <title>Vista Geomatics - Incident Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Modern fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
+    /* ============================================================
+       SCREEN STYLES
+    ============================================================ */
     :root {
-      --vista-blue: #165f7d;
-      --vista-blue-light: #2a7fa3;
-      --vista-blue-dark: #0b3045;
-
-      --bg-body: #eef3f9;
-      --bg-card: #ffffff;
-      --border-soft: #d6e2f0;
-      --text-main: #101827;
-      --text-muted: #6b7280;
+      --blue:       #165f7d;
+      --blue-light: #2a7fa3;
+      --blue-dark:  #0b3045;
+      --bg:         #eef3f9;
+      --card:       #ffffff;
+      --border:     #d6e2f0;
+      --text:       #101827;
+      --muted:      #6b7280;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 24px;
       background: radial-gradient(circle at top, #f4f8fc 0, #e4edf6 40%, #dde6f3 100%);
-      color: var(--text-main);
+      color: var(--text);
     }
 
-    .page-wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .page-wrap { max-width: 1200px; margin: 0 auto; }
 
     .container {
-      background: var(--bg-card);
+      background: var(--card);
       border-radius: 18px;
-      box-shadow:
-        0 18px 40px rgba(5, 41, 66, 0.18),
-        0 0 0 1px rgba(5, 41, 66, 0.04);
+      box-shadow: 0 18px 40px rgba(5,41,66,0.18), 0 0 0 1px rgba(5,41,66,0.04);
       overflow: hidden;
-      position: relative;
-    }
-
-    .container::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at top right, rgba(22,95,125,0.18), transparent 55%);
-      opacity: 0.9;
     }
 
     /* Header */
     .header-bar {
-      position: relative;
-      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 18px 28px;
-      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
-      color: #ffffff;
-      overflow: hidden;
+      background: linear-gradient(120deg, var(--blue-light) 0%, var(--blue) 40%, var(--blue-dark) 100%);
+      color: #fff;
     }
-
-    .header-bar::after {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background-image: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.07) 0,
-        transparent 40%
-      );
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    .header-left {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
     .header-left h1 {
       font-size: 1.7rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin: 0;
-      font-family: "Montserrat", sans-serif;
       font-weight: 400;
     }
+    .header-left p { margin: 0; font-size: 0.96rem; opacity: 0.92; }
+    .vista-bold { font-weight: 700; }
+    .header-logo { height: 90px; width: auto; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35)); }
 
-    .vista-bold {
-      font-weight: 700;
-    }
-
-    .geomatics-regular {
-      font-weight: 400;
-    }
-
-    .header-left p {
-      margin: 0;
-      font-size: 0.96rem;
-      opacity: 0.92;
-    }
-
-    .header-logo {
-      position: relative;
-      z-index: 1;
-      height: 90px;
-      width: auto;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
-    }
-
-    /* Form body */
-    form {
-      position: relative;
-      z-index: 2;
-      padding: 24px 28px 26px;
-      background: radial-gradient(circle at top left, rgba(226,240,246,0.55), transparent 55%) #ffffff;
-    }
+    /* Form */
+    form { padding: 24px 28px 26px; background: #ffffff; }
 
     .section {
       margin-bottom: 20px;
       padding: 16px 18px 18px;
       border-radius: 14px;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       background: linear-gradient(135deg, #fbfdff 0%, #f4f8fd 60%, #eff5fb 100%);
-      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.05);
+      box-shadow: 0 10px 24px rgba(5,41,66,0.05);
       position: relative;
       overflow: hidden;
     }
-
     .section::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 5px;
-      background: linear-gradient(90deg, var(--vista-blue-light), var(--vista-blue-dark));
+      background: linear-gradient(90deg, var(--blue-light), var(--blue-dark));
     }
 
     .section-title {
@@ -158,139 +86,59 @@
       font-weight: 600;
       margin-bottom: 6px;
       font-size: 1.02rem;
-      color: var(--vista-blue-dark);
+      color: var(--blue-dark);
       padding: 4px 10px;
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(22,95,125,0.09), rgba(11,48,69,0.05));
       box-shadow: 0 0 0 1px rgba(22,95,125,0.12);
-      position: relative;
     }
-
     .section-title::before {
       content: "";
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 999px;
-      background: radial-gradient(circle, #ffffff 0, var(--vista-blue-light) 50%, var(--vista-blue-dark) 100%);
+      background: radial-gradient(circle, #fff 0, var(--blue-light) 50%, var(--blue-dark) 100%);
       box-shadow: 0 0 0 4px rgba(22,95,125,0.25);
     }
 
-    .section-subtext {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
+    .section-subtext { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
 
-    .grid-2,
-    .grid-3 {
-      display: grid;
-      gap: 12px;
-    }
+    .grid-2, .grid-3 { display: grid; gap: 12px; }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
-    .grid-2 {
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    }
+    label { font-size: 0.86rem; font-weight: 600; display: block; margin-bottom: 4px; color: var(--text); }
 
-    .grid-3 {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    label {
-      font-size: 0.86rem;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 4px;
-      color: var(--text-main);
-    }
-
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    input[type="number"],
-    textarea,
-    select {
+    input[type="text"], input[type="date"], input[type="time"], input[type="number"],
+    textarea, select {
       width: 100%;
       padding: 7px 10px;
       font-size: 0.9rem;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: 9px;
       background: #f9fbff;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.08s ease;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
+    input:focus, textarea:focus, select:focus {
       outline: none;
-      border-color: var(--vista-blue-light);
-      background: #ffffff;
+      border-color: var(--blue-light);
+      background: #fff;
       box-shadow: 0 0 0 3px rgba(38,132,168,0.22);
-      transform: translateY(-1px);
     }
+    textarea { min-height: 90px; resize: vertical; }
 
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
+    .inline-options { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 6px; font-size: 0.86rem; }
+    .inline-options label { font-weight: 500; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 0; }
+    .inline-options input[type="checkbox"], .inline-options input[type="radio"] { margin: 0; }
 
-    .inline-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      margin-top: 6px;
-      font-size: 0.86rem;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.85rem; border-radius: 10px; overflow: hidden; }
+    th, td { border: 1px solid #d7e2f1; padding: 8px 10px; vertical-align: top; }
+    th { background: linear-gradient(90deg, #e6f1fb, #dde9f7); text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: #4b5563; }
+    tbody tr:nth-child(even) { background: #f7faff; }
+    td input[type="text"] { border: none; background: transparent; padding: 2px 4px; }
 
-    .inline-options label {
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 0;
-    }
-
-    .inline-options input[type="checkbox"],
-    .inline-options input[type="radio"] {
-      margin: 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 6px;
-      font-size: 0.85rem;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    th, td {
-      border: 1px solid #d7e2f1;
-      padding: 8px 10px;
-      vertical-align: top;
-    }
-
-    th {
-      background: linear-gradient(90deg, #e6f1fb, #dde9f7);
-      text-align: left;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #4b5563;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #f7faff;
-    }
-
-    .btn-row {
-      margin-top: 22px;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
-
+    .btn-row { margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
     button {
       padding: 9px 20px;
       font-size: 0.9rem;
@@ -300,107 +148,44 @@
       font-weight: 600;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+      font-family: inherit;
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-
     .btn-primary {
-      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
-      color: #ffffff;
-      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.45);
+      background: linear-gradient(120deg, var(--blue-light) 0%, var(--blue) 40%, var(--blue-dark) 100%);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(5,41,66,0.45);
     }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(5,41,66,0.55); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: #f3f4f6; color: var(--text); border: 1px solid #d4d7dd; }
+    .btn-secondary:hover { background: #e5e7eb; }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 32px rgba(5, 41, 66, 0.55);
+    .photos-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .photo-item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-width: 160px; }
+    .photo-item img { max-width: 140px; max-height: 140px; object-fit: cover; border-radius: 10px; border: 1px solid #d1e0f0; display: block; }
+    .photo-item input[type="text"] { font-size: 0.78rem; padding: 4px 6px; }
+    .hint { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    /* Field error highlight */
+    .field-error input, .field-error select, .field-error textarea {
+      border-color: #ef4444 !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important;
     }
+    .field-error .inline-options { outline: 2px solid #ef4444; outline-offset: 3px; border-radius: 6px; }
 
-    .btn-secondary {
-      background: #f3f4f6;
-      color: var(--text-main);
-      border: 1px solid #d4d7dd;
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-      transform: translateY(-1px);
-    }
-
-    /* Photo preview section */
-    .photos-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .photo-item {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-
-      max-width: 160px;
-    }
-
-    .photo-item img {
-      max-width: 140px;
-      max-height: 140px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid #d1e0f0;
-      box-shadow: 0 6px 14px rgba(5, 41, 66, 0.18);
-      display: block;
-    }
-
-    .photo-item a {
-      text-decoration: none;
-    }
-
-    .photo-item input[type="text"] {
-      font-size: 0.78rem;
-      padding: 4px 6px;
-    }
-
-    .hint {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    @media (max-width: 720px) {
-      body {
-        padding: 12px;
-      }
-
-      form {
-        padding: 18px 16px 20px;
-      }
-
-      .header-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .header-logo {
-        align-self: flex-end;
-        height: 56px;
-      }
-    }
-
-    /* ── Validation modal ─────────────────────────────── */
+    /* Validation modal */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(11,48,69,0.55);
-      backdrop-filter: blur(3px);
       z-index: 9999;
       align-items: center;
       justify-content: center;
     }
     .modal-overlay.active { display: flex; }
-
     .modal-box {
       background: #fff;
       border-radius: 16px;
@@ -408,11 +193,6 @@
       max-width: 460px;
       width: 90%;
       overflow: hidden;
-      animation: modalIn 0.2s ease;
-    }
-    @keyframes modalIn {
-      from { transform: translateY(-18px); opacity: 0; }
-      to   { transform: translateY(0);     opacity: 1; }
     }
     .modal-header {
       background: linear-gradient(120deg, #c0392b 0%, #962d22 100%);
@@ -422,20 +202,10 @@
       gap: 10px;
       color: #fff;
     }
-    .modal-header svg { flex-shrink: 0; }
     .modal-header h2 { margin: 0; font-size: 1rem; font-weight: 700; }
-    .modal-body {
-      padding: 18px 20px 6px;
-    }
-    .modal-body p {
-      margin: 0 0 10px;
-      font-size: 0.87rem;
-      color: #374151;
-    }
-    .modal-errors {
-      list-style: none;
-      padding: 0; margin: 0 0 14px;
-    }
+    .modal-body { padding: 18px 20px 6px; }
+    .modal-body p { margin: 0 0 10px; font-size: 0.87rem; color: #374151; }
+    .modal-errors { list-style: none; padding: 0; margin: 0 0 14px; }
     .modal-errors li {
       display: flex;
       align-items: flex-start;
@@ -448,60 +218,145 @@
       font-size: 0.83rem;
       color: #7f1d1d;
     }
-    .modal-errors li::before {
-      content: "●";
-      color: #ef4444;
-      font-size: 0.6rem;
-      margin-top: 3px;
-      flex-shrink: 0;
-    }
-    .modal-footer {
-      padding: 10px 20px 18px;
-      display: flex;
-      justify-content: flex-end;
-    }
+    .modal-errors li::before { content: "o"; color: #ef4444; font-size: 0.6rem; margin-top: 3px; flex-shrink: 0; }
+    .modal-footer { padding: 10px 20px 18px; display: flex; justify-content: flex-end; }
     .modal-close-btn {
       padding: 8px 22px;
-      background: linear-gradient(120deg, var(--vista-blue-light), var(--vista-blue-dark));
+      background: linear-gradient(120deg, var(--blue-light), var(--blue-dark));
       color: #fff;
       border: none;
       border-radius: 999px;
       font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
-      letter-spacing: 0.04em;
+      font-family: inherit;
     }
-    .modal-close-btn:hover { opacity: 0.88; }
 
-    /* field highlight */
-    .field-error input,
-    .field-error select,
-    .field-error textarea {
-      border-color: #ef4444 !important;
-      background: #fff5f5 !important;
-      box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important;
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+      form { padding: 18px 16px 20px; }
+      .header-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .header-logo { align-self: flex-end; height: 56px; }
     }
-    .field-error .inline-options {
-      outline: 2px solid #ef4444;
-      outline-offset: 3px;
-      border-radius: 6px;
+
+    /* ============================================================
+       PRINT STYLES - shown only when printing
+    ============================================================ */
+    #printView, #printPhotos { display: none; }
+
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { background: white !important; padding: 0 !important; margin: 0 !important; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #1e2330; }
+
+      .page-wrap, .container { box-shadow: none !important; border-radius: 0 !important; max-width: none !important; }
+
+      form, .btn-row, .photos-preview, #photosPreview,
+      input[type="file"], .hint, .modal-overlay,
+      .section, .header-bar { display: none !important; }
+
+      #printHeader {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        background: #0f283c !important;
+        padding: 10pt 20pt;
+        page-break-inside: avoid;
+      }
+      #printHeader .ph-left h1 { font-size: 15pt; color: #fff; margin: 0; font-weight: 400; letter-spacing: 0.1em; }
+      #printHeader .ph-left h1 b { font-weight: 700; }
+      #printHeader .ph-left p { font-size: 9pt; color: #a0c4d8; margin: 2pt 0 0; }
+      #printHeader .ph-right { text-align: right; }
+      #printHeader .ph-right img { height: 32pt; }
+      #printHeader .ph-accent { height: 2pt; background: #16607d; }
+
+      #printView {
+        display: block !important;
+        padding: 0 20pt;
+      }
+      #printView .pr-meta {
+        font-size: 7pt;
+        color: #8a99aa;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 5pt 0 6pt;
+        border-bottom: 0.5pt solid #1667a0;
+        margin-bottom: 8pt;
+      }
+      #printView .pr-section { margin-bottom: 9pt; page-break-inside: avoid; }
+      #printView .pr-section-title {
+        font-size: 7pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #0f283c;
+        padding-bottom: 2pt;
+        border-bottom: 0.4pt solid #dce4ee;
+        margin-bottom: 5pt;
+        padding-left: 5pt;
+        border-left: 2.5pt solid #16607d;
+      }
+      #printView .pr-row { display: flex; flex-wrap: wrap; gap: 3pt 8pt; margin-bottom: 3pt; }
+      #printView .pr-field { flex: 1; min-width: 100pt; }
+      #printView .pr-field.full { flex: 0 0 100%; }
+      #printView .pr-field.half { flex: 0 0 calc(50% - 4pt); }
+      #printView .pr-label { font-size: 5.5pt; text-transform: uppercase; letter-spacing: 0.05em; color: #6a7888; margin-bottom: 1pt; }
+      #printView .pr-value { font-size: 8pt; color: #1e2330; background: #f8fafd !important; border: 0.3pt solid #dce4ee; padding: 2.5pt 4pt; min-height: 12pt; word-break: break-word; }
+
+      #printView table { width: 100%; border-collapse: collapse; font-size: 7pt; }
+      #printView th { background: #eef4fa !important; font-size: 6pt; text-transform: uppercase; color: #5a6978; padding: 3pt 4pt; border: 0.3pt solid #dce4ee; text-align: left; }
+      #printView td { padding: 3pt 4pt; border: 0.3pt solid #dce4ee; vertical-align: top; }
+      #printView tr:nth-child(even) td { background: #f8fafd !important; }
+
+      #printView .pr-sig-row { display: flex; gap: 8pt; margin-top: 4pt; }
+      #printView .pr-sig-block { flex: 1; }
+      #printView .pr-sig-label { font-size: 5.5pt; text-transform: uppercase; letter-spacing: 0.05em; color: #6a7888; margin-bottom: 1pt; }
+      #printView .pr-sig-name { font-size: 8pt; background: #f8fafd !important; border: 0.3pt solid #dce4ee; padding: 2.5pt 4pt; min-height: 14pt; margin-bottom: 2pt; }
+      #printView .pr-sig-line { border-bottom: 0.6pt solid #16607d; margin: 0 4pt 2pt; }
+      #printView .pr-sig-date { font-size: 7pt; color: #6a7888; }
+
+      #printView .pr-cert { background: #f4f8fc !important; border: 0.3pt solid #dce4ee; padding: 4pt 7pt; font-size: 6.5pt; color: #6a7888; margin-top: 6pt; }
+      #printView .pr-footer { font-size: 6pt; color: #9aa5b4; border-top: 0.4pt solid #dce4ee; padding-top: 4pt; margin-top: 5pt; display: flex; justify-content: space-between; }
+
+      #printPhotos { display: block !important; }
+      #printPhotos .photo-page { page-break-before: always; padding: 0 20pt; }
+      #printPhotos .photo-page-title { font-size: 10pt; font-weight: bold; color: #0f283c; margin-bottom: 8pt; padding-top: 10pt; }
+      #printPhotos .photo-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10pt; }
+      #printPhotos .photo-cell { break-inside: avoid; border: 0.3pt solid #dce4ee; }
+      #printPhotos .photo-cell img { width: 100%; height: 160pt; object-fit: contain; background: #f8fafd; display: block; }
+      #printPhotos .photo-caption { font-size: 7pt; color: #5a6978; padding: 3pt 5pt; background: #eef4fa !important; text-align: center; }
+
+      @page { size: letter portrait; margin: 0.5in 0.5in 0.45in 0.5in; }
+      @page :first { margin-top: 0; }
     }
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <div class="container" id="pdfArea">
-      <!-- Header -->
+    <!-- Print header (hidden on screen, shown when printing) -->
+    <div id="printHeader" style="display:none">
+      <div class="ph-left">
+        <h1><b>VISTA</b>GEOMATICS</h1>
+        <p>Incident Report</p>
+      </div>
+      <div class="ph-right">
+        <img src="vista-geomatics.png" alt="Vista Geomatics" onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Screen header -->
       <div class="header-bar">
         <div class="header-left">
-          <h1><span class="vista-bold">VISTA</span><span class="geomatics-regular">GEOMATICS</span></h1>
+          <h1><span class="vista-bold">VISTA</span>GEOMATICS</h1>
           <p>Incident Report Form</p>
         </div>
-        <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo">
+        <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo" onerror="this.style.display='none'">
       </div>
 
-      <form action="#" method="post">
-        <!-- Section: Incident Information -->
+      <form id="incidentForm" action="#" method="post">
+
+        <!-- Incident Information -->
         <div class="section">
           <div class="section-title">Incident Information</div>
           <p class="section-subtext">Record basic details about the incident and when it was reported.</p>
@@ -519,7 +374,7 @@
               <input type="date" id="report_date" name="report_date">
             </div>
           </div>
-          <div class="grid-2" style="margin-top: 10px;">
+          <div class="grid-2" style="margin-top:10px">
             <div>
               <label for="incident_location">Location of Incident</label>
               <input type="text" id="incident_location" name="incident_location">
@@ -531,7 +386,7 @@
           </div>
         </div>
 
-        <!-- Section: Person Involved -->
+        <!-- Person Involved -->
         <div class="section">
           <div class="section-title">Person Involved</div>
           <p class="section-subtext">Details for the worker or individual directly involved in the incident.</p>
@@ -547,7 +402,7 @@
             <div>
               <label for="employee_branch">Division</label>
               <select id="employee_branch" name="employee_branch">
-                <option value="">— Select Division —</option>
+                <option value="">-- Select Division --</option>
                 <option value="Municipal">Municipal</option>
                 <option value="Construction">Construction</option>
                 <option value="Oil and Gas">Oil and Gas</option>
@@ -555,7 +410,7 @@
               </select>
             </div>
           </div>
-          <div class="grid-2" style="margin-top: 10px;">
+          <div class="grid-2" style="margin-top:10px">
             <div>
               <label for="employee_phone">Phone Number</label>
               <input type="text" id="employee_phone" name="employee_phone">
@@ -563,62 +418,61 @@
             <div>
               <label>Employment Type</label>
               <div class="inline-options">
-                <label><input type="radio" name="employment_type" value="full_time"> Full-time</label>
-                <label><input type="radio" name="employment_type" value="part_time"> Part-time</label>
-                <label><input type="radio" name="employment_type" value="contractor"> Contractor</label>
+                <label><input type="radio" name="employment_type" value="Full-time"> Full-time</label>
+                <label><input type="radio" name="employment_type" value="Part-time"> Part-time</label>
+                <label><input type="radio" name="employment_type" value="Contractor"> Contractor</label>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Section: Incident Classification -->
+        <!-- Incident Classification -->
         <div class="section">
           <div class="section-title">Incident Classification</div>
           <p class="section-subtext">Select all categories that apply to the incident.</p>
           <label>Type of Incident</label>
-          <div class="inline-options">
-            <label><input type="checkbox" name="incident_type" value="injury"> Injury / Illness</label>
-            <label><input type="checkbox" name="incident_type" value="first_aid"> First Aid Only</label>
-            <label><input type="checkbox" name="incident_type" value="near_miss"> Near Miss</label>
-            <label><input type="checkbox" name="incident_type" value="property_damage"> Property Damage</label>
-            <label><input type="checkbox" name="incident_type" value="vehicle"> Vehicle / Motor Vehicle</label>
-            <label><input type="checkbox" name="incident_type" value="environmental"> Environmental</label>
-            <label><input type="checkbox" name="incident_type" value="other"> Other</label>
+          <div class="inline-options" id="incident_type_group">
+            <label><input type="checkbox" name="incident_type" value="Injury / Illness"> Injury / Illness</label>
+            <label><input type="checkbox" name="incident_type" value="First Aid Only"> First Aid Only</label>
+            <label><input type="checkbox" name="incident_type" value="Near Miss"> Near Miss</label>
+            <label><input type="checkbox" name="incident_type" value="Property Damage"> Property Damage</label>
+            <label><input type="checkbox" name="incident_type" value="Vehicle / Motor Vehicle"> Vehicle / Motor Vehicle</label>
+            <label><input type="checkbox" name="incident_type" value="Environmental"> Environmental</label>
+            <label><input type="checkbox" name="incident_type" value="Other"> Other</label>
           </div>
-
-          <div class="grid-3" style="margin-top: 12px;">
+          <div class="grid-3" style="margin-top:12px">
             <div>
               <label>Medical Treatment Required?</label>
               <div class="inline-options">
-                <label><input type="radio" name="medical_treatment" value="yes"> Yes</label>
-                <label><input type="radio" name="medical_treatment" value="no"> No</label>
+                <label><input type="radio" name="medical_treatment" value="Yes"> Yes</label>
+                <label><input type="radio" name="medical_treatment" value="No"> No</label>
               </div>
             </div>
             <div>
               <label>Lost Time from Work?</label>
               <div class="inline-options">
-                <label><input type="radio" name="lost_time" value="yes"> Yes</label>
-                <label><input type="radio" name="lost_time" value="no"> No</label>
+                <label><input type="radio" name="lost_time" value="Yes"> Yes</label>
+                <label><input type="radio" name="lost_time" value="No"> No</label>
               </div>
             </div>
             <div>
               <label>Restricted Duties?</label>
               <div class="inline-options">
-                <label><input type="radio" name="modified_duty" value="yes"> Yes</label>
-                <label><input type="radio" name="modified_duty" value="no"> No</label>
+                <label><input type="radio" name="modified_duty" value="Yes"> Yes</label>
+                <label><input type="radio" name="modified_duty" value="No"> No</label>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Section: Description of Incident -->
+        <!-- Description -->
         <div class="section">
           <div class="section-title">Description of Incident</div>
-          <p class="section-subtext">Describe what happened in clear, factual terms. Include events leading up to the incident.</p>
+          <p class="section-subtext">Describe what happened in clear, factual terms.</p>
           <textarea id="incident_description" name="incident_description"></textarea>
         </div>
 
-        <!-- Section: Injury Details -->
+        <!-- Injury Details -->
         <div class="section">
           <div class="section-title">Injury Details (if applicable)</div>
           <p class="section-subtext">Complete this section if an injury or illness occurred.</p>
@@ -628,7 +482,7 @@
               <input type="text" id="body_part" name="body_part">
             </div>
             <div>
-              <label for="nature_of_injury">Nature of Injury (e.g., strain, cut)</label>
+              <label for="nature_of_injury">Nature of Injury</label>
               <input type="text" id="nature_of_injury" name="nature_of_injury">
             </div>
             <div>
@@ -636,101 +490,74 @@
               <input type="text" id="first_aid_by" name="first_aid_by">
             </div>
           </div>
-          <div style="margin-top: 10px;">
+          <div style="margin-top:10px">
             <label for="first_aid_description">First Aid / Medical Treatment Details</label>
             <textarea id="first_aid_description" name="first_aid_description"></textarea>
           </div>
         </div>
 
-        <!-- Section: Equipment / Vehicle / Property Involved -->
+        <!-- Equipment -->
         <div class="section">
           <div class="section-title">Equipment / Vehicle / Property Involved</div>
-          <p class="section-subtext">List any tools, equipment, vehicles, or property involved in the incident.</p>
+          <p class="section-subtext">List any tools, equipment, vehicles, or property involved.</p>
           <table>
             <thead>
               <tr>
-                <th style="width: 30%;">Item / Equipment / Vehicle</th>
-                <th style="width: 25%;">Unit / Plate / ID</th>
-                <th style="width: 45%;">Description of Damage or Role in Incident</th>
+                <th style="width:30%">Item / Equipment / Vehicle</th>
+                <th style="width:25%">Unit / Plate / ID</th>
+                <th style="width:45%">Description of Damage or Role</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><input type="text" name="equip_1_name"></td>
-                <td><input type="text" name="equip_1_id"></td>
-                <td><input type="text" name="equip_1_desc"></td>
-              </tr>
-              <tr>
-                <td><input type="text" name="equip_2_name"></td>
-                <td><input type="text" name="equip_2_id"></td>
-                <td><input type="text" name="equip_2_desc"></td>
-              </tr>
-              <tr>
-                <td><input type="text" name="equip_3_name"></td>
-                <td><input type="text" name="equip_3_id"></td>
-                <td><input type="text" name="equip_3_desc"></td>
-              </tr>
+              <tr><td><input type="text" name="equip_1_name"></td><td><input type="text" name="equip_1_id"></td><td><input type="text" name="equip_1_desc"></td></tr>
+              <tr><td><input type="text" name="equip_2_name"></td><td><input type="text" name="equip_2_id"></td><td><input type="text" name="equip_2_desc"></td></tr>
+              <tr><td><input type="text" name="equip_3_name"></td><td><input type="text" name="equip_3_id"></td><td><input type="text" name="equip_3_desc"></td></tr>
             </tbody>
           </table>
         </div>
 
-        <!-- 120px blank buffer after equipment/vehicle section -->
-        <div style="height: 125px;"></div>
-
-        <!-- Section: Witnesses -->
+        <!-- Witnesses -->
         <div class="section">
           <div class="section-title">Witnesses</div>
-          <p class="section-subtext">List anyone who directly witnessed the incident or events leading up to it.</p>
+          <p class="section-subtext">List anyone who directly witnessed the incident.</p>
           <table>
             <thead>
               <tr>
-                <th style="width: 35%;">Witness Name</th>
-                <th style="width: 30%;">Contact Information</th>
-                <th style="width: 35%;">Brief Statement / Notes</th>
+                <th style="width:35%">Witness Name</th>
+                <th style="width:30%">Contact Information</th>
+                <th style="width:35%">Brief Statement / Notes</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><input type="text" name="wit_1_name"></td>
-                <td><input type="text" name="wit_1_contact"></td>
-                <td><input type="text" name="wit_1_notes"></td>
-              </tr>
-              <tr>
-                <td><input type="text" name="wit_2_name"></td>
-                <td><input type="text" name="wit_2_contact"></td>
-                <td><input type="text" name="wit_2_notes"></td>
-              </tr>
-              <tr>
-                <td><input type="text" name="wit_3_name"></td>
-                <td><input type="text" name="wit_3_contact"></td>
-                <td><input type="text" name="wit_3_notes"></td>
-              </tr>
+              <tr><td><input type="text" name="wit_1_name"></td><td><input type="text" name="wit_1_contact"></td><td><input type="text" name="wit_1_notes"></td></tr>
+              <tr><td><input type="text" name="wit_2_name"></td><td><input type="text" name="wit_2_contact"></td><td><input type="text" name="wit_2_notes"></td></tr>
+              <tr><td><input type="text" name="wit_3_name"></td><td><input type="text" name="wit_3_contact"></td><td><input type="text" name="wit_3_notes"></td></tr>
             </tbody>
           </table>
         </div>
 
-        <!-- Section: Immediate Actions -->
+        <!-- Immediate Actions -->
         <div class="section">
           <div class="section-title">Immediate Corrective Actions</div>
-          <p class="section-subtext">Describe any immediate actions taken to make the area safe or prevent further harm.</p>
+          <p class="section-subtext">Describe any immediate actions taken to make the area safe.</p>
           <textarea id="immediate_actions" name="immediate_actions"></textarea>
         </div>
 
-        <!-- Section: Root Cause -->
+        <!-- Root Cause -->
         <div class="section">
           <div class="section-title">Root Cause / Contributing Factors</div>
-          <p class="section-subtext">Identify underlying causes (e.g., procedures, equipment, environment, human factors).</p>
+          <p class="section-subtext">Identify underlying causes.</p>
           <textarea id="root_cause" name="root_cause"></textarea>
         </div>
 
-        <!-- Section: Recommended Actions -->
+        <!-- Corrective Actions -->
         <div class="section">
           <div class="section-title">Recommended / Planned Corrective Actions</div>
           <p class="section-subtext">Outline corrective or preventative actions, responsibilities, and timelines.</p>
           <textarea id="corrective_actions" name="corrective_actions"></textarea>
         </div>
 
-        <!-- Section: Sign-Off -->
+        <!-- Sign Off -->
         <div class="section">
           <div class="section-title">Sign-Off</div>
           <p class="section-subtext">Confirm review and follow-up responsibilities.</p>
@@ -738,59 +565,43 @@
             <div>
               <label for="employee_signature">Employee Name / Signature</label>
               <input type="text" id="employee_signature" name="employee_signature">
-            </div>
-            <div>
-              <label for="employee_date">Date</label>
+              <label for="employee_date" style="margin-top:8px">Date</label>
               <input type="date" id="employee_date" name="employee_date">
             </div>
-          </div>
-          <div class="grid-3" style="margin-top: 10px;">
             <div>
               <label for="supervisor_signature">Supervisor Name / Signature</label>
               <input type="text" id="supervisor_signature" name="supervisor_signature">
-            </div>
-            <div>
-              <label for="supervisor_date">Date</label>
+              <label for="supervisor_date" style="margin-top:8px">Date</label>
               <input type="date" id="supervisor_date" name="supervisor_date">
             </div>
-          </div>
-          <div class="grid-3" style="margin-top: 10px;">
             <div>
               <label for="hse_signature">HSE Review (Name / Signature)</label>
               <input type="text" id="hse_signature" name="hse_signature">
-            </div>
-            <div>
-              <label for="hse_date">Date</label>
+              <label for="hse_date" style="margin-top:8px">Date</label>
               <input type="date" id="hse_date" name="hse_date">
             </div>
           </div>
         </div>
 
-        <!-- Incident Photos -->
+        <!-- Photos -->
         <div class="section">
           <div class="section-title">Incident Photos</div>
-          <p class="section-subtext">Attach photos related to the incident. Thumbnails and descriptions are shown for review.</p>
+          <p class="section-subtext">Attach photos related to the incident.</p>
           <label for="photos">Upload incident photos (you can select multiple):</label>
-          <input
-            type="file"
-            id="photos"
-            name="photos[]"
-            accept="image/*"
-            multiple
-          >
+          <input type="file" id="photos" name="photos[]" accept="image/*" multiple>
           <p class="hint">Accepted: JPG, PNG, HEIC. Large files may take longer to process.</p>
           <div id="photosPreview" class="photos-preview"></div>
         </div>
 
         <!-- Buttons -->
         <div class="btn-row">
-          <button type="reset" class="btn-secondary">Reset</button>
+          <button type="reset" class="btn-secondary" id="resetBtn">Reset</button>
           <button type="button" id="downloadPdfBtn" class="btn-primary">Download PDF</button>
         </div>
+
       </form>
     </div>
   </div>
-
 
   <!-- Validation Modal -->
   <div class="modal-overlay" id="validationModal">
@@ -812,820 +623,282 @@
     </div>
   </div>
 
-  <!-- PDF Library -->
-  <!-- jsPDF with multiple CDN fallbacks -->
-  <script>
-  (function() {
-    var cdns = [
-      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
-      'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
-    ];
-    var idx = 0;
-    function tryNext() {
-      if (idx >= cdns.length) {
-        window._jspdfLoadError = 'All jsPDF CDNs failed to load.';
-        return;
-      }
-      var s = document.createElement('script');
-      s.src = cdns[idx++];
-      s.onload = function() { window._jspdfLoaded = true; };
-      s.onerror = function() { tryNext(); };
-      document.head.appendChild(s);
-    }
-    tryNext();
-  })();
-  </script>
+  <!-- Print-only views (hidden on screen) -->
+  <div id="printView"></div>
+  <div id="printPhotos"></div>
 
   <script>
-    /* ============================================================
-       Photo preview
-    ============================================================ */
-    const photosInput = document.getElementById('photos');
-    const photosPreview = document.getElementById('photosPreview');
-    let photoItems = [];
-
-    function fileToDataURL(file) {
-      return new Promise(resolve => {
-        const r = new FileReader();
-        r.onload = e => resolve(e.target.result);
-        r.readAsDataURL(file);
-      });
-    }
-
-    async function compressImage(file, maxDim = 1800, quality = 0.82) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = () => reject(new Error('FileReader failed'));
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onerror = () => reject(new Error('Image decode failed: ' + file.name));
-          img.onload = () => {
-            try {
-              let w = img.width, h = img.height;
-              if (!w || !h) return reject(new Error('Zero-size image: ' + file.name));
-              const scale = Math.min(maxDim / w, maxDim / h, 1);
-              w = Math.round(w * scale); h = Math.round(h * scale);
-              const cv = document.createElement('canvas');
-              cv.width = w; cv.height = h;
-              cv.getContext('2d').drawImage(img, 0, 0, w, h);
-              const dataUrl = cv.toDataURL('image/jpeg', quality);
-              if (!dataUrl || dataUrl === 'data:,') return reject(new Error('Canvas toDataURL failed'));
-              resolve({ dataUrl, width: w, height: h });
-            } catch(err) { reject(err); }
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
+    // Photo preview
+    var photosInput = document.getElementById('photos');
+    var photosPreview = document.getElementById('photosPreview');
+    var photoItems = [];
 
     if (photosInput) {
-      photosInput.addEventListener('change', function () {
+      photosInput.addEventListener('change', function() {
         photosPreview.innerHTML = '';
         photoItems = [];
-        Array.from(this.files).forEach(file => {
-          if (!file.type.startsWith('image/')) return;
-          const item = { file, description: '' };
+        var files = Array.prototype.slice.call(this.files);
+        files.forEach(function(file) {
+          if (!file.type || file.type.indexOf('image/') !== 0) return;
+          var item = { file: file, description: '' };
           photoItems.push(item);
-          const r = new FileReader();
-          r.onload = e => {
-            const wrap = document.createElement('div');
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var wrap = document.createElement('div');
             wrap.className = 'photo-item';
-            const a = document.createElement('a');
-            a.href = e.target.result; a.target = '_blank';
-            const img = document.createElement('img');
+            var a = document.createElement('a');
+            a.href = e.target.result;
+            a.target = '_blank';
+            var img = document.createElement('img');
             img.src = e.target.result;
-            a.appendChild(img); wrap.appendChild(a);
-            const inp = document.createElement('input');
-            inp.type = 'text'; inp.placeholder = 'Photo description';
-            inp.addEventListener('input', function () { item.description = this.value; });
+            a.appendChild(img);
+            wrap.appendChild(a);
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.placeholder = 'Photo description';
+            inp.addEventListener('input', function() { item.description = this.value; });
             wrap.appendChild(inp);
             photosPreview.appendChild(wrap);
           };
-          r.readAsDataURL(file);
+          reader.readAsDataURL(file);
         });
       });
     }
 
-    /* ============================================================
-       PDF generation — programmatic layout, 8.5 × 11 in
-    ============================================================ */
-
-    /* ============================================================
-       Validation
-    ============================================================ */
-    // Modal close
-    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+    // Modal
+    document.getElementById('modalCloseBtn').addEventListener('click', function() {
       document.getElementById('validationModal').classList.remove('active');
     });
     document.getElementById('validationModal').addEventListener('click', function(e) {
       if (e.target === this) this.classList.remove('active');
     });
 
+    // Clear error highlights on input
+    document.getElementById('incidentForm').addEventListener('input', function(e) {
+      var wrap = e.target.closest('div');
+      if (wrap) wrap.classList.remove('field-error');
+    });
+    document.getElementById('incidentForm').addEventListener('change', function(e) {
+      var wrap = e.target.closest('div');
+      if (wrap) wrap.classList.remove('field-error');
+      var opts = e.target.closest('.inline-options');
+      if (opts) opts.classList.remove('field-error');
+    });
+
+    // Validation
     function clearFieldErrors() {
-      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+      var els = document.querySelectorAll('.field-error');
+      for (var i = 0; i < els.length; i++) els[i].classList.remove('field-error');
     }
 
     function markError(ids) {
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.closest('div') && el.closest('div').classList.add('field-error');
-      });
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el && el.closest('div')) el.closest('div').classList.add('field-error');
+      }
+    }
+
+    function g(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
     }
 
     function validateForm() {
       clearFieldErrors();
-      const errors = [];
+      var errors = [];
 
-      // ── Incident Information ──────────────────────────────────
-      const incidentMissing = [];
-      if (!document.getElementById('incident_date').value)    incidentMissing.push('incident_date');
-      if (!document.getElementById('incident_time').value)    incidentMissing.push('incident_time');
-      if (!document.getElementById('incident_location').value.trim()) incidentMissing.push('incident_location');
-      if (!document.getElementById('supervisor_name').value.trim())   incidentMissing.push('supervisor_name');
-      if (incidentMissing.length) {
-        markError(incidentMissing);
-        errors.push('Incident Information: date, time, location, and supervisor are required');
-      }
+      // Incident Information
+      var incMissing = [];
+      if (!g('incident_date')) incMissing.push('incident_date');
+      if (!g('incident_time')) incMissing.push('incident_time');
+      if (!g('incident_location')) incMissing.push('incident_location');
+      if (!g('supervisor_name')) incMissing.push('supervisor_name');
+      if (incMissing.length) { markError(incMissing); errors.push('Incident Information: date, time, location and supervisor are required'); }
 
-      // ── Person Involved ───────────────────────────────────────
-      const personMissing = [];
-      if (!document.getElementById('employee_name').value.trim())     personMissing.push('employee_name');
-      if (!document.getElementById('employee_position').value.trim()) personMissing.push('employee_position');
-      if (!document.getElementById('employee_branch').value)          personMissing.push('employee_branch');
-      if (personMissing.length) {
-        markError(personMissing);
-        errors.push('Person Involved: employee name, position, and division are required');
-      }
+      // Person Involved
+      var perMissing = [];
+      if (!g('employee_name')) perMissing.push('employee_name');
+      if (!g('employee_position')) perMissing.push('employee_position');
+      if (!g('employee_branch')) perMissing.push('employee_branch');
+      if (perMissing.length) { markError(perMissing); errors.push('Person Involved: employee name, position and division are required'); }
 
-      // ── Incident Classification ───────────────────────────────
-      const typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
-      const medChecked  = document.querySelector('input[name="medical_treatment"]:checked');
-      const lostChecked = document.querySelector('input[name="lost_time"]:checked');
-      const restChecked = document.querySelector('input[name="modified_duty"]:checked');
+      // Classification
+      var typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
+      var medChecked = document.querySelector('input[name="medical_treatment"]:checked');
+      var lostChecked = document.querySelector('input[name="lost_time"]:checked');
+      var restChecked = document.querySelector('input[name="modified_duty"]:checked');
       if (!typeChecked || !medChecked || !lostChecked || !restChecked) {
-        if (!typeChecked) {
-          const typeWrap = document.querySelector('input[name="incident_type"]').closest('.inline-options');
-          if (typeWrap) typeWrap.classList.add('field-error');
-        }
-        errors.push('Incident Classification: type of incident, medical treatment, lost time, and restricted duties must all be selected');
+        errors.push('Incident Classification: type, medical treatment, lost time and restricted duties must all be selected');
       }
 
-      // ── Description of Incident ───────────────────────────────
-      if (!document.getElementById('incident_description').value.trim()) {
-        markError(['incident_description']);
-        errors.push('Description of Incident: a description is required');
-      }
+      // Description
+      if (!g('incident_description')) { markError(['incident_description']); errors.push('Description of Incident is required'); }
 
-      // ── Immediate Corrective Actions ──────────────────────────
-      if (!document.getElementById('immediate_actions').value.trim()) {
-        markError(['immediate_actions']);
-        errors.push('Immediate Corrective Actions: this field is required');
-      }
+      // Actions
+      if (!g('immediate_actions')) { markError(['immediate_actions']); errors.push('Immediate Corrective Actions is required'); }
+      if (!g('root_cause')) { markError(['root_cause']); errors.push('Root Cause / Contributing Factors is required'); }
+      if (!g('corrective_actions')) { markError(['corrective_actions']); errors.push('Recommended / Planned Corrective Actions is required'); }
 
-      // ── Root Cause ────────────────────────────────────────────
-      if (!document.getElementById('root_cause').value.trim()) {
-        markError(['root_cause']);
-        errors.push('Root Cause / Contributing Factors: this field is required');
-      }
-
-      // ── Recommended Corrective Actions ────────────────────────
-      if (!document.getElementById('corrective_actions').value.trim()) {
-        markError(['corrective_actions']);
-        errors.push('Recommended / Planned Corrective Actions: this field is required');
-      }
-
-      // ── Sign-Off: at least one person ─────────────────────────
-      const empSig  = document.getElementById('employee_signature').value.trim();
-      const supSig  = document.getElementById('supervisor_signature').value.trim();
-      const hseSig  = document.getElementById('hse_signature').value.trim();
-      if (!empSig && !supSig && !hseSig) {
+      // Sign-off
+      if (!g('employee_signature') && !g('supervisor_signature') && !g('hse_signature')) {
         markError(['employee_signature', 'supervisor_signature', 'hse_signature']);
-        errors.push('Sign-Off: at least one signature (employee, supervisor, or HSE) is required');
+        errors.push('Sign-Off: at least one signature is required');
       }
 
       return errors;
     }
 
+    // Helpers
+    function esc(s) {
+      return (s || 'N/A').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function radioVal(name) {
+      var el = document.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : 'N/A';
+    }
+    function checkVals(name) {
+      var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+      if (!els.length) return 'N/A';
+      return Array.prototype.map.call(els, function(e) { return e.value; }).join(', ');
+    }
+    function field(label, value, cls) {
+      return '<div class="pr-field' + (cls ? ' ' + cls : '') + '">' +
+        '<div class="pr-label">' + esc(label) + '</div>' +
+        '<div class="pr-value">' + esc(value) + '</div>' +
+        '</div>';
+    }
+    function tableRows(prefix, cols, count) {
+      var rows = [];
+      for (var r = 1; r <= count; r++) {
+        var cells = cols.map(function(c) {
+          var el = document.querySelector('input[name="' + prefix + r + '_' + c + '"]');
+          return el ? el.value.trim() : '';
+        });
+        if (cells.some(function(c) { return c; })) rows.push(cells);
+      }
+      return rows;
+    }
 
-    /* Clear field-error highlight on user correction */
-    document.querySelector('form').addEventListener('input', function(e) {
-      const wrap = e.target.closest('div');
-      if (wrap && wrap.classList.contains('field-error')) wrap.classList.remove('field-error');
-    });
-    document.querySelector('form').addEventListener('change', function(e) {
-      const wrap = e.target.closest('div');
-      if (wrap && wrap.classList.contains('field-error')) wrap.classList.remove('field-error');
-      // also clear inline-options highlight
-      const opts = e.target.closest('.inline-options');
-      if (opts && opts.classList.contains('field-error')) opts.classList.remove('field-error');
-    });
-
-    document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
-      // ── Validate before generating ──────────────────────────
-      const errors = validateForm();
+    // Build print view and trigger print
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+      var errors = validateForm();
       if (errors.length) {
-        const list = document.getElementById('validationList');
-        list.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+        var list = document.getElementById('validationList');
+        list.innerHTML = errors.map(function(e) { return '<li>' + e + '</li>'; }).join('');
         document.getElementById('validationModal').classList.add('active');
         return;
       }
 
-      const btn = document.getElementById('downloadPdfBtn');
-      const originalText = btn.textContent;
-      btn.textContent = 'Generating…';
-      btn.disabled = true;
+      var today = new Date().toLocaleDateString('en-CA');
 
-      try {
-      // Wait for jsPDF to finish loading (CDN may still be in flight)
-      const jsPDF = await new Promise((resolve, reject) => {
-        const deadline = Date.now() + 12000; // 12 second timeout
-        function check() {
-          if (window.jspdf && window.jspdf.jsPDF) {
-            resolve(window.jspdf.jsPDF);
-          } else if (window._jspdfLoadError || Date.now() > deadline) {
-            reject(new Error('PDF library failed to load. Please check your internet connection and try again.'));
-          } else {
-            setTimeout(check, 100);
-          }
-        }
-        check();
-      });
+      // Equipment rows
+      var eRows = tableRows('equip_', ['name','id','desc'], 3);
+      var eTbody = eRows.length ? eRows.map(function(r) {
+        return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
+      }).join('') : '<tr><td colspan="3" style="color:#9aa5b4">None recorded</td></tr>';
 
-      // Page dimensions in points  (1 pt = 1/72 in)
-      const PW = 612, PH = 792;          // 8.5 × 11
-      const ML = 40, MR = 40, MT = 40;   // margins
-      const CW = PW - ML - MR;           // content width = 532
+      // Witness rows
+      var wRows = tableRows('wit_', ['name','contact','notes'], 3);
+      var wTbody = wRows.length ? wRows.map(function(r) {
+        return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
+      }).join('') : '<tr><td colspan="3" style="color:#9aa5b4">None recorded</td></tr>';
 
-      // ── colour palette ──────────────────────────────────────────
-      const NAVY       = [15,  40,  60];   // header bg, accent
-      const ACCENT     = [22,  95,  125];  // left rule, table header text
-      const WHITE      = [255, 255, 255];
-      const PAGE_BG    = [255, 255, 255];
-      const FIELD_BG   = [250, 251, 253];
-      const RULE       = [220, 228, 238];  // subtle divider lines
-      const TEXT_MAIN  = [30,  35,  45];
-      const TEXT_MUTED = [120, 130, 145];
-      const TEXT_LABEL = [90,  105, 120];
+      var html =
+        '<div class="pr-meta">Generated: ' + today + '</div>' +
 
-      const pdf = new jsPDF({ unit: 'pt', format: [PW, PH], compress: false });
+        '<div class="pr-section"><div class="pr-section-title">Incident Information</div>' +
+        '<div class="pr-row">' + field('Date of Incident', g('incident_date')) + field('Time of Incident', g('incident_time')) + field('Date Reported', g('report_date')) + '</div>' +
+        '<div class="pr-row">' + field('Location of Incident', g('incident_location'), 'half') + field('Supervisor', g('supervisor_name'), 'half') + '</div>' +
+        '</div>' +
 
-      /* ---- helpers -------------------------------------------- */
-      function setFont(bold, size, color) {
-        pdf.setFont('helvetica', bold ? 'bold' : 'normal');
-        pdf.setFontSize(size);
-        pdf.setTextColor(...color);
-      }
+        '<div class="pr-section"><div class="pr-section-title">Person Involved</div>' +
+        '<div class="pr-row">' + field('Employee Name', g('employee_name')) + field('Position / Title', g('employee_position')) + field('Division', g('employee_branch')) + '</div>' +
+        '<div class="pr-row">' + field('Phone Number', g('employee_phone'), 'half') + field('Employment Type', radioVal('employment_type'), 'half') + '</div>' +
+        '</div>' +
 
-      function val(id) {
-        const el = document.getElementById(id);
-        if (!el) return '';
-        return (el.value || '').trim();
-      }
+        '<div class="pr-section"><div class="pr-section-title">Incident Classification</div>' +
+        '<div class="pr-row">' + field('Type of Incident', checkVals('incident_type'), 'full') + '</div>' +
+        '<div class="pr-row">' + field('Medical Treatment Required?', radioVal('medical_treatment')) + field('Lost Time from Work?', radioVal('lost_time')) + field('Restricted Duties?', radioVal('modified_duty')) + '</div>' +
+        '</div>' +
 
-      function radio(name) {
-        const el = document.querySelector(`input[name="${name}"]:checked`);
-        return el ? el.value.replace(/_/g,' ') : '—';
-      }
+        '<div class="pr-section"><div class="pr-section-title">Description of Incident</div>' +
+        '<div class="pr-row">' + field('Description', g('incident_description'), 'full') + '</div>' +
+        '</div>' +
 
-      function checks(name) {
-        const els = document.querySelectorAll(`input[name="${name}"]:checked`);
-        if (!els.length) return '—';
-        return Array.from(els).map(e => {
-          const lbl = e.closest('label');
-          return lbl ? lbl.textContent.trim() : e.value;
-        }).join(', ');
-      }
+        '<div class="pr-section"><div class="pr-section-title">Injury Details (if applicable)</div>' +
+        '<div class="pr-row">' + field('Body Part(s) Affected', g('body_part')) + field('Nature of Injury', g('nature_of_injury')) + field('First Aid Provided By', g('first_aid_by')) + '</div>' +
+        '<div class="pr-row">' + field('First Aid / Medical Treatment Details', g('first_aid_description'), 'full') + '</div>' +
+        '</div>' +
 
-      function tableInputs(namePrefix, cols, rows) {
-        // returns array of row-objects
-        const result = [];
-        for (let r = 1; r <= rows; r++) {
-          const row = cols.map(c => {
-            const el = document.querySelector(`input[name="${namePrefix}${r}_${c}"]`);
-            return el ? (el.value || '').trim() : '';
+        '<div class="pr-section"><div class="pr-section-title">Equipment / Vehicle / Property Involved</div>' +
+        '<table><thead><tr><th>Item / Equipment / Vehicle</th><th>Unit / Plate / ID</th><th>Description of Damage or Role</th></tr></thead><tbody>' + eTbody + '</tbody></table>' +
+        '</div>' +
+
+        '<div class="pr-section"><div class="pr-section-title">Witnesses</div>' +
+        '<table><thead><tr><th>Witness Name</th><th>Contact Information</th><th>Brief Statement / Notes</th></tr></thead><tbody>' + wTbody + '</tbody></table>' +
+        '</div>' +
+
+        '<div class="pr-section"><div class="pr-section-title">Immediate Corrective Actions</div>' +
+        '<div class="pr-row">' + field('Actions Taken', g('immediate_actions'), 'full') + '</div>' +
+        '</div>' +
+
+        '<div class="pr-section"><div class="pr-section-title">Root Cause / Contributing Factors</div>' +
+        '<div class="pr-row">' + field('Root Cause', g('root_cause'), 'full') + '</div>' +
+        '</div>' +
+
+        '<div class="pr-section"><div class="pr-section-title">Recommended / Planned Corrective Actions</div>' +
+        '<div class="pr-row">' + field('Corrective Actions', g('corrective_actions'), 'full') + '</div>' +
+        '</div>' +
+
+        '<div class="pr-section"><div class="pr-section-title">Sign-Off</div>' +
+        '<div class="pr-sig-row">' +
+          '<div class="pr-sig-block"><div class="pr-sig-label">Employee Name / Signature</div><div class="pr-sig-name">' + esc(g('employee_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('employee_date')) + '</div></div>' +
+          '<div class="pr-sig-block"><div class="pr-sig-label">Supervisor Name / Signature</div><div class="pr-sig-name">' + esc(g('supervisor_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('supervisor_date')) + '</div></div>' +
+          '<div class="pr-sig-block"><div class="pr-sig-label">HSE Review (Name / Signature)</div><div class="pr-sig-name">' + esc(g('hse_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('hse_date')) + '</div></div>' +
+        '</div>' +
+        '<div class="pr-cert">By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.</div>' +
+        '</div>' +
+
+        '<div class="pr-footer"><span>CONFIDENTIAL -- Vista Geomatics Incident Report</span><span>For internal use only</span></div>';
+
+      document.getElementById('printView').innerHTML = html;
+
+      // Photos
+      var photoDiv = document.getElementById('printPhotos');
+      photoDiv.innerHTML = '';
+      if (photoItems && photoItems.length > 0) {
+        var perPage = 4;
+        var pages = Math.ceil(photoItems.length / perPage);
+        for (var p = 0; p < pages; p++) {
+          var slice = photoItems.slice(p * perPage, (p + 1) * perPage);
+          var pageEl = document.createElement('div');
+          pageEl.className = 'photo-page';
+          var title = document.createElement('div');
+          title.className = 'photo-page-title';
+          title.textContent = 'Incident Photos';
+          pageEl.appendChild(title);
+          var grid = document.createElement('div');
+          grid.className = 'photo-grid';
+          var previewImgs = photosPreview.querySelectorAll('.photo-item img');
+          slice.forEach(function(item, i) {
+            var cell = document.createElement('div');
+            cell.className = 'photo-cell';
+            var imgEl = document.createElement('img');
+            var srcImg = previewImgs[p * perPage + i];
+            if (srcImg) imgEl.src = srcImg.src;
+            var cap = document.createElement('div');
+            cap.className = 'photo-caption';
+            cap.textContent = item.description || ('Photo ' + (p * perPage + i + 1));
+            cell.appendChild(imgEl);
+            cell.appendChild(cap);
+            grid.appendChild(cell);
           });
-          if (row.some(v => v)) result.push(row);
-        }
-        return result;
-      }
-
-      // Wrap text and return lines
-      function wrap(text, maxW, fontSize) {
-        pdf.setFontSize(fontSize);
-        return pdf.splitTextToSize(text || '—', maxW);
-      }
-
-      // Draw a filled rounded rect (approximated with rect since jsPDF doesn't natively round)
-      function filledRect(x, y, w, h, r, rgb) {
-        pdf.setFillColor(...rgb);
-        pdf.rect(x, y, w, h, 'F');
-      }
-
-      function line(x1, y1, x2, y2, rgb, lw) {
-        pdf.setDrawColor(...rgb);
-        pdf.setLineWidth(lw || 0.5);
-        pdf.line(x1, y1, x2, y2);
-      }
-
-      /* ---- section heading ------------------------------------ */
-      function sectionHeading(y, title) {
-        // Thin left accent bar + label, no background fill
-        pdf.setFillColor(...ACCENT);
-        pdf.rect(ML, y, 3, 13, 'F');
-        setFont(true, 8, NAVY);
-        pdf.text(title.toUpperCase(), ML + 8, y + 9.5);
-        // Full-width rule underneath
-        pdf.setDrawColor(...RULE);
-        pdf.setLineWidth(0.5);
-        pdf.line(ML, y + 14, ML + CW, y + 14);
-        return y + 14 + 6;
-      }
-
-      /* ---- labelled field (label above value) ----------------- */
-      function field(x, y, w, label, value, opts = {}) {
-        const fontSize = opts.fontSize || 8;
-        const lines = wrap(value || '—', w - 4, fontSize);
-        const lineH = fontSize * 1.4;
-        const textH = lines.length * lineH;
-        const blockH = Math.max(16, textH + 8);
-
-        // label — small caps, muted
-        setFont(false, 6, TEXT_LABEL);
-        pdf.text(label.toUpperCase(), x, y + 6);
-
-        // subtle field background
-        pdf.setFillColor(...FIELD_BG);
-        pdf.setDrawColor(...RULE);
-        pdf.setLineWidth(0.35);
-        pdf.rect(x, y + 8, w, blockH, 'FD');
-
-        // value text
-        setFont(false, fontSize, TEXT_MAIN);
-        pdf.text(lines, x + 5, y + 8 + lineH - 0.5);
-
-        return y + 8 + blockH + 5;
-      }
-
-      /* ---- row of fields ------------------------------------- */
-      function fieldRow(y, fields, gutter) {
-        // fields: [{label, value, flex}]  flex defaults to 1
-        gutter = gutter || 8;
-        const totalFlex = fields.reduce((s, f) => s + (f.flex || 1), 0);
-        const unit = (CW - gutter * (fields.length - 1)) / totalFlex;
-        let x = ML;
-        let maxBottom = y;
-        fields.forEach((f, i) => {
-          const w = unit * (f.flex || 1);
-          const bottom = field(x, y, w, f.label, f.value, f.opts || {});
-          if (bottom > maxBottom) maxBottom = bottom;
-          x += w + gutter;
-        });
-        return maxBottom;
-      }
-
-      /* ---- table --------------------------------------------- */
-      function drawTable(y, headers, rows, colWidths) {
-        const ROW_H = 16, HEAD_H = 13;
-        const tableW = colWidths.reduce((a, b) => a + b, 0);
-
-        // Outer border
-        pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4);
-        pdf.rect(ML, y, tableW, HEAD_H + ROW_H * Math.max(rows.length, 1), 'S');
-
-        // Header — no fill, just bold text + bottom rule
-        setFont(true, 6.5, TEXT_LABEL);
-        let x = ML;
-        headers.forEach((h, i) => {
-          pdf.text(h.toUpperCase(), x + 5, y + 8.5);
-          x += colWidths[i];
-        });
-        // Header bottom rule
-        pdf.setDrawColor(...RULE); pdf.setLineWidth(0.5);
-        pdf.line(ML, y + HEAD_H, ML + tableW, y + HEAD_H);
-        y += HEAD_H;
-
-        const dataRows = rows.length ? rows : [['None', '', '']];
-        const isFallback = !rows.length;
-        dataRows.forEach((row, ri) => {
-          // Alternate row tint — very subtle
-          if (ri % 2 === 1) {
-            pdf.setFillColor(247, 249, 252);
-            pdf.rect(ML, y, tableW, ROW_H, 'F');
-          }
-          setFont(false, 7, isFallback && ri === 0 ? TEXT_MUTED : TEXT_MAIN);
-          let cx = ML;
-          row.forEach((cell, ci) => {
-            const txt = pdf.splitTextToSize(cell || '', colWidths[ci] - 10);
-            pdf.text(txt[0] || '', cx + 5, y + 10.5);
-            cx += colWidths[ci];
-            if (ci < row.length - 1) {
-              pdf.setDrawColor(...RULE); pdf.setLineWidth(0.3);
-              pdf.line(cx, y, cx, y + ROW_H);
-            }
-          });
-          // Row rule
-          if (ri < dataRows.length - 1) {
-            pdf.setDrawColor(...RULE); pdf.setLineWidth(0.3);
-            pdf.line(ML, y + ROW_H, ML + tableW, y + ROW_H);
-          }
-          y += ROW_H;
-        });
-        return y + 6;
-      }
-
-      /* ---- page header --------------------------------------- */
-      // Logo image cache — loaded once, reused each page
-      let _logoDataUrl = null;
-      let _logoW = 0, _logoH = 0;
-      async function loadLogo() {
-        if (_logoDataUrl) return;
-        try {
-          // Fetch the image as a blob to avoid canvas cross-origin tainting,
-          // then draw it from a local object URL — works on Safari / iPad.
-          const imgEl = document.querySelector('.header-logo');
-          if (!imgEl) return;
-
-          const src = imgEl.src || imgEl.getAttribute('src');
-          if (!src) return;
-
-          // Fetch as blob (same-origin or relative path — always allowed)
-          const resp = await fetch(src);
-          if (!resp.ok) return;
-          const blob = await resp.blob();
-          const objectUrl = URL.createObjectURL(blob);
-
-          // Load into a fresh Image from the blob URL
-          await new Promise((resolve) => {
-            const fresh = new Image();
-            fresh.onload = () => {
-              try {
-                const cv = document.createElement('canvas');
-                cv.width  = fresh.naturalWidth;
-                cv.height = fresh.naturalHeight;
-                cv.getContext('2d').drawImage(fresh, 0, 0);
-                _logoDataUrl = cv.toDataURL('image/png');
-                _logoW = fresh.naturalWidth;
-                _logoH = fresh.naturalHeight;
-              } catch(e) {
-                // canvas taint — skip logo silently
-              }
-              URL.revokeObjectURL(objectUrl);
-              resolve();
-            };
-            fresh.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(); };
-            fresh.src = objectUrl;
-          });
-        } catch(e) {
-          // Missing file, network error, or security error — skip logo silently
-          _logoDataUrl = null;
+          pageEl.appendChild(grid);
+          photoDiv.appendChild(pageEl);
         }
       }
 
-      function drawPageHeader(pageNum, totalPages) {
-        const BAR_H = 52;
-
-        // Navy bar
-        pdf.setFillColor(...NAVY);
-        pdf.rect(0, 0, PW, BAR_H, 'F');
-
-        // Left block — company name stacked above "Incident Report"
-        // VISTA GEOMATICS — company name
-        setFont(true, 15, WHITE);
-        pdf.text('VISTA', ML, 22);
-        setFont(false, 15, [160, 195, 215]);
-        pdf.text('GEOMATICS', ML + pdf.getTextWidth('VISTA') + 3, 22);
-
-        // "Incident Report" — prominent subtitle
-        setFont(false, 10.5, [190, 215, 232]);
-        pdf.text('Incident Report', ML, 36);
-
-        // Right block — logo (if available), else date/page
-        const logoSlot = 48; // max height for logo inside bar
-        if (_logoDataUrl) {
-          try {
-            const maxH = BAR_H - 10;
-            const scale = Math.min(maxH / _logoH, 90 / _logoW);
-            const dw = _logoW * scale, dh = _logoH * scale;
-            const lx = PW - MR - dw;
-            const ly = (BAR_H - dh) / 2;
-            pdf.addImage(_logoDataUrl, 'PNG', lx, ly, dw, dh);
-          } catch(e) {
-            _logoDataUrl = null; // mark as unavailable so fallback text shows
-          }
-        }
-
-        // Date + page always shown, right-aligned below logo or at right
-        const today = new Date().toLocaleDateString('en-CA');
-        setFont(false, 6.5, [130, 165, 188]);
-        const dateW = pdf.getTextWidth(today);
-        pdf.text(today, PW - MR - dateW, _logoDataUrl ? BAR_H + 10 : 20);
-        const pgStr = `Page ${pageNum} of ${totalPages}`;
-        pdf.text(pgStr, PW - MR - pdf.getTextWidth(pgStr), _logoDataUrl ? BAR_H + 19 : 31);
-
-        // Accent rule
-        pdf.setDrawColor(...ACCENT);
-        pdf.setLineWidth(1.5);
-        pdf.line(0, BAR_H, PW, BAR_H);
-      }
-
-      /* ---- page footer --------------------------------------- */
-      function drawPageFooter() {
-        pdf.setDrawColor(...RULE);
-        pdf.setLineWidth(0.5);
-        pdf.line(ML, PH - 22, ML + CW, PH - 22);
-        setFont(false, 6.5, TEXT_MUTED);
-        pdf.text('CONFIDENTIAL — Vista Geomatics Incident Report', ML, PH - 12);
-        const dStr = 'For internal use only';
-        pdf.text(dStr, ML + CW - pdf.getTextWidth(dStr), PH - 12);
-      }
-
-      /* ================================================================
-         Collect all form values
-      ================================================================ */
-      const F = {
-        // Incident info
-        incidentDate:  val('incident_date'),
-        incidentTime:  val('incident_time'),
-        reportDate:    val('report_date'),
-        location:      val('incident_location'),
-        supervisor:    val('supervisor_name'),
-        // Person
-        empName:       val('employee_name'),
-        empPosition:   val('employee_position'),
-        empBranch:     val('employee_branch'),
-        empPhone:      val('employee_phone'),
-        empType:       radio('employment_type'),
-        // Classification
-        incidentTypes: checks('incident_type'),
-        medTreatment:  radio('medical_treatment'),
-        lostTime:      radio('lost_time'),
-        restrictedDuty:radio('modified_duty'),
-        // Description
-        description:   val('incident_description'),
-        // Injury
-        bodyPart:      val('body_part'),
-        natureInjury:  val('nature_of_injury'),
-        firstAidBy:    val('first_aid_by'),
-        firstAidDesc:  val('first_aid_description'),
-        // Equipment rows
-        equipRows: tableInputs('equip_', ['name','id','desc'], 3),
-        // Witnesses
-        witnessRows: tableInputs('wit_', ['name','contact','notes'], 3),
-        // Actions
-        immediateActions: val('immediate_actions'),
-        rootCause:        val('root_cause'),
-        correctiveActions:val('corrective_actions'),
-        // Sign-off
-        empSig:    val('employee_signature'),
-        empSigDate:val('employee_date'),
-        supSig:    val('supervisor_signature'),
-        supSigDate:val('supervisor_date'),
-        hseSig:    val('hse_signature'),
-        hseSigDate:val('hse_date'),
-      };
-
-      // Determine photo count for page total
-      const photos = photoItems.length ? photoItems
-        : (photosInput && photosInput.files.length
-            ? Array.from(photosInput.files).filter(f=>f.type.startsWith('image/')).map(f=>({file:f,description:''}))
-            : []);
-      const photoPages = Math.ceil(photos.length / 4) || 0;
-      const TOTAL_PAGES = 2 + photoPages;
-
-      /* ================================================================
-         PAGE 1
-      ================================================================ */
-      await loadLogo();   // cache logo before drawing any page
-      drawPageHeader(1, TOTAL_PAGES);
-      drawPageFooter();
-
-      let y = 62; // start below header (52pt bar + 10pt breathing room)
-
-      // ── Incident Information ──────────────────────────────────
-      y = sectionHeading(y, 'Incident Information');
-      y = fieldRow(y, [
-        { label: 'Date of Incident', value: F.incidentDate },
-        { label: 'Time of Incident', value: F.incidentTime },
-        { label: 'Date Reported',    value: F.reportDate   },
-      ]);
-      y = fieldRow(y, [
-        { label: 'Location of Incident', value: F.location,   flex: 2 },
-        { label: 'Supervisor',           value: F.supervisor, flex: 1 },
-      ]);
-      y += 6;
-
-      // ── Person Involved ───────────────────────────────────────
-      y = sectionHeading(y, 'Person Involved');
-      y = fieldRow(y, [
-        { label: 'Employee Name',    value: F.empName     },
-        { label: 'Position / Title', value: F.empPosition },
-        { label: 'Division',  value: F.empBranch   },
-      ]);
-      y = fieldRow(y, [
-        { label: 'Phone Number',     value: F.empPhone, flex: 1 },
-        { label: 'Employment Type',  value: F.empType,  flex: 2 },
-      ]);
-      y += 6;
-
-      // ── Incident Classification ───────────────────────────────
-      y = sectionHeading(y, 'Incident Classification');
-      y = field(ML, y, CW, 'Type of Incident', F.incidentTypes);
-      y = fieldRow(y, [
-        { label: 'Medical Treatment Required?', value: F.medTreatment  },
-        { label: 'Lost Time from Work?',        value: F.lostTime      },
-        { label: 'Restricted Duties?',          value: F.restrictedDuty},
-      ]);
-      y += 6;
-
-      // ── Description of Incident ───────────────────────────────
-      y = sectionHeading(y, 'Description of Incident');
-      y = field(ML, y, CW, 'Description', F.description, { fontSize: 7.5 });
-      y += 6;
-
-      // ── Injury Details ────────────────────────────────────────
-      y = sectionHeading(y, 'Injury Details (if applicable)');
-      y = fieldRow(y, [
-        { label: 'Body Part(s) Affected', value: F.bodyPart      },
-        { label: 'Nature of Injury',      value: F.natureInjury  },
-        { label: 'First Aid Provided By', value: F.firstAidBy    },
-      ]);
-      y = field(ML, y, CW, 'First Aid / Medical Treatment Details', F.firstAidDesc, { fontSize: 7.5 });
-      y += 6;
-
-      // ── Equipment / Vehicle / Property ───────────────────────
-      y = sectionHeading(y, 'Equipment / Vehicle / Property Involved');
-      const equipCols = [160, 130, CW - 160 - 130];
-      y = drawTable(y, ['Item / Equipment / Vehicle', 'Unit / Plate / ID', 'Description of Damage or Role'], F.equipRows, equipCols);
-      y += 2;
-
-      // ── Witnesses ─────────────────────────────────────────────
-      y = sectionHeading(y, 'Witnesses');
-      const witCols = [170, 140, CW - 170 - 140];
-      y = drawTable(y, ['Witness Name', 'Contact Information', 'Brief Statement / Notes'], F.witnessRows, witCols);
-
-      /* ================================================================
-         PAGE 2
-      ================================================================ */
-      pdf.addPage([PW, PH]);
-      drawPageHeader(2, TOTAL_PAGES);
-      drawPageFooter();
-      y = 62;
-
-      // ── Immediate Corrective Actions ──────────────────────────
-      y = sectionHeading(y, 'Immediate Corrective Actions');
-      y = field(ML, y, CW, 'Actions Taken', F.immediateActions, { fontSize: 7.5 });
-      y += 6;
-
-      // ── Root Cause / Contributing Factors ─────────────────────
-      y = sectionHeading(y, 'Root Cause / Contributing Factors');
-      y = field(ML, y, CW, 'Root Cause', F.rootCause, { fontSize: 7.5 });
-      y += 6;
-
-      // ── Recommended / Planned Corrective Actions ──────────────
-      y = sectionHeading(y, 'Recommended / Planned Corrective Actions');
-      y = field(ML, y, CW, 'Corrective Actions', F.correctiveActions, { fontSize: 7.5 });
-      y += 6;
-
-      // ── Sign-Off ──────────────────────────────────────────────
-      y = sectionHeading(y, 'Sign-Off');
-
-      // Signature boxes — draw three signature blocks side by side
-      const sigW = (CW - 16) / 3;
-      function sigBlock(bx, by, bw, nameLabel, nameVal, dateVal) {
-        setFont(false, 6, TEXT_LABEL);
-        pdf.text(nameLabel.toUpperCase(), bx, by + 7);
-        pdf.setFillColor(...FIELD_BG); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.35); pdf.rect(bx, by + 9, bw, 22, 'FD');
-        setFont(false, 8, TEXT_MAIN);
-        pdf.text(nameVal || '—', bx + 5, by + 23);
-
-        // signature line
-        pdf.setDrawColor(...ACCENT); pdf.setLineWidth(0.6);
-        pdf.line(bx + 5, by + 29, bx + bw - 5, by + 29);
-
-        // date
-        setFont(false, 6, TEXT_LABEL);
-        pdf.text('DATE', bx, by + 40);
-        setFont(false, 7.5, TEXT_MAIN);
-        pdf.text(dateVal || '—', bx, by + 50);
-
-        return by + 56;
-      }
-
-      const sigY = y;
-      sigBlock(ML,             sigY, sigW, 'Employee Name / Signature', F.empSig, F.empSigDate);
-      sigBlock(ML + sigW + 8,  sigY, sigW, 'Supervisor Name / Signature', F.supSig, F.supSigDate);
-      sigBlock(ML + (sigW+8)*2,sigY, sigW, 'HSE Review (Name / Signature)', F.hseSig, F.hseSigDate);
-      y = sigY + 60;
-
-      // ── Certification bar ─────────────────────────────────────
-      y += 8;
-      pdf.setFillColor(245, 248, 252); pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4); pdf.rect(ML, y, CW, 28, 'FD');
-      setFont(false, 7, TEXT_MUTED);
-      const certText = 'By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.';
-      const certLines = pdf.splitTextToSize(certText, CW - 16);
-      pdf.text(certLines, ML + 8, y + 10);
-
-      /* ================================================================
-         PHOTO PAGES
-      ================================================================ */
-      if (photos.length) {
-        const perPage = 4;
-        const pages = Math.ceil(photos.length / perPage);
-
-        for (let p = 0; p < pages; p++) {
-          pdf.addPage([PW, PH]);
-          const pageNum = 3 + p;
-          drawPageHeader(pageNum, TOTAL_PAGES);
-          drawPageFooter();
-
-          // Photo page title
-          y = 68;
-          setFont(true, 11, NAVY);
-          pdf.text('Incident Photos', ML, y);
-          y += 10;
-          line(ML, y, PW - MR, y, RULE, 0.5);
-          y += 8;
-
-          const slice = photos.slice(p * perPage, (p + 1) * perPage);
-          const GUTTER = 12;
-          const cellW = (CW - GUTTER) / 2;
-          const cellH = (PH - y - 20 - GUTTER) / 2;
-          const IMG_LABEL_H = 22;
-
-          for (let i = 0; i < slice.length; i++) {
-            const item = slice[i];
-            const col = i % 2;
-            const row = Math.floor(i / 2);
-            const cx = ML + col * (cellW + GUTTER);
-            const cy = y + row * (cellH + GUTTER);
-            const imgAreaH = cellH - IMG_LABEL_H;
-
-            // cell bg
-            pdf.setFillColor(...FIELD_BG); pdf.rect(cx, cy, cellW, cellH, 'F');
-            pdf.setDrawColor(...RULE); pdf.setLineWidth(0.4);
-            pdf.rect(cx, cy, cellW, cellH, 'S');
-
-            try {
-              const { dataUrl, width, height } = await compressImage(item.file, 1800, 0.82);
-              const ratio = Math.min((cellW - 16) / width, imgAreaH / height);
-              const dw = width * ratio, dh = height * ratio;
-              const ix = cx + (cellW - dw) / 2;
-              const iy = cy + (imgAreaH - dh) / 2 + 4;
-              try {
-                pdf.addImage(dataUrl, 'JPEG', ix, iy, dw, dh);
-              } catch(imgErr) {
-                throw new Error('Photo image could not be added: ' + (item.file ? item.file.name : '') + ' — ' + imgErr.message);
-              }
-            } catch(e) {
-              setFont(false, 7, TEXT_MUTED);
-              pdf.text('[Image unavailable]', cx + 6, cy + imgAreaH / 2);
-            }
-
-            // description label bar
-            pdf.setFillColor(235, 241, 248); pdf.rect(cx, cy + cellH - IMG_LABEL_H, cellW, IMG_LABEL_H, 'F');
-            setFont(false, 7, TEXT_MAIN);
-            const desc = item.description || `Photo ${p * perPage + i + 1}`;
-            const dlines = pdf.splitTextToSize(desc, cellW - 10);
-            pdf.text(dlines[0], cx + 5, cy + cellH - IMG_LABEL_H + 9);
-            if (dlines[1]) pdf.text(dlines[1], cx + 5, cy + cellH - IMG_LABEL_H + 18);
-          }
-        }
-      }
-
-      // ── iPad / Safari-safe save ──────────────────────────────
-      // pdf.save() uses a synthetic <a> click which Safari blocks inside
-      // async functions. Instead get a blob and open/download it directly.
-      const blob = pdf.output('blob');
-      const url  = URL.createObjectURL(blob);
-
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isIOS) {
-        // iOS Safari: open in new tab — user can then use Share → Save to Files
-        window.open(url, '_blank');
-      } else {
-        // All other browsers: trigger download normally
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Vista-Incident-Report.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-
-      } catch (err) {
-        console.error('PDF generation error:', err);
-        const detail = (err && err.stack) ? err.stack : (err && err.message) ? err.message : String(err);
-        alert('Could not generate PDF:\n\n' + detail);
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
+      window.print();
     });
   </script>
 </body>
