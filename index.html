@@ -239,96 +239,7 @@
       .header-logo { align-self: flex-end; height: 56px; }
     }
 
-    /* ============================================================
-       PRINT STYLES - shown only when printing
-    ============================================================ */
-    #printView, #printPhotos { display: none; }
 
-    @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-
-      body { background: white !important; padding: 0 !important; margin: 0 !important; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #1e2330; }
-
-      .page-wrap, .container { box-shadow: none !important; border-radius: 0 !important; max-width: none !important; }
-
-      form, .btn-row, .photos-preview, #photosPreview,
-      input[type="file"], .hint, .modal-overlay,
-      .section, .header-bar { display: none !important; }
-
-      #printHeader {
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        background: #0f283c !important;
-        padding: 10pt 20pt;
-        page-break-inside: avoid;
-      }
-      #printHeader .ph-left h1 { font-size: 15pt; color: #fff; margin: 0; font-weight: 400; letter-spacing: 0.1em; }
-      #printHeader .ph-left h1 b { font-weight: 700; }
-      #printHeader .ph-left p { font-size: 9pt; color: #a0c4d8; margin: 2pt 0 0; }
-      #printHeader .ph-right { text-align: right; }
-      #printHeader .ph-right img { height: 32pt; }
-      #printHeader .ph-accent { height: 2pt; background: #16607d; }
-
-      #printView {
-        display: block !important;
-        padding: 0 20pt;
-      }
-      #printView .pr-meta {
-        font-size: 7pt;
-        color: #8a99aa;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 5pt 0 6pt;
-        border-bottom: 0.5pt solid #1667a0;
-        margin-bottom: 8pt;
-      }
-      #printView .pr-section { margin-bottom: 9pt; page-break-inside: avoid; }
-      #printView .pr-section-title {
-        font-size: 7pt;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        color: #0f283c;
-        padding-bottom: 2pt;
-        border-bottom: 0.4pt solid #dce4ee;
-        margin-bottom: 5pt;
-        padding-left: 5pt;
-        border-left: 2.5pt solid #16607d;
-      }
-      #printView .pr-row { display: flex; flex-wrap: wrap; gap: 3pt 8pt; margin-bottom: 3pt; }
-      #printView .pr-field { flex: 1; min-width: 100pt; }
-      #printView .pr-field.full { flex: 0 0 100%; }
-      #printView .pr-field.half { flex: 0 0 calc(50% - 4pt); }
-      #printView .pr-label { font-size: 5.5pt; text-transform: uppercase; letter-spacing: 0.05em; color: #6a7888; margin-bottom: 1pt; }
-      #printView .pr-value { font-size: 8pt; color: #1e2330; background: #f8fafd !important; border: 0.3pt solid #dce4ee; padding: 2.5pt 4pt; min-height: 12pt; word-break: break-word; }
-
-      #printView table { width: 100%; border-collapse: collapse; font-size: 7pt; }
-      #printView th { background: #eef4fa !important; font-size: 6pt; text-transform: uppercase; color: #5a6978; padding: 3pt 4pt; border: 0.3pt solid #dce4ee; text-align: left; }
-      #printView td { padding: 3pt 4pt; border: 0.3pt solid #dce4ee; vertical-align: top; }
-      #printView tr:nth-child(even) td { background: #f8fafd !important; }
-
-      #printView .pr-sig-row { display: flex; gap: 8pt; margin-top: 4pt; }
-      #printView .pr-sig-block { flex: 1; }
-      #printView .pr-sig-label { font-size: 5.5pt; text-transform: uppercase; letter-spacing: 0.05em; color: #6a7888; margin-bottom: 1pt; }
-      #printView .pr-sig-name { font-size: 8pt; background: #f8fafd !important; border: 0.3pt solid #dce4ee; padding: 2.5pt 4pt; min-height: 14pt; margin-bottom: 2pt; }
-      #printView .pr-sig-line { border-bottom: 0.6pt solid #16607d; margin: 0 4pt 2pt; }
-      #printView .pr-sig-date { font-size: 7pt; color: #6a7888; }
-
-      #printView .pr-cert { background: #f4f8fc !important; border: 0.3pt solid #dce4ee; padding: 4pt 7pt; font-size: 6.5pt; color: #6a7888; margin-top: 6pt; }
-      #printView .pr-footer { font-size: 6pt; color: #9aa5b4; border-top: 0.4pt solid #dce4ee; padding-top: 4pt; margin-top: 5pt; display: flex; justify-content: space-between; }
-
-      #printPhotos { display: block !important; }
-      #printPhotos .photo-page { page-break-before: always; padding: 0 20pt; }
-      #printPhotos .photo-page-title { font-size: 10pt; font-weight: bold; color: #0f283c; margin-bottom: 8pt; padding-top: 10pt; }
-      #printPhotos .photo-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10pt; }
-      #printPhotos .photo-cell { break-inside: avoid; border: 0.3pt solid #dce4ee; }
-      #printPhotos .photo-cell img { width: 100%; height: 160pt; object-fit: contain; background: #f8fafd; display: block; }
-      #printPhotos .photo-caption { font-size: 7pt; color: #5a6978; padding: 3pt 5pt; background: #eef4fa !important; text-align: center; }
-
-      @page { size: letter portrait; margin: 0.5in 0.5in 0.45in 0.5in; }
-      @page :first { margin-top: 0; }
-    }
   </style>
 </head>
 <body>
@@ -623,11 +534,8 @@
     </div>
   </div>
 
-  <!-- Print-only views (hidden on screen) -->
-  <div id="printView"></div>
-  <div id="printPhotos"></div>
-
   <script>
+
     // Photo preview
     var photosInput = document.getElementById('photos');
     var photosPreview = document.getElementById('photosPreview');
@@ -748,38 +656,387 @@
       return errors;
     }
 
-    // Helpers
-    function esc(s) {
-      return (s || 'N/A').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-    function radioVal(name) {
-      var el = document.querySelector('input[name="' + name + '"]:checked');
-      return el ? el.value : 'N/A';
-    }
-    function checkVals(name) {
-      var els = document.querySelectorAll('input[name="' + name + '"]:checked');
-      if (!els.length) return 'N/A';
-      return Array.prototype.map.call(els, function(e) { return e.value; }).join(', ');
-    }
-    function field(label, value, cls) {
-      return '<div class="pr-field' + (cls ? ' ' + cls : '') + '">' +
-        '<div class="pr-label">' + esc(label) + '</div>' +
-        '<div class="pr-value">' + esc(value) + '</div>' +
-        '</div>';
-    }
-    function tableRows(prefix, cols, count) {
-      var rows = [];
-      for (var r = 1; r <= count; r++) {
-        var cells = cols.map(function(c) {
-          var el = document.querySelector('input[name="' + prefix + r + '_' + c + '"]');
-          return el ? el.value.trim() : '';
-        });
-        if (cells.some(function(c) { return c; })) rows.push(cells);
-      }
-      return rows;
-    }
 
-    // Build print view and trigger print
+    // ================================================================
+    // PURE JS PDF GENERATOR - no external libraries
+    // ================================================================
+function createPDFGenerator() {
+
+  // PDF state ------------------------------------------------------
+  var streams = [];    // {pageIdx, content}
+  var pages   = [];    // page object ids
+  var objs    = [];    // all object strings
+  var images  = [];    // {id, width, height, dataRGB, name}
+
+  function addObj(content) {
+    var n = objs.length + 1;
+    objs.push(n + ' 0 obj\n' + content + '\nendobj');
+    return n;
+  }
+
+  // Encode string for PDF (Latin-1 safe, escape parens/backslash)
+  function pdfStr(s) {
+    s = (s || '').substring(0, 500);  // cap length
+    return '(' + s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/\r/g,'').replace(/\n/g,'\\n') + ')';
+  }
+
+  // Page geometry --------------------------------------------------
+  var PW = 612, PH = 792;
+  var ML = 45, MR = 45, MT = 45, MB = 40;
+  var CW = PW - ML - MR;
+
+  // Colour helpers (PDF uses 0-1) ----------------------------------
+  function rgb(r,g,b) { return (r/255).toFixed(3)+' '+(g/255).toFixed(3)+' '+(b/255).toFixed(3); }
+
+  var C = {
+    navy:    rgb(15,40,60),
+    accent:  rgb(22,95,125),
+    white:   '1 1 1',
+    fieldBg: rgb(250,251,253),
+    rule:    rgb(214,226,238),
+    textMain:rgb(30,35,45),
+    textMute:rgb(110,120,135),
+    textLbl: rgb(90,105,120),
+    rowAlt:  rgb(247,249,252),
+  };
+
+  // Per-page stream builder ----------------------------------------
+  var curPage = -1;
+  var ops = [];   // current page ops array
+
+  function newPage() {
+    if (curPage >= 0) flushPage();
+    curPage++;
+    ops = [];
+    curY = PH - MT - 56;  // start below header
+  }
+
+  function flushPage() {
+    var content = ops.join('\n');
+    var streamId = addObj('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream');
+    pages.push(streamId);
+  }
+
+  // Current Y position --------------------------------------------
+  var curY = 0;
+
+  function checkSpace(needed) {
+    if (curY - needed < MB + 20) {
+      newPage();
+      drawPageHeader(curPage);
+      drawPageFooter();
+    }
+  }
+
+  // Drawing primitives --------------------------------------------
+  function rect(x, y, w, h, fillColor, strokeColor, lw) {
+    var s = '';
+    if (fillColor) s += fillColor + ' rg ';
+    if (strokeColor) { s += strokeColor + ' RG ' + (lw||0.4) + ' w '; }
+    s += x.toFixed(1) + ' ' + y.toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1);
+    if (fillColor && strokeColor) s += ' re B';
+    else if (fillColor) s += ' re f';
+    else s += ' re S';
+    ops.push(s);
+  }
+
+  function line(x1,y1,x2,y2,color,lw) {
+    ops.push(color+' RG '+(lw||0.4)+' w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l S');
+  }
+
+  function text(str, x, y, size, color, bold) {
+    if (!str) return;
+    var font = bold ? '/FB' : '/F1';
+    ops.push('BT '+font+' '+size+' Tf '+color+' rg '+x.toFixed(1)+' '+y.toFixed(1)+' Td '+pdfStr(str)+' Tj ET');
+  }
+
+  // Wrap text into lines fitting maxW at given font size (approx: 0.55 * size per char)
+  function wrapText(str, maxW, size) {
+    var charW = size * 0.52;
+    var charsPerLine = Math.floor(maxW / charW);
+    var words = (str || '').split(' ');
+    var lines = [], cur = '';
+    words.forEach(function(w) {
+      if ((cur + ' ' + w).trim().length <= charsPerLine) {
+        cur = (cur + ' ' + w).trim();
+      } else {
+        if (cur) lines.push(cur);
+        // Handle very long words
+        while (w.length > charsPerLine) {
+          lines.push(w.substring(0, charsPerLine));
+          w = w.substring(charsPerLine);
+        }
+        cur = w;
+      }
+    });
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [''];
+  }
+
+  // Page header ---------------------------------------------------
+  function drawPageHeader(pageNum) {
+    var BAR_H = 46;
+    // Navy bar
+    rect(0, PH - BAR_H, PW, BAR_H, C.navy, null, 0);
+    // Accent line at bottom of bar
+    rect(0, PH - BAR_H - 1.5, PW, 1.5, C.accent, null, 0);
+
+    // VISTA (bold) GEOMATICS (regular)
+    text('VISTA', ML, PH - 28, 14, C.white, true);
+    var vistaW = 14 * 0.52 * 5;
+    text('GEOMATICS', ML + vistaW + 3, PH - 28, 14, '0.63 0.76 0.85', false);
+
+    // Incident Report subtitle
+    text('Incident Report', ML, PH - 14, 9, '0.75 0.85 0.92', false);
+
+    // Right side: date + page
+    var today = new Date().toLocaleDateString('en-CA');
+    var dateX = PW - MR - today.length * 6.5;
+    text(today, dateX, PH - 20, 7, '0.63 0.76 0.85', false);
+    var pgStr = 'Page ' + (pageNum + 1);
+    text(pgStr, PW - MR - pgStr.length * 6, PH - 32, 7, '0.51 0.65 0.74', false);
+  }
+
+  // Page footer ---------------------------------------------------
+  function drawPageFooter() {
+    line(ML, MB + 10, PW - MR, MB + 10, C.rule, 0.5);
+    text('CONFIDENTIAL -- Vista Geomatics Incident Report', ML, MB, 6.5, C.textMute, false);
+    var r = 'For internal use only';
+    text(r, PW - MR - r.length * 3.4, MB, 6.5, C.textMute, false);
+  }
+
+  // Section heading -----------------------------------------------
+  function sectionHeading(title) {
+    checkSpace(22);
+    // Accent left bar
+    rect(ML, curY - 11, 3, 13, C.accent, null, 0);
+    text(title.toUpperCase(), ML + 8, curY - 2, 8, C.navy, true);
+    line(ML, curY - 13, PW - MR, curY - 13, C.rule, 0.5);
+    curY -= 20;
+  }
+
+  // Labelled field ------------------------------------------------
+  // Returns height used
+  function drawField(x, y, w, label, value, fontSize) {
+    fontSize = fontSize || 8;
+    var lines = wrapText(value || 'N/A', w - 8, fontSize);
+    var lineH = fontSize * 1.45;
+    var blockH = Math.max(16, lines.length * lineH + 6);
+
+    // Label
+    text(label.toUpperCase(), x, y - 7, 6, C.textLbl, false);
+
+    // Field box
+    rect(x, y - 7 - blockH, w, blockH, C.fieldBg, C.rule, 0.35);
+
+    // Value text
+    lines.forEach(function(ln, i) {
+      text(ln, x + 4, y - 7 - blockH + blockH - lineH * (i + 1) + 4, fontSize, C.textMain, false);
+    });
+
+    return 7 + blockH + 5;
+  }
+
+  // Row of fields -------------------------------------------------
+  function fieldRow(fields, gutter) {
+    gutter = gutter || 8;
+    var totalFlex = fields.reduce(function(s,f){return s+(f.flex||1);}, 0);
+    var unit = (CW - gutter * (fields.length - 1)) / totalFlex;
+    var maxH = 0;
+    var x = ML;
+    fields.forEach(function(f) {
+      var w = unit * (f.flex || 1);
+      var h = drawField(x, curY, w, f.label, f.value, f.size);
+      if (h > maxH) maxH = h;
+      x += w + gutter;
+    });
+    curY -= maxH;
+  }
+
+  // Table ---------------------------------------------------------
+  function drawTable(headers, rows, colWidths) {
+    var ROW_H = 16, HEAD_H = 13;
+    var tableW = colWidths.reduce(function(a,b){return a+b;}, 0);
+    checkSpace(HEAD_H + ROW_H * Math.max(rows.length, 1) + 8);
+
+    var ty = curY;
+
+    // Header
+    rect(ML, ty - HEAD_H, tableW, HEAD_H, '0.93 0.96 0.98', C.rule, 0.4);
+    var x = ML;
+    headers.forEach(function(h, i) {
+      text(h.toUpperCase(), x + 4, ty - HEAD_H + 4, 6.5, C.textLbl, true);
+      x += colWidths[i];
+      if (i < headers.length - 1) line(x, ty, x, ty - HEAD_H, C.rule, 0.3);
+    });
+    ty -= HEAD_H;
+
+    var dataRows = rows.length ? rows : [headers.map(function(){return '';})];
+    var isEmpty = !rows.length;
+
+    dataRows.forEach(function(row, ri) {
+      if (ri % 2 === 1) rect(ML, ty - ROW_H, tableW, ROW_H, C.rowAlt, null, 0);
+      rect(ML, ty - ROW_H, tableW, ROW_H, null, C.rule, 0.3);
+      var cx = ML;
+      row.forEach(function(cell, ci) {
+        var display = isEmpty && ci === 0 ? 'None recorded' : (cell || '');
+        text(display.substring(0, 50), cx + 4, ty - ROW_H + 5, 7, isEmpty ? C.textMute : C.textMain, false);
+        cx += colWidths[ci];
+        if (ci < row.length - 1) line(cx, ty, cx, ty - ROW_H, C.rule, 0.3);
+      });
+      ty -= ROW_H;
+      if (ri < dataRows.length - 1) line(ML, ty, ML + tableW, ty, C.rule, 0.3);
+    });
+
+    curY = ty - 6;
+  }
+
+  // Sign-off blocks -----------------------------------------------
+  function drawSignOff(blocks) {
+    checkSpace(70);
+    var gutter = 10;
+    var bw = (CW - gutter * (blocks.length - 1)) / blocks.length;
+    var bx = ML;
+    blocks.forEach(function(b) {
+      text(b.label.toUpperCase(), bx, curY - 7, 6, C.textLbl, false);
+      rect(bx, curY - 7 - 22, bw, 22, C.fieldBg, C.rule, 0.35);
+      text(b.name || '', bx + 5, curY - 7 - 22 + 8, 8, C.textMain, false);
+      // Signature line
+      ops.push(C.accent+' RG 0.6 w '+(bx+5).toFixed(1)+' '+(curY-36).toFixed(1)+' m '+(bx+bw-5).toFixed(1)+' '+(curY-36).toFixed(1)+' l S');
+      text('DATE', bx, curY - 42, 6, C.textLbl, false);
+      text(b.date || '', bx, curY - 52, 7.5, C.textMain, false);
+      bx += bw + gutter;
+    });
+    curY -= 60;
+  }
+
+  // Public API ----------------------------------------------------
+  function generate(data) {
+    newPage();
+    drawPageHeader(0);
+    drawPageFooter();
+
+    var gap = 8;
+
+    sectionHeading('Incident Information');
+    checkSpace(60);
+    fieldRow([{label:'Date of Incident',value:data.incidentDate},{label:'Time of Incident',value:data.incidentTime},{label:'Date Reported',value:data.reportDate}]);
+    curY -= gap;
+    fieldRow([{label:'Location of Incident',value:data.location,flex:2},{label:'Supervisor',value:data.supervisor,flex:1}]);
+    curY -= gap;
+
+    sectionHeading('Person Involved');
+    checkSpace(60);
+    fieldRow([{label:'Employee Name',value:data.empName},{label:'Position / Title',value:data.empPosition},{label:'Division',value:data.empBranch}]);
+    curY -= gap;
+    fieldRow([{label:'Phone Number',value:data.empPhone,flex:1},{label:'Employment Type',value:data.empType,flex:2}]);
+    curY -= gap;
+
+    sectionHeading('Incident Classification');
+    checkSpace(50);
+    fieldRow([{label:'Type of Incident',value:data.incidentTypes}]);
+    curY -= gap;
+    fieldRow([{label:'Medical Treatment Required?',value:data.medTreatment},{label:'Lost Time from Work?',value:data.lostTime},{label:'Restricted Duties?',value:data.restrictedDuty}]);
+    curY -= gap;
+
+    sectionHeading('Description of Incident');
+    checkSpace(40);
+    fieldRow([{label:'Description',value:data.description,size:7.5}]);
+    curY -= gap;
+
+    sectionHeading('Injury Details (if applicable)');
+    checkSpace(60);
+    fieldRow([{label:'Body Part(s) Affected',value:data.bodyPart},{label:'Nature of Injury',value:data.natureInjury},{label:'First Aid Provided By',value:data.firstAidBy}]);
+    curY -= gap;
+    fieldRow([{label:'First Aid / Medical Treatment Details',value:data.firstAidDesc,size:7.5}]);
+    curY -= gap;
+
+    sectionHeading('Equipment / Vehicle / Property Involved');
+    drawTable(['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'], data.equipRows, [170, 130, CW-300]);
+    curY -= gap;
+
+    sectionHeading('Witnesses');
+    drawTable(['Witness Name','Contact Information','Brief Statement / Notes'], data.witnessRows, [175, 145, CW-320]);
+    curY -= gap;
+
+    // Page 2
+    newPage();
+    drawPageHeader(1);
+    drawPageFooter();
+
+    sectionHeading('Immediate Corrective Actions');
+    checkSpace(40);
+    fieldRow([{label:'Actions Taken',value:data.immediateActions,size:7.5}]);
+    curY -= gap;
+
+    sectionHeading('Root Cause / Contributing Factors');
+    checkSpace(40);
+    fieldRow([{label:'Root Cause',value:data.rootCause,size:7.5}]);
+    curY -= gap;
+
+    sectionHeading('Recommended / Planned Corrective Actions');
+    checkSpace(40);
+    fieldRow([{label:'Corrective Actions',value:data.correctiveActions,size:7.5}]);
+    curY -= gap;
+
+    sectionHeading('Sign-Off');
+    drawSignOff([
+      {label:'Employee Name / Signature', name:data.empSig,    date:data.empSigDate},
+      {label:'Supervisor Name / Signature', name:data.supSig,  date:data.supSigDate},
+      {label:'HSE Review (Name / Signature)', name:data.hseSig,date:data.hseSigDate},
+    ]);
+
+    // Certification note
+    checkSpace(30);
+    rect(ML, curY - 26, CW, 26, '0.96 0.98 0.99', C.rule, 0.4);
+    text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge.', ML + 6, curY - 9, 7, C.textMute, false);
+    curY -= 32;
+
+    // Flush last page
+    flushPage();
+
+    // Build PDF objects
+    var fontId  = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    var fontBId = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+    var fontResource = '<< /F1 ' + fontId + ' 0 R /FB ' + fontBId + ' 0 R >>';
+
+    var pageObjIds = pages.map(function(streamId) {
+      return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents ' + streamId + ' 0 R /Resources << /Font ' + fontResource + ' >> >>');
+    });
+
+    // Fix parent references
+    var pagesId = objs.length + 1;
+    pageObjIds.forEach(function(pid) {
+      objs[pid - 1] = objs[pid - 1].replace('/Parent 0 /', '/Parent ' + pagesId + ' 0 R /');
+    });
+
+    var kidsStr = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
+    var pagesObjId = addObj('<< /Type /Pages /Kids [' + kidsStr + '] /Count ' + pageObjIds.length + ' >>');
+    var catId = addObj('<< /Type /Catalog /Pages ' + pagesObjId + ' 0 R >>');
+
+    // Build body
+    var body = '%PDF-1.4\n%\xFF\xFF\xFF\xFF\n';
+    var offsets = [];
+    objs.forEach(function(o) {
+      offsets.push(body.length);
+      body += o + '\n';
+    });
+
+    var xrefPos = body.length;
+    body += 'xref\n0 ' + (objs.length + 1) + '\n';
+    body += '0000000000 65535 f \n';
+    offsets.forEach(function(o) {
+      body += ('0000000000' + o).slice(-10) + ' 00000 n \n';
+    });
+    body += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catId + ' 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF';
+
+    return body;
+  }
+
+  return { generate: generate };
+}
+
+    // Download handler
     document.getElementById('downloadPdfBtn').addEventListener('click', function() {
       var errors = validateForm();
       if (errors.length) {
@@ -789,117 +1046,79 @@
         return;
       }
 
-      var today = new Date().toLocaleDateString('en-CA');
-
-      // Equipment rows
-      var eRows = tableRows('equip_', ['name','id','desc'], 3);
-      var eTbody = eRows.length ? eRows.map(function(r) {
-        return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
-      }).join('') : '<tr><td colspan="3" style="color:#9aa5b4">None recorded</td></tr>';
-
-      // Witness rows
-      var wRows = tableRows('wit_', ['name','contact','notes'], 3);
-      var wTbody = wRows.length ? wRows.map(function(r) {
-        return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
-      }).join('') : '<tr><td colspan="3" style="color:#9aa5b4">None recorded</td></tr>';
-
-      var html =
-        '<div class="pr-meta">Generated: ' + today + '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Incident Information</div>' +
-        '<div class="pr-row">' + field('Date of Incident', g('incident_date')) + field('Time of Incident', g('incident_time')) + field('Date Reported', g('report_date')) + '</div>' +
-        '<div class="pr-row">' + field('Location of Incident', g('incident_location'), 'half') + field('Supervisor', g('supervisor_name'), 'half') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Person Involved</div>' +
-        '<div class="pr-row">' + field('Employee Name', g('employee_name')) + field('Position / Title', g('employee_position')) + field('Division', g('employee_branch')) + '</div>' +
-        '<div class="pr-row">' + field('Phone Number', g('employee_phone'), 'half') + field('Employment Type', radioVal('employment_type'), 'half') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Incident Classification</div>' +
-        '<div class="pr-row">' + field('Type of Incident', checkVals('incident_type'), 'full') + '</div>' +
-        '<div class="pr-row">' + field('Medical Treatment Required?', radioVal('medical_treatment')) + field('Lost Time from Work?', radioVal('lost_time')) + field('Restricted Duties?', radioVal('modified_duty')) + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Description of Incident</div>' +
-        '<div class="pr-row">' + field('Description', g('incident_description'), 'full') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Injury Details (if applicable)</div>' +
-        '<div class="pr-row">' + field('Body Part(s) Affected', g('body_part')) + field('Nature of Injury', g('nature_of_injury')) + field('First Aid Provided By', g('first_aid_by')) + '</div>' +
-        '<div class="pr-row">' + field('First Aid / Medical Treatment Details', g('first_aid_description'), 'full') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Equipment / Vehicle / Property Involved</div>' +
-        '<table><thead><tr><th>Item / Equipment / Vehicle</th><th>Unit / Plate / ID</th><th>Description of Damage or Role</th></tr></thead><tbody>' + eTbody + '</tbody></table>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Witnesses</div>' +
-        '<table><thead><tr><th>Witness Name</th><th>Contact Information</th><th>Brief Statement / Notes</th></tr></thead><tbody>' + wTbody + '</tbody></table>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Immediate Corrective Actions</div>' +
-        '<div class="pr-row">' + field('Actions Taken', g('immediate_actions'), 'full') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Root Cause / Contributing Factors</div>' +
-        '<div class="pr-row">' + field('Root Cause', g('root_cause'), 'full') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Recommended / Planned Corrective Actions</div>' +
-        '<div class="pr-row">' + field('Corrective Actions', g('corrective_actions'), 'full') + '</div>' +
-        '</div>' +
-
-        '<div class="pr-section"><div class="pr-section-title">Sign-Off</div>' +
-        '<div class="pr-sig-row">' +
-          '<div class="pr-sig-block"><div class="pr-sig-label">Employee Name / Signature</div><div class="pr-sig-name">' + esc(g('employee_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('employee_date')) + '</div></div>' +
-          '<div class="pr-sig-block"><div class="pr-sig-label">Supervisor Name / Signature</div><div class="pr-sig-name">' + esc(g('supervisor_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('supervisor_date')) + '</div></div>' +
-          '<div class="pr-sig-block"><div class="pr-sig-label">HSE Review (Name / Signature)</div><div class="pr-sig-name">' + esc(g('hse_signature')) + '</div><div class="pr-sig-line"></div><div class="pr-sig-date">Date: ' + esc(g('hse_date')) + '</div></div>' +
-        '</div>' +
-        '<div class="pr-cert">By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.</div>' +
-        '</div>' +
-
-        '<div class="pr-footer"><span>CONFIDENTIAL -- Vista Geomatics Incident Report</span><span>For internal use only</span></div>';
-
-      document.getElementById('printView').innerHTML = html;
-
-      // Photos
-      var photoDiv = document.getElementById('printPhotos');
-      photoDiv.innerHTML = '';
-      if (photoItems && photoItems.length > 0) {
-        var perPage = 4;
-        var pages = Math.ceil(photoItems.length / perPage);
-        for (var p = 0; p < pages; p++) {
-          var slice = photoItems.slice(p * perPage, (p + 1) * perPage);
-          var pageEl = document.createElement('div');
-          pageEl.className = 'photo-page';
-          var title = document.createElement('div');
-          title.className = 'photo-page-title';
-          title.textContent = 'Incident Photos';
-          pageEl.appendChild(title);
-          var grid = document.createElement('div');
-          grid.className = 'photo-grid';
-          var previewImgs = photosPreview.querySelectorAll('.photo-item img');
-          slice.forEach(function(item, i) {
-            var cell = document.createElement('div');
-            cell.className = 'photo-cell';
-            var imgEl = document.createElement('img');
-            var srcImg = previewImgs[p * perPage + i];
-            if (srcImg) imgEl.src = srcImg.src;
-            var cap = document.createElement('div');
-            cap.className = 'photo-caption';
-            cap.textContent = item.description || ('Photo ' + (p * perPage + i + 1));
-            cell.appendChild(imgEl);
-            cell.appendChild(cap);
-            grid.appendChild(cell);
+      function g(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+      function radioVal(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : 'N/A'; }
+      function checkVals(name) {
+        var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+        if (!els.length) return 'N/A';
+        return Array.prototype.map.call(els, function(e) { return e.value; }).join(', ');
+      }
+      function tableRows(prefix, cols, count) {
+        var rows = [];
+        for (var r = 1; r <= count; r++) {
+          var cells = cols.map(function(c) {
+            var el = document.querySelector('input[name="' + prefix + r + '_' + c + '"]');
+            return el ? el.value.trim() : '';
           });
-          pageEl.appendChild(grid);
-          photoDiv.appendChild(pageEl);
+          if (cells.some(function(c) { return c; })) rows.push(cells);
         }
+        return rows;
       }
 
-      window.print();
+      var data = {
+        incidentDate: g('incident_date'),     incidentTime: g('incident_time'),
+        reportDate:   g('report_date'),        location:     g('incident_location'),
+        supervisor:   g('supervisor_name'),    empName:      g('employee_name'),
+        empPosition:  g('employee_position'),  empBranch:    g('employee_branch'),
+        empPhone:     g('employee_phone'),     empType:      radioVal('employment_type'),
+        incidentTypes:checkVals('incident_type'),
+        medTreatment: radioVal('medical_treatment'),
+        lostTime:     radioVal('lost_time'),
+        restrictedDuty: radioVal('modified_duty'),
+        description:  g('incident_description'),
+        bodyPart:     g('body_part'),          natureInjury: g('nature_of_injury'),
+        firstAidBy:   g('first_aid_by'),       firstAidDesc: g('first_aid_description'),
+        equipRows:    tableRows('equip_', ['name','id','desc'], 3),
+        witnessRows:  tableRows('wit_', ['name','contact','notes'], 3),
+        immediateActions:  g('immediate_actions'),
+        rootCause:         g('root_cause'),
+        correctiveActions: g('corrective_actions'),
+        empSig:     g('employee_signature'),   empSigDate: g('employee_date'),
+        supSig:     g('supervisor_signature'), supSigDate: g('supervisor_date'),
+        hseSig:     g('hse_signature'),        hseSigDate: g('hse_date'),
+      };
+
+      try {
+        var gen = createPDFGenerator();
+        var pdfStr = gen.generate(data);
+
+        // Convert string to Uint8Array for binary-safe Blob
+        var bytes = new Uint8Array(pdfStr.length);
+        for (var i = 0; i < pdfStr.length; i++) {
+          bytes[i] = pdfStr.charCodeAt(i) & 0xff;
+        }
+        var blob = new Blob([bytes], { type: 'application/pdf' });
+        var url = URL.createObjectURL(blob);
+
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOS) {
+          window.open(url, '_blank');
+        } else {
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'Vista-Incident-Report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+        setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+      } catch(err) {
+        alert('Could not generate PDF: ' + (err.message || err));
+      }
     });
+
   </script>
 </body>
 </html>
