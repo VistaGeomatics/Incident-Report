@@ -815,6 +815,14 @@
     if (wrap) wrap.classList.remove('field-error');
   });
 
+  // iOS overlay close
+  document.getElementById('iosOverlayClose').addEventListener('click', function() {
+    document.getElementById('iosDownloadOverlay').style.display = 'none';
+  });
+  document.getElementById('iosDownloadOverlay').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
   // Reset button
   document.getElementById('resetBtn').addEventListener('click', function() {
     setTimeout(function() {
@@ -1695,26 +1703,24 @@
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-        // On all platforms, try <a download> first.
-        // On iOS Safari, blob URL + window.open is the most reliable way to get
-        // the native PDF viewer, from which the user can share/save.
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'Vista-Incident-Report.pdf';
-        a.type = 'application/pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
         if (isIOS) {
-          // <a download> is ignored by iOS Safari -- it won't trigger a save dialog.
-          // Instead open the blob URL in the current window so Safari shows the
-          // native PDF viewer with its own Share sheet (Share > Save to Files).
-          // We do this AFTER the click() above so desktop browsers already handled it.
-          setTimeout(function() {
-            window.location.href = url;
-          }, 100);
+          // iOS Safari ignores <a download> and blocks window.open from async contexts.
+          // The ONLY reliable method: show the user a real tappable <a href> link.
+          // A user-initiated tap on an <a href=blobUrl> opens Safari's native PDF viewer.
+          var overlay = document.getElementById('iosDownloadOverlay');
+          var link    = document.getElementById('iosDownloadLink');
+          link.href   = url;
+          overlay.style.display = 'flex';
+          // Revoke after 10 minutes
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 600000);
         } else {
+          // Desktop / Android: standard programmatic download
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'Vista-Incident-Report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
           setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
         }
       } catch(err) {
@@ -1729,5 +1735,25 @@
     });
   });
   </script>
+
+  <!-- iOS PDF download overlay -->
+  <div id="iosDownloadOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,25,40,0.92);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:88%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+      <div style="width:56px;height:56px;background:#eef6fb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#165f7d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <h2 style="margin:0 0 8px;font-family:sans-serif;font-size:17px;font-weight:700;color:#0b3045;">Your PDF is ready</h2>
+      <p style="margin:0 0 20px;font-family:sans-serif;font-size:14px;color:#6b7280;line-height:1.5;">Tap the button below to open it, then use <strong>Share &rarr; Save to Files</strong> to save it.</p>
+      <a id="iosDownloadLink" href="#" target="_blank"
+        style="display:block;background:linear-gradient(120deg,#2a7fa3,#0b3045);color:#fff;text-decoration:none;padding:14px 20px;border-radius:12px;font-family:sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;">
+        Open PDF
+      </a>
+      <button id="iosOverlayClose"
+        style="background:none;border:none;color:#9ca3af;font-family:sans-serif;font-size:14px;cursor:pointer;padding:8px;">
+        Cancel
+      </button>
+    </div>
+  </div>
+
 </body>
 </html>
