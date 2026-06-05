@@ -378,7 +378,11 @@
             <label><input type="checkbox" name="incident_type" value="Property Damage"> Property Damage</label>
             <label><input type="checkbox" name="incident_type" value="Vehicle / Motor Vehicle"> Vehicle / Motor Vehicle</label>
             <label><input type="checkbox" name="incident_type" value="Environmental"> Environmental</label>
-            <label><input type="checkbox" name="incident_type" value="Other"> Other</label>
+            <label><input type="checkbox" name="incident_type" value="Other" id="incident_type_other_cb"> Other</label>
+          </div>
+          <div id="incident_other_wrap" style="display:none;margin-top:8px">
+            <label for="incident_type_other_text">Please specify:</label>
+            <input type="text" id="incident_type_other_text" name="incident_type_other" placeholder="Describe the type of incident..." style="max-width:420px">
           </div>
           <div class="grid-3" style="margin-top:12px">
             <div>
@@ -819,7 +823,22 @@
       });
       photoItems = [];
       photosPreview.innerHTML = '';
+      document.getElementById('incident_other_wrap').style.display = 'none';
+      document.getElementById('incident_type_other_text').value = '';
     }, 0);
+  });
+
+  // Other checkbox -- show/hide text input
+  document.getElementById('incident_type_other_cb').addEventListener('change', function() {
+    var wrap = document.getElementById('incident_other_wrap');
+    var inp  = document.getElementById('incident_type_other_text');
+    if (this.checked) {
+      wrap.style.display = 'block';
+      inp.focus();
+    } else {
+      wrap.style.display = 'none';
+      inp.value = '';
+    }
   });
 
   // ================================================================
@@ -855,6 +874,14 @@
     if (perMissing.length) { markError(perMissing); errors.push('Person Involved: employee name, position and division are required'); }
 
     var typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
+    // If Other is checked, the specify field must also be filled
+    var otherCb   = document.getElementById('incident_type_other_cb');
+    var otherText = document.getElementById('incident_type_other_text');
+    if (otherCb && otherCb.checked && otherText && !otherText.value.trim()) {
+      otherText.closest('div').classList.add('field-error');
+      errors.push('Incident Classification: please specify the type of incident in the "Other" field');
+      typeChecked = false; // prevents duplicate error
+    }
     var medChecked  = document.querySelector('input[name="medical_treatment"]:checked');
     var lostChecked = document.querySelector('input[name="lost_time"]:checked');
     var restChecked = document.querySelector('input[name="modified_duty"]:checked');
@@ -919,7 +946,7 @@
       if (curPage >= 0) flushPage();
       curPage++;
       ops = [];
-      curY = PH - MT - 56;
+      curY = PH - MT - 66;   // clear 52pt header + 14pt breathing room
     }
 
     function flushPage() {
@@ -973,16 +1000,27 @@
     }
 
     function drawPageHeader(pageNum) {
-      var BAR_H = 46;
-      rect(0, PH-BAR_H, PW, BAR_H, C.navy, null, 0);
-      rect(0, PH-BAR_H-1.5, PW, 1.5, C.accent, null, 0);
-      text('VISTA', ML, PH-28, 14, C.white, true);
-      text('GEOMATICS', ML+14*0.52*5+3, PH-28, 14, '0.63 0.76 0.85', false);
-      text('Incident Report', ML, PH-14, 9, '0.75 0.85 0.92', false);
+      var BAR_H = 52;
+      // Navy bar fills top of page
+      rect(0, PH - BAR_H, PW, BAR_H, C.navy, null, 0);
+      // Accent line at BOTTOM of bar
+      rect(0, PH - BAR_H - 2, PW, 2, C.accent, null, 0);
+
+      // VISTA bold + GEOMATICS regular -- vertically centred in bar
+      // Bar occupies PH-52 to PH (top of page in PDF = high Y values)
+      // Text baseline: PH-52 is bottom of bar, PH is top
+      // Center of bar = PH - 26. Put company name at PH-22 (upper line)
+      var vistaW = 15 * 0.58 * 5;
+      text('VISTA',     ML,           PH - 22, 15, C.white,          true);
+      text('GEOMATICS', ML + vistaW,  PH - 22, 15, '0.60 0.74 0.84', false);
+      // Subtitle one line below
+      text('Incident Report', ML, PH - 38, 9, '0.72 0.83 0.91', false);
+
+      // Right side: date + page number
       var today = new Date().toLocaleDateString('en-CA');
-      text(today, PW-MR-today.length*6.5, PH-20, 7, '0.63 0.76 0.85', false);
-      var pg = 'Page '+(pageNum+1);
-      text(pg, PW-MR-pg.length*6, PH-32, 7, '0.51 0.65 0.74', false);
+      var pg    = 'Page ' + (pageNum + 1);
+      text(today, PW - MR - today.length * 4.1, PH - 22, 7, '0.60 0.74 0.84', false);
+      text(pg,    PW - MR - pg.length    * 4.1, PH - 36, 7, '0.48 0.62 0.72', false);
     }
 
     function drawPageFooter() {
@@ -993,28 +1031,40 @@
     }
 
     function sectionHeading(title) {
-      checkSpace(22);
-      rect(ML, curY-11, 3, 13, C.accent, null, 0);
-      text(title.toUpperCase(), ML+8, curY-2, 8, C.navy, true);
-      line(ML, curY-13, PW-MR, curY-13, C.rule, 0.5);
-      curY -= 20;
+      checkSpace(26);
+      rect(ML, curY - 12, 3, 14, C.accent, null, 0);
+      text(title.toUpperCase(), ML + 8, curY - 2, 8.5, C.navy, true);
+      line(ML, curY - 15, PW - MR, curY - 15, C.rule, 0.5);
+      curY -= 22;
     }
 
     function drawField(x, y, w, label, value, fontSize) {
-      fontSize = fontSize || 8;
-      var lines   = wrapText(value || 'N/A', w-8, fontSize);
-      var lineH   = fontSize * 1.45;
-      var blockH  = Math.max(16, lines.length * lineH + 6);
-      text(label.toUpperCase(), x, y-7, 6, C.textLbl, false);
-      rect(x, y-7-blockH, w, blockH, C.fieldBg, C.rule, 0.35);
+      fontSize = fontSize || 8.5;
+      var lines  = wrapText(value || 'N/A', w - 10, fontSize);
+      var lineH  = fontSize * 1.5;
+      var pad    = 5;
+      var blockH = Math.max(18, lines.length * lineH + pad * 2);
+
+      // Label above box
+      text(label.toUpperCase(), x, y - 8, 6, C.textLbl, false);
+
+      // Field background box -- drawn below label
+      var boxTop = y - 10 - blockH;
+      rect(x, boxTop, w, blockH, C.fieldBg, C.rule, 0.3);
+
+      // Text lines: PDF Y origin is bottom-left, so first line is near TOP of box
+      // boxTop is the bottom of the box in PDF coords
+      // First line baseline = boxTop + blockH - pad - fontSize
       lines.forEach(function(ln, i) {
-        text(ln, x+4, y-7-blockH + blockH - lineH*(i+1)+4, fontSize, C.textMain, false);
+        var lineY = boxTop + blockH - pad - fontSize - i * lineH;
+        text(ln, x + 5, lineY, fontSize, C.textMain, false);
       });
-      return 7 + blockH + 5;
+
+      return 10 + blockH + 4;
     }
 
     function fieldRow(fields, gutter) {
-      gutter = gutter || 8;
+      gutter = gutter || 10;
       var total = fields.reduce(function(s,f){return s+(f.flex||1);},0);
       var unit  = (CW - gutter*(fields.length-1)) / total;
       var maxH  = 0, x = ML;
@@ -1028,7 +1078,7 @@
     }
 
     function drawTable(headers, rows, colWidths) {
-      var ROW_H = 16, HEAD_H = 13;
+      var ROW_H = 18, HEAD_H = 14;
       var tableW = colWidths.reduce(function(a,b){return a+b;},0);
       checkSpace(HEAD_H + ROW_H * Math.max(rows.length,1) + 8);
       var ty = curY;
@@ -1089,30 +1139,44 @@
 
     // -- Sign-off blocks --------------------------------------------
     function drawSignOff(blocks) {
-      checkSpace(90);
-      var gutter = 10;
-      var bw = (CW - gutter*(blocks.length-1)) / blocks.length;
+      var sigH   = 42;
+      var belowH = 52;   // space for printed name + date below box
+      checkSpace(10 + sigH + belowH + 10);
+      var gutter = 12;
+      var bw = (CW - gutter * (blocks.length - 1)) / blocks.length;
       var bx = ML;
-      var sigH = 38;
 
       blocks.forEach(function(b) {
-        text(b.label.toUpperCase(), bx, curY-7, 6, C.textLbl, false);
+        var topY = curY;   // reference Y for this block
+
+        // Label
+        text(b.label.toUpperCase(), bx, topY - 8, 6, C.textLbl, false);
+
         // Signature box
-        rect(bx, curY-7-sigH, bw, sigH, C.fieldBg, C.rule, 0.35);
+        var boxBottom = topY - 10 - sigH;
+        rect(bx, boxBottom, bw, sigH, C.fieldBg, C.rule, 0.35);
+
+        // Signature image centred in box
         if (b.imgName && imageXObjs[b.imgName]) {
-          drawImage(b.imgName, bx+2, curY-7, bw-4, sigH-4);
+          drawImage(b.imgName, bx + 2, boxBottom + sigH - 2, bw - 4, sigH - 4);
         }
-        // Underline
-        ops.push(C.accent+' RG 0.6 w '+(bx+4).toFixed(1)+' '+(curY-7-sigH-2).toFixed(1)+' m '+(bx+bw-4).toFixed(1)+' '+(curY-7-sigH-2).toFixed(1)+' l S');
-        // Printed name
-        text('PRINTED NAME', bx, curY-7-sigH-11, 5.5, C.textLbl, false);
-        text(b.name||'', bx, curY-7-sigH-20, 7.5, C.textMain, false);
-        // Date
-        text('DATE', bx, curY-7-sigH-31, 5.5, C.textLbl, false);
-        text(b.date||'', bx, curY-7-sigH-40, 7.5, C.textMain, false);
+
+        // Underline beneath box
+        var ulY = boxBottom - 2;
+        ops.push(C.accent + ' RG 0.7 w ' + (bx + 3).toFixed(1) + ' ' + ulY.toFixed(1) + ' m ' + (bx + bw - 3).toFixed(1) + ' ' + ulY.toFixed(1) + ' l S');
+
+        // Printed name label + value
+        text('PRINTED NAME', bx, ulY - 9,  5.5, C.textLbl,  false);
+        text(b.name || '',   bx, ulY - 19, 8,   C.textMain, false);
+
+        // Date label + value
+        text('DATE',       bx, ulY - 30, 5.5, C.textLbl,  false);
+        text(b.date || '', bx, ulY - 40, 8,   C.textMain, false);
+
         bx += bw + gutter;
       });
-      curY -= (7 + sigH + 48);
+
+      curY -= (10 + sigH + belowH);
     }
 
     // -- Generate --------------------------------------------------
@@ -1131,52 +1195,50 @@
       newPage();
       drawPageHeader(0);
       drawPageFooter();
-      var gap = 8;
+      var gap = 10;
+
+      // ---- PAGE 1: all sections flow naturally, no auto page breaks ----
+      // We reduce gap slightly so everything fits comfortably on one page
+      var g1 = 6;  // tighter gap for page 1
 
       sectionHeading('Incident Information');
-      checkSpace(60);
       fieldRow([{label:'Date of Incident',value:data.incidentDate},{label:'Time of Incident',value:data.incidentTime},{label:'Date Reported',value:data.reportDate}]);
-      curY -= gap;
+      curY -= g1;
       fieldRow([{label:'Location of Incident',value:data.location,flex:2},{label:'Supervisor',value:data.supervisor,flex:1}]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Person Involved');
-      checkSpace(60);
       fieldRow([{label:'Employee Name',value:data.empName},{label:'Position / Title',value:data.empPosition},{label:'Division',value:data.empBranch}]);
-      curY -= gap;
+      curY -= g1;
       fieldRow([{label:'Phone Number',value:data.empPhone,flex:1},{label:'Employment Type',value:data.empType,flex:2}]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Incident Classification');
-      checkSpace(50);
       fieldRow([{label:'Type of Incident',value:data.incidentTypes}]);
-      curY -= gap;
+      curY -= g1;
       fieldRow([{label:'Medical Treatment Required?',value:data.medTreatment},{label:'Lost Time from Work?',value:data.lostTime},{label:'Restricted Duties?',value:data.restrictedDuty}]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Description of Incident');
-      checkSpace(40);
       fieldRow([{label:'Description',value:data.description,size:7.5}]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Injury Details (if applicable)');
-      checkSpace(60);
       fieldRow([{label:'Body Part(s) Affected',value:data.bodyPart},{label:'Nature of Injury',value:data.natureInjury},{label:'First Aid Provided By',value:data.firstAidBy}]);
-      curY -= gap;
+      curY -= g1;
       fieldRow([{label:'First Aid / Medical Treatment Details',value:data.firstAidDesc,size:7.5}]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Equipment / Vehicle / Property Involved');
       drawTable(['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'],
         data.equipRows, [170,130,CW-300]);
-      curY -= gap;
+      curY -= g1;
 
       sectionHeading('Witnesses');
       drawTable(['Witness Name','Contact Information','Brief Statement / Notes'],
         data.witnessRows, [175,145,CW-320]);
-      curY -= gap;
 
-      // Page 2
+      // ---- PAGE 2 ----
       newPage(); drawPageHeader(1); drawPageFooter();
 
       sectionHeading('Immediate Corrective Actions');
@@ -1202,36 +1264,57 @@
       text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge.', ML+6, curY-9, 7, C.textMute, false);
       curY -= 32;
 
-      // Photo pages
+      // Photo pages -- one full page per photo
       if (data.photos && data.photos.length) {
-        var perPage = 4;
-        for (var p = 0; p < data.photos.length; p += perPage) {
+        data.photos.forEach(function(photo, i) {
           newPage(); drawPageHeader(curPage); drawPageFooter();
+
+          // Page title
           text('INCIDENT PHOTOS', ML, curY, 10, C.navy, true);
-          line(ML, curY-4, PW-MR, curY-4, C.rule, 0.5);
-          curY -= 14;
+          var photoLabel = 'Photo ' + (i + 1) + ' of ' + data.photos.length;
+          text(photoLabel, PW - MR - photoLabel.length * 4.2, curY, 8, C.textMute, false);
+          line(ML, curY - 4, PW - MR, curY - 4, C.rule, 0.5);
+          curY -= 16;
 
-          var slice = data.photos.slice(p, p+perPage);
-          var cellW = (CW - 10) / 2;
-          var cellH = Math.min(180, (curY - MB - 20) / 2);
+          // Full-width image area
+          var capH   = 22;
+          var imgAreaH = curY - MB - capH - 20;
+          var imgAreaW = CW;
 
-          slice.forEach(function(photo, i) {
-            var col = i % 2, row = Math.floor(i/2);
-            var cx  = ML + col*(cellW+10);
-            var cy  = curY - row*(cellH+10);
-            // Border
-            rect(cx, cy-cellH, cellW, cellH, C.fieldBg, C.rule, 0.35);
-            // Image
-            var imgName = 'photo'+(p+i);
-            if (imageXObjs[imgName]) {
-              drawImage(imgName, cx+2, cy-2, cellW-4, cellH-18);
+          // Get image dimensions to maintain aspect ratio
+          var info = imageXObjs['photo' + i];
+          var drawW = imgAreaW;
+          var drawH = imgAreaH;
+          if (info && info.w && info.h) {
+            var aspect = info.w / info.h;
+            if (imgAreaW / imgAreaH > aspect) {
+              // Image is taller relative to area -- constrain by height
+              drawH = imgAreaH;
+              drawW = Math.min(imgAreaW, drawH * aspect);
+            } else {
+              // Image is wider -- constrain by width
+              drawW = imgAreaW;
+              drawH = Math.min(imgAreaH, drawW / aspect);
             }
-            // Caption bar
-            rect(cx, cy-cellH, cellW, 16, '0.91 0.95 0.99', C.rule, 0.3);
-            var cap = (photo.description || ('Photo '+(p+i+1))).substring(0,60);
-            text(cap, cx+4, cy-cellH+5, 7, C.textMain, false);
-          });
-        }
+          }
+          // Centre horizontally
+          var imgX = ML + (imgAreaW - drawW) / 2;
+          var imgY = curY;  // top of image in curY terms
+
+          // Image border/background
+          rect(ML, curY - imgAreaH, CW, imgAreaH, C.fieldBg, C.rule, 0.35);
+
+          // Draw image
+          if (info) {
+            drawImage('photo' + i, imgX, imgY, drawW, drawH);
+          }
+
+          // Caption bar below image
+          var capY = curY - imgAreaH - 4;
+          rect(ML, capY - capH, CW, capH, '0.89 0.94 0.99', C.rule, 0.3);
+          var cap = (photo.description || ('Photo ' + (i + 1))).substring(0, 100);
+          text(cap, ML + 8, capY - capH + 8, 9, C.textMain, false);
+        });
       }
 
       flushPage();
@@ -1315,7 +1398,15 @@
   function checkVals(name) {
     var els = document.querySelectorAll('input[name="'+name+'"]:checked');
     if (!els.length) return 'N/A';
-    return Array.prototype.map.call(els, function(e){return e.value;}).join(', ');
+    return Array.prototype.map.call(els, function(e) {
+      // For the "Other" incident type, append the user-specified text
+      if (name === 'incident_type' && e.value === 'Other') {
+        var otherText = document.getElementById('incident_type_other_text');
+        var spec = otherText ? otherText.value.trim() : '';
+        return spec ? 'Other: ' + spec : 'Other';
+      }
+      return e.value;
+    }).join(', ');
   }
   function tableRows(prefix, cols, count) {
     var rows = [];
@@ -1424,13 +1515,42 @@
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         if (isIOS) {
-          window.open(url, '_blank');
+          // iOS Safari blocks blob URLs from window.open -- convert to base64 data URI
+          // then open inline so the user can use Share > Save to Files
+          var reader2 = new FileReader();
+          reader2.onload = function() {
+            var dataUri = reader2.result;
+            var win = window.open('', '_blank');
+            if (win) {
+              win.document.write(
+                '<html><head><title>Vista Incident Report</title></head>' +
+                '<body style="margin:0;padding:0;background:#222;">' +
+                '<p style="color:#fff;font-family:sans-serif;text-align:center;padding:12px;font-size:14px">' +
+                'Tap the share button and choose <b>Save to Files</b> to save the PDF.' +
+                '</p>' +
+                '<iframe src="' + dataUri + '" style="width:100%;height:calc(100vh - 60px);border:none"></iframe>' +
+                '</body></html>'
+              );
+              win.document.close();
+            } else {
+              // Pop-up blocked fallback -- create a tap-to-download link
+              var a2 = document.createElement('a');
+              a2.href = dataUri;
+              a2.download = 'Vista-Incident-Report.pdf';
+              a2.style = 'display:block;padding:16px;text-align:center;font-family:sans-serif';
+              a2.textContent = 'Tap here to download PDF';
+              document.body.appendChild(a2);
+              a2.click();
+              setTimeout(function(){ document.body.removeChild(a2); }, 3000);
+            }
+          };
+          reader2.readAsDataURL(blob);
         } else {
           var a = document.createElement('a');
           a.href = url; a.download = 'Vista-Incident-Report.pdf';
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
         }
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
       } catch(err) {
         alert('Could not generate PDF: ' + (err.message || String(err)));
       }
