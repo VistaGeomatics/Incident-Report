@@ -978,6 +978,70 @@
       ops.push(color+' RG '+(lw||0.4)+' w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l S');
     }
 
+    // Draw a checkbox (square) with optional checkmark
+    function drawCheckbox(x, y, size, checked) {
+      size = size || 7;
+      // Box
+      rect(x, y - size, size, size, '1 1 1', C.textMute, 0.5);
+      if (checked) {
+        // Checkmark: two lines forming a tick
+        ops.push(C.accent + ' RG 1.2 w ' +
+          (x + size*0.15).toFixed(1) + ' ' + (y - size*0.55).toFixed(1) + ' m ' +
+          (x + size*0.4).toFixed(1)  + ' ' + (y - size*0.82).toFixed(1) + ' l ' +
+          (x + size*0.88).toFixed(1) + ' ' + (y - size*0.15).toFixed(1) + ' l S');
+      }
+    }
+
+    // Draw a radio button (circle) with optional fill
+    function drawRadio(x, y, r, checked) {
+      r = r || 3.5;
+      var cx = x + r, cy = y - r;
+      // Outer circle (approximated with 4 bezier curves)
+      var k = r * 0.552;
+      ops.push('1 1 1 rg ' + C.textMute + ' RG 0.5 w ' +
+        (cx).toFixed(1) + ' ' + (cy+r).toFixed(1) + ' m ' +
+        (cx+k).toFixed(1)+' '+(cy+r).toFixed(1)+' '+(cx+r).toFixed(1)+' '+(cy+k).toFixed(1)+' '+(cx+r).toFixed(1)+' '+cy.toFixed(1)+' c ' +
+        (cx+r).toFixed(1)+' '+(cy-k).toFixed(1)+' '+(cx+k).toFixed(1)+' '+(cy-r).toFixed(1)+' '+cx.toFixed(1)+' '+(cy-r).toFixed(1)+' c ' +
+        (cx-k).toFixed(1)+' '+(cy-r).toFixed(1)+' '+(cx-r).toFixed(1)+' '+(cy-k).toFixed(1)+' '+(cx-r).toFixed(1)+' '+cy.toFixed(1)+' c ' +
+        (cx-r).toFixed(1)+' '+(cy+k).toFixed(1)+' '+(cx-k).toFixed(1)+' '+(cy+r).toFixed(1)+' '+cx.toFixed(1)+' '+(cy+r).toFixed(1)+' c B');
+      if (checked) {
+        // Filled inner dot
+        var ir = r * 0.5, ik = ir * 0.552;
+        ops.push(C.accent + ' rg ' +
+          cx.toFixed(1)+' '+(cy+ir).toFixed(1)+' m ' +
+          (cx+ik).toFixed(1)+' '+(cy+ir).toFixed(1)+' '+(cx+ir).toFixed(1)+' '+(cy+ik).toFixed(1)+' '+(cx+ir).toFixed(1)+' '+cy.toFixed(1)+' c ' +
+          (cx+ir).toFixed(1)+' '+(cy-ik).toFixed(1)+' '+(cx+ik).toFixed(1)+' '+(cy-ir).toFixed(1)+' '+cx.toFixed(1)+' '+(cy-ir).toFixed(1)+' c ' +
+          (cx-ik).toFixed(1)+' '+(cy-ir).toFixed(1)+' '+(cx-ir).toFixed(1)+' '+(cy-ik).toFixed(1)+' '+(cx-ir).toFixed(1)+' '+cy.toFixed(1)+' c ' +
+          (cx-ir).toFixed(1)+' '+(cy+ik).toFixed(1)+' '+(cx-ik).toFixed(1)+' '+(cy+ir).toFixed(1)+' '+cx.toFixed(1)+' '+(cy+ir).toFixed(1)+' c f');
+      }
+    }
+
+    // Draw a row of checkbox options inline
+    function drawCheckboxRow(options, x, y, fontSize) {
+      fontSize = fontSize || 7.5;
+      var itemGap = 5;
+      var boxSize = 7;
+      var cx = x;
+      options.forEach(function(opt) {
+        drawCheckbox(cx, y, boxSize, opt.checked);
+        text(opt.label, cx + boxSize + 3, y - 1, fontSize, C.textMain, false);
+        cx += boxSize + 3 + opt.label.length * fontSize * 0.52 + itemGap + 8;
+      });
+    }
+
+    // Draw a row of radio options inline
+    function drawRadioRow(options, x, y, fontSize) {
+      fontSize = fontSize || 7.5;
+      var itemGap = 5;
+      var r = 3.5;
+      var cx = x;
+      options.forEach(function(opt) {
+        drawRadio(cx, y, r, opt.checked);
+        text(opt.label, cx + r*2 + 3, y - 1, fontSize, C.textMain, false);
+        cx += r*2 + 3 + opt.label.length * fontSize * 0.52 + itemGap + 6;
+      });
+    }
+
     function text(str, x, y, size, color, bold) {
       if (!str) return;
       ops.push('BT '+(bold?'/FB':'/F1')+' '+size+' Tf '+color+' rg '+x.toFixed(1)+' '+y.toFixed(1)+' Td '+pdfStr(str)+' Tj ET');
@@ -1031,19 +1095,19 @@
     }
 
     function sectionHeading(title) {
-      checkSpace(26);
-      rect(ML, curY - 12, 3, 14, C.accent, null, 0);
-      text(title.toUpperCase(), ML + 8, curY - 2, 8.5, C.navy, true);
-      line(ML, curY - 15, PW - MR, curY - 15, C.rule, 0.5);
-      curY -= 22;
+      checkSpace(22);
+      rect(ML, curY - 10, 3, 12, C.accent, null, 0);
+      text(title.toUpperCase(), ML + 8, curY - 1, 8, C.navy, true);
+      line(ML, curY - 13, PW - MR, curY - 13, C.rule, 0.5);
+      curY -= 18;
     }
 
     function drawField(x, y, w, label, value, fontSize) {
-      fontSize = fontSize || 8.5;
+      fontSize = fontSize || 8;
       var lines  = wrapText(value || 'N/A', w - 10, fontSize);
-      var lineH  = fontSize * 1.5;
-      var pad    = 5;
-      var blockH = Math.max(18, lines.length * lineH + pad * 2);
+      var lineH  = fontSize * 1.45;
+      var pad    = 3;
+      var blockH = Math.max(16, lines.length * lineH + pad * 2);
 
       // Label above box
       text(label.toUpperCase(), x, y - 8, 6, C.textLbl, false);
@@ -1078,9 +1142,8 @@
     }
 
     function drawTable(headers, rows, colWidths) {
-      var ROW_H = 18, HEAD_H = 14;
+      var ROW_H = 16, HEAD_H = 13;
       var tableW = colWidths.reduce(function(a,b){return a+b;},0);
-      checkSpace(HEAD_H + ROW_H * Math.max(rows.length,1) + 8);
       var ty = curY;
       rect(ML, ty-HEAD_H, tableW, HEAD_H, '0.93 0.96 0.98', C.rule, 0.4);
       var x = ML;
@@ -1139,181 +1202,277 @@
 
     // -- Sign-off blocks --------------------------------------------
     function drawSignOff(blocks) {
-      var sigH   = 42;
-      var belowH = 52;   // space for printed name + date below box
-      checkSpace(10 + sigH + belowH + 10);
-      var gutter = 12;
+      var sigH = 38, nameH = 16, dateH = 16, pad = 8;
+      var total = sigH + pad + nameH + pad + dateH + 4;
+      checkSpace(20 + total);
+      var gutter = 10;
       var bw = (CW - gutter * (blocks.length - 1)) / blocks.length;
       var bx = ML;
-
       blocks.forEach(function(b) {
-        var topY = curY;   // reference Y for this block
-
         // Label
-        text(b.label.toUpperCase(), bx, topY - 8, 6, C.textLbl, false);
-
-        // Signature box
-        var boxBottom = topY - 10 - sigH;
-        rect(bx, boxBottom, bw, sigH, C.fieldBg, C.rule, 0.35);
-
-        // Signature image centred in box
+        text(b.label.toUpperCase(), bx, curY - 7, 6, C.textLbl, false);
+        // Sig box
+        var by = curY - 10 - sigH;
+        rect(bx, by, bw, sigH, C.fieldBg, C.rule, 0.35);
         if (b.imgName && imageXObjs[b.imgName]) {
-          drawImage(b.imgName, bx + 2, boxBottom + sigH - 2, bw - 4, sigH - 4);
+          drawImage(b.imgName, bx+2, by+sigH-2, bw-4, sigH-4);
         }
-
-        // Underline beneath box
-        var ulY = boxBottom - 2;
-        ops.push(C.accent + ' RG 0.7 w ' + (bx + 3).toFixed(1) + ' ' + ulY.toFixed(1) + ' m ' + (bx + bw - 3).toFixed(1) + ' ' + ulY.toFixed(1) + ' l S');
-
-        // Printed name label + value
-        text('PRINTED NAME', bx, ulY - 9,  5.5, C.textLbl,  false);
-        text(b.name || '',   bx, ulY - 19, 8,   C.textMain, false);
-
-        // Date label + value
-        text('DATE',       bx, ulY - 30, 5.5, C.textLbl,  false);
-        text(b.date || '', bx, ulY - 40, 8,   C.textMain, false);
-
+        // Underline
+        ops.push(C.accent+' RG 0.7 w '+(bx+3).toFixed(1)+' '+(by-2).toFixed(1)+' m '+(bx+bw-3).toFixed(1)+' '+(by-2).toFixed(1)+' l S');
+        // Printed name
+        text('PRINTED NAME', bx, by-10, 5.5, C.textLbl, false);
+        rect(bx, by-10-nameH, bw, nameH, C.fieldBg, C.rule, 0.3);
+        text(b.name||'', bx+4, by-10-nameH+5, 7.5, C.textMain, false);
+        // Date
+        text('DATE', bx, by-10-nameH-6, 5.5, C.textLbl, false);
+        rect(bx, by-10-nameH-6-dateH, bw, dateH, C.fieldBg, C.rule, 0.3);
+        text(b.date||'', bx+4, by-10-nameH-6-dateH+5, 7.5, C.textMain, false);
         bx += bw + gutter;
       });
+      curY -= (10 + total + 4);
+    }
 
-      curY -= (10 + sigH + belowH);
+    // -- Checkbox --------------------------------------------------
+    // Draws a bordered square; if checked, fills with accent colour + white tick
+    function drawCheckbox(x, y, sz, checked) {
+      sz = sz || 8;
+      // White background + border
+      ops.push('1 1 1 rg '+C.rule+' RG 0.5 w '+x.toFixed(1)+' '+(y-sz).toFixed(1)+' '+sz.toFixed(1)+' '+sz.toFixed(1)+' re B');
+      if (checked) {
+        // Filled accent background
+        ops.push(C.accent+' rg '+x.toFixed(1)+' '+(y-sz).toFixed(1)+' '+sz.toFixed(1)+' '+sz.toFixed(1)+' re f');
+        // White tick mark: two line segments
+        var m  = sz * 0.18;
+        var x1 = x + m,          y1 = y - sz * 0.52;
+        var x2 = x + sz * 0.42,  y2 = y - sz + m;
+        var x3 = x + sz - m,     y3 = y - m;
+        ops.push('1 1 1 RG 1.2 w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l '+x3.toFixed(1)+' '+y3.toFixed(1)+' l S');
+      }
+    }
+
+    // -- Radio button ----------------------------------------------
+    // Draws a circle (approximated as rounded square); if selected, blue filled dot
+    function drawRadio(x, y, r, checked) {
+      r = r || 4;
+      var d = r * 2;
+      // Outer circle background (white + border)
+      ops.push('1 1 1 rg '+C.rule+' RG 0.5 w '+x.toFixed(1)+' '+(y-d).toFixed(1)+' '+d.toFixed(1)+' '+d.toFixed(1)+' re B');
+      if (checked) {
+        // Inner filled dot (smaller rect centred in the outer)
+        var margin = r * 0.35;
+        ops.push(C.accent+' rg '+(x+margin).toFixed(1)+' '+(y-d+margin).toFixed(1)+' '+(d-margin*2).toFixed(1)+' '+(d-margin*2).toFixed(1)+' re f');
+      }
+    }
+
+    // -- Checkbox grid (wraps onto rows) ---------------------------
+    function drawCheckGrid(options, bx, by, bw, cols, rowH) {
+      cols = cols || 4; rowH = rowH || 14;
+      var colW = bw / cols;
+      options.forEach(function(opt, i) {
+        var col = i % cols, row = Math.floor(i / cols);
+        var ox = bx + col * colW + 5;
+        var oy = by - row * rowH - 5;
+        drawCheckbox(ox, oy, 8, opt.checked);
+        text(opt.label, ox + 11, oy - 1, 7.5, opt.checked ? C.navy : C.textMain, opt.checked);
+      });
+    }
+
+    // -- Radio row (inline) ----------------------------------------
+    function drawRadioRow(options, rx, ry) {
+      var cx = rx;
+      options.forEach(function(opt) {
+        drawRadio(cx, ry, 4, opt.checked);
+        text(opt.label, cx + 10, ry - 2, 8, opt.checked ? C.navy : C.textMain, opt.checked);
+        cx += 10 + opt.label.length * 4.5 + 12;
+      });
+    }
+
+    // -- Labelled option block (for Yes/No etc) --------------------
+    function drawOptionBlock(x, y, w, label, options) {
+      var bH = 20;
+      text(label, x, y - 8, 6, C.textLbl, false);
+      rect(x, y - 10 - bH, w, bH, C.fieldBg, C.rule, 0.3);
+      drawRadioRow(options, x + 6, y - 16);
+      return 10 + bH + 4;
     }
 
     // -- Generate --------------------------------------------------
     function generate(data) {
-      // Register signature images
       if (data.empSigImg) addImage('emp', data.empSigImg);
       if (data.supSigImg) addImage('sup', data.supSigImg);
       if (data.hseSigImg) addImage('hse', data.hseSigImg);
-      // Register photo images
       if (data.photos) {
-        data.photos.forEach(function(p, i) {
-          if (p.jpegDataUrl) addImage('photo'+i, p.jpegDataUrl);
-        });
+        data.photos.forEach(function(p,i){ if (p.jpegDataUrl) addImage('photo'+i, p.jpegDataUrl); });
       }
 
-      newPage();
-      drawPageHeader(0);
-      drawPageFooter();
-      var gap = 10;
+      // ============================================================
+      // PAGE 1  -- all content forced onto one page
+      // ============================================================
+      newPage(); drawPageHeader(0); drawPageFooter();
+      var G = 5;
 
-      // ---- PAGE 1: all sections flow naturally, no auto page breaks ----
-      // We reduce gap slightly so everything fits comfortably on one page
-      var g1 = 6;  // tighter gap for page 1
-
+      // -- Incident Information ------------------------------------
       sectionHeading('Incident Information');
-      fieldRow([{label:'Date of Incident',value:data.incidentDate},{label:'Time of Incident',value:data.incidentTime},{label:'Date Reported',value:data.reportDate}]);
-      curY -= g1;
-      fieldRow([{label:'Location of Incident',value:data.location,flex:2},{label:'Supervisor',value:data.supervisor,flex:1}]);
-      curY -= g1;
+      fieldRow([
+        {label:'Date of Incident', value:data.incidentDate},
+        {label:'Time of Incident', value:data.incidentTime},
+        {label:'Date Reported',    value:data.reportDate}
+      ]);
+      curY -= G;
+      fieldRow([
+        {label:'Location of Incident', value:data.location,   flex:2},
+        {label:'Supervisor',           value:data.supervisor, flex:1}
+      ]);
+      curY -= G;
 
+      // -- Person Involved -----------------------------------------
       sectionHeading('Person Involved');
-      fieldRow([{label:'Employee Name',value:data.empName},{label:'Position / Title',value:data.empPosition},{label:'Division',value:data.empBranch}]);
-      curY -= g1;
-      fieldRow([{label:'Phone Number',value:data.empPhone,flex:1},{label:'Employment Type',value:data.empType,flex:2}]);
-      curY -= g1;
+      fieldRow([
+        {label:'Employee Name',    value:data.empName},
+        {label:'Position / Title', value:data.empPosition},
+        {label:'Division',         value:data.empBranch}
+      ]);
+      curY -= G;
 
+      // Phone + Employment Type radios side by side
+      var ph1 = (CW - 10) / 3;
+      var ph2 = CW - ph1 - 10;
+      drawField(ML, curY, ph1, 'Phone Number', data.empPhone);
+      var etH = 20;
+      text('EMPLOYMENT TYPE', ML + ph1 + 10, curY - 8, 6, C.textLbl, false);
+      rect(ML + ph1 + 10, curY - 10 - etH, ph2, etH, C.fieldBg, C.rule, 0.3);
+      if (data.empTypeOptions) drawRadioRow(data.empTypeOptions, ML + ph1 + 16, curY - 15);
+      curY -= (10 + etH + 4 + G);
+
+      // -- Incident Classification ---------------------------------
       sectionHeading('Incident Classification');
-      fieldRow([{label:'Type of Incident',value:data.incidentTypes}]);
-      curY -= g1;
-      fieldRow([{label:'Medical Treatment Required?',value:data.medTreatment},{label:'Lost Time from Work?',value:data.lostTime},{label:'Restricted Duties?',value:data.restrictedDuty}]);
-      curY -= g1;
 
+      // Checkbox grid for incident types
+      text('TYPE OF INCIDENT', ML, curY - 8, 6, C.textLbl, false);
+      var nTypes = data.incidentTypesList ? data.incidentTypesList.length : 7;
+      var nRows  = Math.ceil(nTypes / 4);
+      var cbH    = nRows * 13 + 6;
+      rect(ML, curY - 10 - cbH, CW, cbH, C.fieldBg, C.rule, 0.3);
+      if (data.incidentTypesList) drawCheckGrid(data.incidentTypesList, ML, curY - 12, CW, 4, 13);
+      curY -= (10 + cbH + 4 + G);
+
+      // Yes/No radio triplet
+      var rw = (CW - 16) / 3;
+      drawOptionBlock(ML,          curY, rw, 'MEDICAL TREATMENT REQUIRED?', data.medOptions  || []);
+      drawOptionBlock(ML + rw + 8, curY, rw, 'LOST TIME FROM WORK?',        data.lostOptions || []);
+      drawOptionBlock(ML +rw*2+16, curY, rw, 'RESTRICTED DUTIES?',          data.restOptions || []);
+      curY -= (10 + 20 + 4 + G);
+
+      // -- Description ---------------------------------------------
       sectionHeading('Description of Incident');
-      fieldRow([{label:'Description',value:data.description,size:7.5}]);
-      curY -= g1;
+      fieldRow([{label:'Description', value:data.description, size:7.5}]);
+      curY -= G;
 
+      // -- Injury Details ------------------------------------------
       sectionHeading('Injury Details (if applicable)');
-      fieldRow([{label:'Body Part(s) Affected',value:data.bodyPart},{label:'Nature of Injury',value:data.natureInjury},{label:'First Aid Provided By',value:data.firstAidBy}]);
-      curY -= g1;
-      fieldRow([{label:'First Aid / Medical Treatment Details',value:data.firstAidDesc,size:7.5}]);
-      curY -= g1;
+      fieldRow([
+        {label:'Body Part(s) Affected', value:data.bodyPart},
+        {label:'Nature of Injury',      value:data.natureInjury},
+        {label:'First Aid Provided By', value:data.firstAidBy}
+      ]);
+      curY -= G;
+      fieldRow([{label:'First Aid / Medical Treatment Details', value:data.firstAidDesc, size:7.5}]);
+      curY -= G;
 
+      // -- Equipment -----------------------------------------------
       sectionHeading('Equipment / Vehicle / Property Involved');
-      drawTable(['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'],
-        data.equipRows, [170,130,CW-300]);
-      curY -= g1;
+      drawTable(
+        ['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'],
+        data.equipRows, [168, 124, CW - 292]
+      );
+      curY -= G;
 
+      // -- Witnesses -----------------------------------------------
       sectionHeading('Witnesses');
-      drawTable(['Witness Name','Contact Information','Brief Statement / Notes'],
-        data.witnessRows, [175,145,CW-320]);
+      drawTable(
+        ['Witness Name','Contact Information','Brief Statement / Notes'],
+        data.witnessRows, [170, 140, CW - 310]
+      );
 
-      // ---- PAGE 2 ----
+      // ============================================================
+      // PAGE 2
+      // ============================================================
       newPage(); drawPageHeader(1); drawPageFooter();
 
       sectionHeading('Immediate Corrective Actions');
-      fieldRow([{label:'Actions Taken',value:data.immediateActions,size:7.5}]);
-      curY -= gap;
+      fieldRow([{label:'Actions Taken', value:data.immediateActions, size:7.5}]);
+      curY -= G;
 
       sectionHeading('Root Cause / Contributing Factors');
-      fieldRow([{label:'Root Cause',value:data.rootCause,size:7.5}]);
-      curY -= gap;
+      fieldRow([{label:'Root Cause', value:data.rootCause, size:7.5}]);
+      curY -= G;
 
       sectionHeading('Recommended / Planned Corrective Actions');
-      fieldRow([{label:'Corrective Actions',value:data.correctiveActions,size:7.5}]);
-      curY -= gap;
+      fieldRow([{label:'Corrective Actions', value:data.correctiveActions, size:7.5}]);
+      curY -= G;
 
       sectionHeading('Sign-Off');
       drawSignOff([
-        {label:'Employee Signature',        name:data.empSig, date:data.empSigDate, imgName:data.empSigImg?'emp':null},
-        {label:'Supervisor Signature',      name:data.supSig, date:data.supSigDate, imgName:data.supSigImg?'sup':null},
-        {label:'HSE Review Signature',      name:data.hseSig, date:data.hseSigDate, imgName:data.hseSigImg?'hse':null},
+        {label:'Employee Signature',   name:data.empSig, date:data.empSigDate, imgName:data.empSigImg?'emp':null},
+        {label:'Supervisor Signature', name:data.supSig, date:data.supSigDate, imgName:data.supSigImg?'sup':null},
+        {label:'HSE Review Signature', name:data.hseSig, date:data.hseSigDate, imgName:data.hseSigImg?'hse':null}
       ]);
 
-      rect(ML, curY-26, CW, 26, '0.96 0.98 0.99', C.rule, 0.4);
-      text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge.', ML+6, curY-9, 7, C.textMute, false);
-      curY -= 32;
+      checkSpace(32);
+      rect(ML, curY - 28, CW, 28, '0.96 0.98 0.99', C.rule, 0.4);
+      text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.', ML + 6, curY - 10, 7, C.textMute, false);
+      curY -= 34;
 
-      // Photo pages -- one full page per photo
+      // ============================================================
+      // PHOTO PAGES -- one full page per photo
+      // ============================================================
       if (data.photos && data.photos.length) {
         data.photos.forEach(function(photo, i) {
           newPage(); drawPageHeader(curPage); drawPageFooter();
 
-          // Page title
-          text('INCIDENT PHOTOS', ML, curY, 10, C.navy, true);
-          var photoLabel = 'Photo ' + (i + 1) + ' of ' + data.photos.length;
-          text(photoLabel, PW - MR - photoLabel.length * 4.2, curY, 8, C.textMute, false);
-          line(ML, curY - 4, PW - MR, curY - 4, C.rule, 0.5);
-          curY -= 16;
+          // Title row
+          text('INCIDENT PHOTOS', ML, curY, 11, C.navy, true);
+          var lbl = 'Photo ' + (i+1) + ' of ' + data.photos.length;
+          text(lbl, PW - MR - lbl.length * 4.1, curY, 8, C.textMute, false);
+          line(ML, curY - 5, PW - MR, curY - 5, C.rule, 0.5);
+          curY -= 18;
 
-          // Full-width image area
-          var capH   = 22;
-          var imgAreaH = curY - MB - capH - 20;
-          var imgAreaW = CW;
+          // Caption bar height
+          var capH = 26;
 
-          // Get image dimensions to maintain aspect ratio
-          var info = imageXObjs['photo' + i];
-          var drawW = imgAreaW;
-          var drawH = imgAreaH;
+          // Available image area
+          var availH = curY - MB - capH - 8;
+          var availW = CW;
+
+          // Aspect-correct sizing
+          var info   = imageXObjs['photo' + i];
+          var drawW  = availW, drawH = availH;
           if (info && info.w && info.h) {
-            var aspect = info.w / info.h;
-            if (imgAreaW / imgAreaH > aspect) {
-              // Image is taller relative to area -- constrain by height
-              drawH = imgAreaH;
-              drawW = Math.min(imgAreaW, drawH * aspect);
+            var ratio = info.w / info.h;
+            if (availW / availH > ratio) {
+              drawH = availH;
+              drawW = drawH * ratio;
             } else {
-              // Image is wider -- constrain by width
-              drawW = imgAreaW;
-              drawH = Math.min(imgAreaH, drawW / aspect);
+              drawW = availW;
+              drawH = drawW / ratio;
             }
           }
-          // Centre horizontally
-          var imgX = ML + (imgAreaW - drawW) / 2;
-          var imgY = curY;  // top of image in curY terms
+          // Clamp
+          if (drawW > availW) { drawW = availW; drawH = drawW / (info ? info.w/info.h : 1); }
+          if (drawH > availH) { drawH = availH; drawW = drawH * (info ? info.w/info.h : 1); }
 
-          // Image border/background
-          rect(ML, curY - imgAreaH, CW, imgAreaH, C.fieldBg, C.rule, 0.35);
+          var imgX = ML + (availW - drawW) / 2;
+          var imgY = curY;  // top of image area
 
-          // Draw image
-          if (info) {
-            drawImage('photo' + i, imgX, imgY, drawW, drawH);
-          }
+          // Draw image with border
+          rect(imgX, imgY - drawH, drawW, drawH, C.fieldBg, C.rule, 0.5);
+          if (info) drawImage('photo' + i, imgX, imgY, drawW, drawH);
 
-          // Caption bar below image
-          var capY = curY - imgAreaH - 4;
-          rect(ML, capY - capH, CW, capH, '0.89 0.94 0.99', C.rule, 0.3);
+          // Caption bar directly under image (not at bottom of page)
+          var capY = imgY - drawH - 4;
+          rect(ML, capY - capH, CW, capH, '0.91 0.95 0.99', C.rule, 0.3);
           var cap = (photo.description || ('Photo ' + (i + 1))).substring(0, 100);
-          text(cap, ML + 8, capY - capH + 8, 9, C.textMain, false);
+          text(cap, ML + 10, capY - capH + 10, 9, C.textMain, false);
         });
       }
 
@@ -1481,6 +1640,18 @@
       var photos   = results[0];
       var sigJpegs = results[1];
 
+      // Collect all incident type options with their checked state
+      var allIncidentTypes = [
+        'Injury / Illness','First Aid Only','Near Miss','Property Damage',
+        'Vehicle / Motor Vehicle','Environmental','Other'
+      ];
+      var checkedTypes = {};
+      document.querySelectorAll('input[name="incident_type"]:checked').forEach(function(el){ checkedTypes[el.value] = true; });
+      var otherSpecify = g('incident_type_other_text');
+      var incidentTypesList = allIncidentTypes.map(function(t) {
+        return { label: t === 'Other' && otherSpecify ? 'Other: ' + otherSpecify : t, checked: !!checkedTypes[t] };
+      });
+
       var data = {
         incidentDate:  g('incident_date'),      incidentTime: g('incident_time'),
         reportDate:    g('report_date'),         location:     g('incident_location'),
@@ -1488,9 +1659,18 @@
         empPosition:   g('employee_position'),   empBranch:    g('employee_branch'),
         empPhone:      g('employee_phone'),      empType:      radioVal('employment_type'),
         incidentTypes: checkVals('incident_type'),
+        incidentTypesList: incidentTypesList,
         medTreatment:  radioVal('medical_treatment'),
         lostTime:      radioVal('lost_time'),
         restrictedDuty:radioVal('modified_duty'),
+        empTypeOptions: [
+          {label:'Full-time', checked: radioVal('employment_type')==='Full-time'},
+          {label:'Part-time', checked: radioVal('employment_type')==='Part-time'},
+          {label:'Contractor', checked: radioVal('employment_type')==='Contractor'}
+        ],
+        medOptions:  [{label:'Yes',checked:radioVal('medical_treatment')==='Yes'},{label:'No',checked:radioVal('medical_treatment')==='No'}],
+        lostOptions: [{label:'Yes',checked:radioVal('lost_time')==='Yes'},{label:'No',checked:radioVal('lost_time')==='No'}],
+        restOptions: [{label:'Yes',checked:radioVal('modified_duty')==='Yes'},{label:'No',checked:radioVal('modified_duty')==='No'}],
         description:   g('incident_description'),
         bodyPart:      g('body_part'),           natureInjury: g('nature_of_injury'),
         firstAidBy:    g('first_aid_by'),        firstAidDesc: g('first_aid_description'),
@@ -1514,35 +1694,41 @@
         var url  = URL.createObjectURL(blob);
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
         if (isIOS) {
-          // iOS Safari blocks blob URLs from window.open -- convert to base64 data URI
-          // then open inline so the user can use Share > Save to Files
+          // iOS Safari: show an in-page fullscreen overlay with the PDF in an iframe
+          // This avoids all popup-blocker issues since we never leave the page
           var reader2 = new FileReader();
           reader2.onload = function() {
             var dataUri = reader2.result;
-            var win = window.open('', '_blank');
-            if (win) {
-              win.document.write(
-                '<html><head><title>Vista Incident Report</title></head>' +
-                '<body style="margin:0;padding:0;background:#222;">' +
-                '<p style="color:#fff;font-family:sans-serif;text-align:center;padding:12px;font-size:14px">' +
-                'Tap the share button and choose <b>Save to Files</b> to save the PDF.' +
-                '</p>' +
-                '<iframe src="' + dataUri + '" style="width:100%;height:calc(100vh - 60px);border:none"></iframe>' +
-                '</body></html>'
-              );
-              win.document.close();
-            } else {
-              // Pop-up blocked fallback -- create a tap-to-download link
-              var a2 = document.createElement('a');
-              a2.href = dataUri;
-              a2.download = 'Vista-Incident-Report.pdf';
-              a2.style = 'display:block;padding:16px;text-align:center;font-family:sans-serif';
-              a2.textContent = 'Tap here to download PDF';
-              document.body.appendChild(a2);
-              a2.click();
-              setTimeout(function(){ document.body.removeChild(a2); }, 3000);
-            }
+
+            // Build overlay
+            var overlay = document.createElement('div');
+            overlay.id = 'pdfOverlay';
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#1a1a2e;display:flex;flex-direction:column;';
+
+            // Top bar with instructions + close button
+            var bar = document.createElement('div');
+            bar.style.cssText = 'background:#0f283c;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;';
+            bar.innerHTML =
+              '<p style="margin:0;color:#c8dde8;font-family:sans-serif;font-size:13px;line-height:1.4">' +
+              'Tap <b style="color:#fff">&#x2B06; Share</b> then <b style="color:#fff">Save to Files</b> to save your PDF.' +
+              '</p>' +
+              '<button id="pdfOverlayClose" ' +
+              'style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:sans-serif;">Close</button>';
+
+            // iframe
+            var frame = document.createElement('iframe');
+            frame.src = dataUri;
+            frame.style.cssText = 'flex:1;width:100%;border:none;background:#fff;';
+
+            overlay.appendChild(bar);
+            overlay.appendChild(frame);
+            document.body.appendChild(overlay);
+            document.getElementById('pdfOverlayClose').addEventListener('click', function() {
+              var ov = document.getElementById('pdfOverlay');
+              if (ov) ov.remove();
+            });
           };
           reader2.readAsDataURL(blob);
         } else {
