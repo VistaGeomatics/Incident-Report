@@ -2,81 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vista Geomatics - Incident Report</title>
+  <title>Vista Geomatics – Incident Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Modern fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    /* ============================================================
-       SCREEN STYLES
-    ============================================================ */
     :root {
-      --blue:       #165f7d;
-      --blue-light: #2a7fa3;
-      --blue-dark:  #0b3045;
-      --bg:         #eef3f9;
-      --card:       #ffffff;
-      --border:     #d6e2f0;
-      --text:       #101827;
-      --muted:      #6b7280;
+      --vista-blue: #165f7d;
+      --vista-blue-light: #2a7fa3;
+      --vista-blue-dark: #0b3045;
+
+      --bg-body: #eef3f9;
+      --bg-card: #ffffff;
+      --border-soft: #d6e2f0;
+      --text-main: #101827;
+      --text-muted: #6b7280;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       padding: 24px;
       background: radial-gradient(circle at top, #f4f8fc 0, #e4edf6 40%, #dde6f3 100%);
-      color: var(--text);
+      color: var(--text-main);
     }
 
-    .page-wrap { max-width: 1200px; margin: 0 auto; }
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     .container {
-      background: var(--card);
+      background: var(--bg-card);
       border-radius: 18px;
-      box-shadow: 0 18px 40px rgba(5,41,66,0.18), 0 0 0 1px rgba(5,41,66,0.04);
+      box-shadow:
+        0 18px 40px rgba(5, 41, 66, 0.18),
+        0 0 0 1px rgba(5, 41, 66, 0.04);
       overflow: hidden;
+      position: relative;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at top right, rgba(22,95,125,0.18), transparent 55%);
+      opacity: 0.9;
     }
 
     /* Header */
     .header-bar {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 18px 28px;
-      background: linear-gradient(120deg, var(--blue-light) 0%, var(--blue) 40%, var(--blue-dark) 100%);
-      color: #fff;
+      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
+      color: #ffffff;
+      overflow: hidden;
     }
+
+    .header-bar::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.07) 0,
+        transparent 40%
+      );
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .header-left {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     .header-left h1 {
       font-size: 1.7rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin: 0;
+      font-family: "Montserrat", sans-serif;
       font-weight: 400;
     }
-    .header-left p { margin: 0; font-size: 0.96rem; opacity: 0.92; }
-    .vista-bold { font-weight: 700; }
-    .header-logo { height: 90px; width: auto; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35)); }
 
-    /* Form */
-    form { padding: 24px 28px 26px; background: #ffffff; }
+    .vista-bold {
+      font-weight: 700;
+    }
+
+    .geomatics-regular {
+      font-weight: 400;
+    }
+
+    .header-left p {
+      margin: 0;
+      font-size: 0.96rem;
+      opacity: 0.92;
+    }
+
+    .header-logo {
+      position: relative;
+      z-index: 1;
+      height: 90px;
+      width: auto;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+    }
+
+    /* Form body */
+    form {
+      position: relative;
+      z-index: 2;
+      padding: 24px 28px 26px;
+      background: radial-gradient(circle at top left, rgba(226,240,246,0.55), transparent 55%) #ffffff;
+    }
 
     .section {
       margin-bottom: 20px;
       padding: 16px 18px 18px;
       border-radius: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       background: linear-gradient(135deg, #fbfdff 0%, #f4f8fd 60%, #eff5fb 100%);
-      box-shadow: 0 10px 24px rgba(5,41,66,0.05);
+      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.05);
       position: relative;
       overflow: hidden;
     }
+
     .section::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 5px;
-      background: linear-gradient(90deg, var(--blue-light), var(--blue-dark));
+      background: linear-gradient(90deg, var(--vista-blue-light), var(--vista-blue-dark));
     }
 
     .section-title {
@@ -86,59 +158,139 @@
       font-weight: 600;
       margin-bottom: 6px;
       font-size: 1.02rem;
-      color: var(--blue-dark);
+      color: var(--vista-blue-dark);
       padding: 4px 10px;
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(22,95,125,0.09), rgba(11,48,69,0.05));
       box-shadow: 0 0 0 1px rgba(22,95,125,0.12);
+      position: relative;
     }
+
     .section-title::before {
       content: "";
       display: inline-block;
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 999px;
-      background: radial-gradient(circle, #fff 0, var(--blue-light) 50%, var(--blue-dark) 100%);
+      background: radial-gradient(circle, #ffffff 0, var(--vista-blue-light) 50%, var(--vista-blue-dark) 100%);
       box-shadow: 0 0 0 4px rgba(22,95,125,0.25);
     }
 
-    .section-subtext { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+    .section-subtext {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
 
-    .grid-2, .grid-3 { display: grid; gap: 12px; }
-    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 12px;
+    }
 
-    label { font-size: 0.86rem; font-weight: 600; display: block; margin-bottom: 4px; color: var(--text); }
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
 
-    input[type="text"], input[type="date"], input[type="time"], input[type="number"],
-    textarea, select {
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    textarea,
+    select {
       width: 100%;
       padding: 7px 10px;
       font-size: 0.9rem;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: 9px;
       background: #f9fbff;
-      font-family: inherit;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.08s ease;
     }
-    input:focus, textarea:focus, select:focus {
+
+    input:focus,
+    textarea:focus,
+    select:focus {
       outline: none;
-      border-color: var(--blue-light);
-      background: #fff;
+      border-color: var(--vista-blue-light);
+      background: #ffffff;
       box-shadow: 0 0 0 3px rgba(38,132,168,0.22);
+      transform: translateY(-1px);
     }
-    textarea { min-height: 90px; resize: vertical; }
 
-    .inline-options { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 6px; font-size: 0.86rem; }
-    .inline-options label { font-weight: 500; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 0; }
-    .inline-options input[type="checkbox"], .inline-options input[type="radio"] { margin: 0; }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.85rem; border-radius: 10px; overflow: hidden; }
-    th, td { border: 1px solid #d7e2f1; padding: 8px 10px; vertical-align: top; }
-    th { background: linear-gradient(90deg, #e6f1fb, #dde9f7); text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: #4b5563; }
-    tbody tr:nth-child(even) { background: #f7faff; }
-    td input[type="text"] { border: none; background: transparent; padding: 2px 4px; }
+    .inline-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin-top: 6px;
+      font-size: 0.86rem;
+    }
 
-    .btn-row { margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    .inline-options label {
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 0;
+    }
+
+    .inline-options input[type="checkbox"],
+    .inline-options input[type="radio"] {
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #d7e2f1;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    th {
+      background: linear-gradient(90deg, #e6f1fb, #dde9f7);
+      text-align: left;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #4b5563;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f7faff;
+    }
+
+    .btn-row {
+      margin-top: 22px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
     button {
       padding: 9px 20px;
       font-size: 0.9rem;
@@ -148,44 +300,159 @@
       font-weight: 600;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      font-family: inherit;
-      transition: transform 0.12s, box-shadow 0.12s;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
     }
+
     .btn-primary {
-      background: linear-gradient(120deg, var(--blue-light) 0%, var(--blue) 40%, var(--blue-dark) 100%);
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(5,41,66,0.45);
+      background: linear-gradient(120deg, var(--vista-blue-light) 0%, var(--vista-blue) 40%, var(--vista-blue-dark) 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(5, 41, 66, 0.45);
     }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(5,41,66,0.55); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: #f3f4f6; color: var(--text); border: 1px solid #d4d7dd; }
-    .btn-secondary:hover { background: #e5e7eb; }
 
-    .photos-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .photo-item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-width: 160px; }
-    .photo-item img { max-width: 140px; max-height: 140px; object-fit: cover; border-radius: 10px; border: 1px solid #d1e0f0; display: block; }
-    .photo-item input[type="text"] { font-size: 0.78rem; padding: 4px 6px; }
-    .hint { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-
-    /* Field error highlight */
-    .field-error input, .field-error select, .field-error textarea {
-      border-color: #ef4444 !important;
-      background: #fff5f5 !important;
-      box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important;
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(5, 41, 66, 0.55);
     }
-    .field-error .inline-options { outline: 2px solid #ef4444; outline-offset: 3px; border-radius: 6px; }
 
-    /* Validation modal */
+    .btn-secondary {
+      background: #f3f4f6;
+      color: var(--text-main);
+      border: 1px solid #d4d7dd;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    /* Photo preview section */
+    .photos-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .photo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+
+      max-width: 160px;
+    }
+
+    .photo-item img {
+      max-width: 140px;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #d1e0f0;
+      box-shadow: 0 6px 14px rgba(5, 41, 66, 0.18);
+      display: block;
+    }
+
+    .photo-item a {
+      text-decoration: none;
+    }
+
+    .photo-item input[type="text"] {
+      font-size: 0.78rem;
+      padding: 4px 6px;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 12px;
+      }
+
+      form {
+        padding: 18px 16px 20px;
+      }
+
+      .header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .header-logo {
+        align-self: flex-end;
+        height: 56px;
+      }
+    }
+
+    /* ── Signature pads (revealed once a name is typed) ── */
+    .sig-pad {
+      margin-top: 8px;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+      animation: sigIn 0.18s ease;
+    }
+    .sig-pad[hidden] { display: none; }
+    @keyframes sigIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sig-pad-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 8px;
+      background: linear-gradient(90deg, #e6f1fb, #dde9f7);
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #4b5563;
+    }
+    .sig-clear {
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: var(--text-main);
+      border: 1px solid #d4d7dd;
+    }
+    .sig-canvas {
+      display: block;
+      width: 100%;
+      height: 90px;
+      cursor: crosshair;
+      touch-action: none;
+      background:
+        linear-gradient(#ffffff, #ffffff) padding-box,
+        repeating-linear-gradient(90deg, #c9d6e6 0 6px, transparent 6px 11px) bottom 22px left 12px / calc(100% - 24px) 1px no-repeat;
+    }
+    .sig-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Validation modal ─────────────────────────────── */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(11,48,69,0.55);
+      backdrop-filter: blur(3px);
       z-index: 9999;
       align-items: center;
       justify-content: center;
     }
     .modal-overlay.active { display: flex; }
+
     .modal-box {
       background: #fff;
       border-radius: 16px;
@@ -193,6 +460,11 @@
       max-width: 460px;
       width: 90%;
       overflow: hidden;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn {
+      from { transform: translateY(-18px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
     }
     .modal-header {
       background: linear-gradient(120deg, #c0392b 0%, #962d22 100%);
@@ -202,10 +474,20 @@
       gap: 10px;
       color: #fff;
     }
+    .modal-header svg { flex-shrink: 0; }
     .modal-header h2 { margin: 0; font-size: 1rem; font-weight: 700; }
-    .modal-body { padding: 18px 20px 6px; }
-    .modal-body p { margin: 0 0 10px; font-size: 0.87rem; color: #374151; }
-    .modal-errors { list-style: none; padding: 0; margin: 0 0 14px; }
+    .modal-body {
+      padding: 18px 20px 6px;
+    }
+    .modal-body p {
+      margin: 0 0 10px;
+      font-size: 0.87rem;
+      color: #374151;
+    }
+    .modal-errors {
+      list-style: none;
+      padding: 0; margin: 0 0 14px;
+    }
     .modal-errors li {
       display: flex;
       align-items: flex-start;
@@ -218,85 +500,60 @@
       font-size: 0.83rem;
       color: #7f1d1d;
     }
-    .modal-errors li::before { content: "o"; color: #ef4444; font-size: 0.6rem; margin-top: 3px; flex-shrink: 0; }
-    .modal-footer { padding: 10px 20px 18px; display: flex; justify-content: flex-end; }
+    .modal-errors li::before {
+      content: "●";
+      color: #ef4444;
+      font-size: 0.6rem;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .modal-footer {
+      padding: 10px 20px 18px;
+      display: flex;
+      justify-content: flex-end;
+    }
     .modal-close-btn {
       padding: 8px 22px;
-      background: linear-gradient(120deg, var(--blue-light), var(--blue-dark));
+      background: linear-gradient(120deg, var(--vista-blue-light), var(--vista-blue-dark));
       color: #fff;
       border: none;
       border-radius: 999px;
       font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
-      font-family: inherit;
+      letter-spacing: 0.04em;
     }
+    .modal-close-btn:hover { opacity: 0.88; }
 
-
-    /* Signature pads */
-    .sig-block { display: flex; flex-direction: column; gap: 4px; }
-    .sig-label-row { display: flex; justify-content: space-between; align-items: center; }
-    .sig-clear {
-      font-size: 0.72rem; color: var(--blue); background: none; border: none;
-      cursor: pointer; padding: 0; font-family: inherit; text-decoration: underline;
-      text-underline-offset: 2px;
+    /* field highlight */
+    .field-error input,
+    .field-error select,
+    .field-error textarea {
+      border-color: #ef4444 !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important;
     }
-    .sig-clear:hover { color: var(--blue-dark); }
-    .sig-canvas-wrap {
-      position: relative; border-radius: 10px; overflow: hidden;
-      border: 1.5px solid var(--border); background: #fff;
-      touch-action: none;
+    .field-error .inline-options {
+      outline: 2px solid #ef4444;
+      outline-offset: 3px;
+      border-radius: 6px;
     }
-    .sig-canvas-wrap.active { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(38,132,168,0.18); }
-    .sig-canvas-wrap canvas { display: block; width: 100%; height: 100px; cursor: crosshair; }
-    .sig-placeholder {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      color: #c0ccd8; font-size: 0.82rem; pointer-events: none; gap: 6px;
-      transition: opacity 0.15s;
-    }
-    .sig-placeholder svg { opacity: 0.5; }
-    .sig-name-row { display: flex; flex-direction: column; gap: 4px; }
-    .sig-name-input { margin-top: 2px; }
-
-    /* Error state */
-    .field-error .sig-canvas-wrap { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239,68,68,0.18) !important; }
-
-    @media (max-width: 720px) {
-      body { padding: 12px; }
-      form { padding: 18px 16px 20px; }
-      .header-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .header-logo { align-self: flex-end; height: 56px; }
-    }
-
-
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <!-- Print header (hidden on screen, shown when printing) -->
-    <div id="printHeader" style="display:none">
-      <div class="ph-left">
-        <h1><b>VISTA</b>GEOMATICS</h1>
-        <p>Incident Report</p>
-      </div>
-      <div class="ph-right">
-        <img src="vista-geomatics.png" alt="Vista Geomatics" onerror="this.style.display='none'">
-      </div>
-    </div>
-
-    <div class="container">
-      <!-- Screen header -->
+    <div class="container" id="pdfArea">
+      <!-- Header -->
       <div class="header-bar">
         <div class="header-left">
-          <h1><span class="vista-bold">VISTA</span>GEOMATICS</h1>
+          <h1><span class="vista-bold">VISTA</span><span class="geomatics-regular">GEOMATICS</span></h1>
           <p>Incident Report Form</p>
         </div>
-        <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo" onerror="this.style.display='none'">
+        <img src="vista-geomatics.png" alt="Vista Geomatics Logo" class="header-logo">
       </div>
 
-      <form id="incidentForm" action="#" method="post">
-
-        <!-- Incident Information -->
+      <form action="#" method="post">
+        <!-- Section: Incident Information -->
         <div class="section">
           <div class="section-title">Incident Information</div>
           <p class="section-subtext">Record basic details about the incident and when it was reported.</p>
@@ -314,7 +571,7 @@
               <input type="date" id="report_date" name="report_date">
             </div>
           </div>
-          <div class="grid-2" style="margin-top:10px">
+          <div class="grid-2" style="margin-top: 10px;">
             <div>
               <label for="incident_location">Location of Incident</label>
               <input type="text" id="incident_location" name="incident_location">
@@ -326,7 +583,7 @@
           </div>
         </div>
 
-        <!-- Person Involved -->
+        <!-- Section: Person Involved -->
         <div class="section">
           <div class="section-title">Person Involved</div>
           <p class="section-subtext">Details for the worker or individual directly involved in the incident.</p>
@@ -342,7 +599,7 @@
             <div>
               <label for="employee_branch">Division</label>
               <select id="employee_branch" name="employee_branch">
-                <option value="">-- Select Division --</option>
+                <option value="">— Select Division —</option>
                 <option value="Municipal">Municipal</option>
                 <option value="Construction">Construction</option>
                 <option value="Oil and Gas">Oil and Gas</option>
@@ -350,7 +607,7 @@
               </select>
             </div>
           </div>
-          <div class="grid-2" style="margin-top:10px">
+          <div class="grid-2" style="margin-top: 10px;">
             <div>
               <label for="employee_phone">Phone Number</label>
               <input type="text" id="employee_phone" name="employee_phone">
@@ -358,65 +615,62 @@
             <div>
               <label>Employment Type</label>
               <div class="inline-options">
-                <label><input type="radio" name="employment_type" value="Full-time"> Full-time</label>
-                <label><input type="radio" name="employment_type" value="Part-time"> Part-time</label>
-                <label><input type="radio" name="employment_type" value="Contractor"> Contractor</label>
+                <label><input type="radio" name="employment_type" value="full_time"> Full-time</label>
+                <label><input type="radio" name="employment_type" value="part_time"> Part-time</label>
+                <label><input type="radio" name="employment_type" value="contractor"> Contractor</label>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Incident Classification -->
+        <!-- Section: Incident Classification -->
         <div class="section">
           <div class="section-title">Incident Classification</div>
           <p class="section-subtext">Select all categories that apply to the incident.</p>
           <label>Type of Incident</label>
-          <div class="inline-options" id="incident_type_group">
-            <label><input type="checkbox" name="incident_type" value="Injury / Illness"> Injury / Illness</label>
-            <label><input type="checkbox" name="incident_type" value="First Aid Only"> First Aid Only</label>
-            <label><input type="checkbox" name="incident_type" value="Near Miss"> Near Miss</label>
-            <label><input type="checkbox" name="incident_type" value="Property Damage"> Property Damage</label>
-            <label><input type="checkbox" name="incident_type" value="Vehicle / Motor Vehicle"> Vehicle / Motor Vehicle</label>
-            <label><input type="checkbox" name="incident_type" value="Environmental"> Environmental</label>
-            <label><input type="checkbox" name="incident_type" value="Other" id="incident_type_other_cb"> Other</label>
+          <div class="inline-options">
+            <label><input type="checkbox" name="incident_type" value="injury"> Injury / Illness</label>
+            <label><input type="checkbox" name="incident_type" value="first_aid"> First Aid Only</label>
+            <label><input type="checkbox" name="incident_type" value="near_miss"> Near Miss</label>
+            <label><input type="checkbox" name="incident_type" value="property_damage"> Property Damage</label>
+            <label><input type="checkbox" name="incident_type" value="vehicle"> Vehicle / Motor Vehicle</label>
+            <label><input type="checkbox" name="incident_type" value="environmental"> Environmental</label>
+            <label><input type="checkbox" name="incident_type" value="other"> Other</label>
           </div>
-          <div id="incident_other_wrap" style="display:none;margin-top:8px">
-            <label for="incident_type_other_text">Please specify:</label>
-            <input type="text" id="incident_type_other_text" name="incident_type_other" placeholder="Describe the type of incident..." style="max-width:420px">
-          </div>
-          <div class="grid-3" style="margin-top:12px">
+
+          <div class="grid-3" style="margin-top: 12px;">
             <div>
               <label>Medical Treatment Required?</label>
               <div class="inline-options">
-                <label><input type="radio" name="medical_treatment" value="Yes"> Yes</label>
-                <label><input type="radio" name="medical_treatment" value="No"> No</label>
+                <label><input type="radio" name="medical_treatment" value="yes"> Yes</label>
+                <label><input type="radio" name="medical_treatment" value="no"> No</label>
               </div>
             </div>
             <div>
               <label>Lost Time from Work?</label>
               <div class="inline-options">
-                <label><input type="radio" name="lost_time" value="Yes"> Yes</label>
-                <label><input type="radio" name="lost_time" value="No"> No</label>
+                <label><input type="radio" name="lost_time" value="yes"> Yes</label>
+                <label><input type="radio" name="lost_time" value="no"> No</label>
               </div>
             </div>
             <div>
               <label>Restricted Duties?</label>
               <div class="inline-options">
-                <label><input type="radio" name="modified_duty" value="Yes"> Yes</label>
-                <label><input type="radio" name="modified_duty" value="No"> No</label>
+                <label><input type="radio" name="modified_duty" value="yes"> Yes</label>
+                <label><input type="radio" name="modified_duty" value="no"> No</label>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Description -->
+        <!-- Section: Description of Incident -->
         <div class="section">
           <div class="section-title">Description of Incident</div>
-          <p class="section-subtext">Describe what happened in clear, factual terms.</p>
+          <p class="section-subtext">Describe what happened in clear, factual terms. Include events leading up to the incident.</p>
           <textarea id="incident_description" name="incident_description"></textarea>
         </div>
 
-        <!-- Injury Details -->
+        <!-- Section: Injury Details -->
         <div class="section">
           <div class="section-title">Injury Details (if applicable)</div>
           <p class="section-subtext">Complete this section if an injury or illness occurred.</p>
@@ -426,7 +680,7 @@
               <input type="text" id="body_part" name="body_part">
             </div>
             <div>
-              <label for="nature_of_injury">Nature of Injury</label>
+              <label for="nature_of_injury">Nature of Injury (e.g., strain, cut)</label>
               <input type="text" id="nature_of_injury" name="nature_of_injury">
             </div>
             <div>
@@ -434,161 +688,173 @@
               <input type="text" id="first_aid_by" name="first_aid_by">
             </div>
           </div>
-          <div style="margin-top:10px">
+          <div style="margin-top: 10px;">
             <label for="first_aid_description">First Aid / Medical Treatment Details</label>
             <textarea id="first_aid_description" name="first_aid_description"></textarea>
           </div>
         </div>
 
-        <!-- Equipment -->
+        <!-- Section: Equipment / Vehicle / Property Involved -->
         <div class="section">
           <div class="section-title">Equipment / Vehicle / Property Involved</div>
-          <p class="section-subtext">List any tools, equipment, vehicles, or property involved.</p>
+          <p class="section-subtext">List any tools, equipment, vehicles, or property involved in the incident.</p>
           <table>
             <thead>
               <tr>
-                <th style="width:30%">Item / Equipment / Vehicle</th>
-                <th style="width:25%">Unit / Plate / ID</th>
-                <th style="width:45%">Description of Damage or Role</th>
+                <th style="width: 30%;">Item / Equipment / Vehicle</th>
+                <th style="width: 25%;">Unit / Plate / ID</th>
+                <th style="width: 45%;">Description of Damage or Role in Incident</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td><input type="text" name="equip_1_name"></td><td><input type="text" name="equip_1_id"></td><td><input type="text" name="equip_1_desc"></td></tr>
-              <tr><td><input type="text" name="equip_2_name"></td><td><input type="text" name="equip_2_id"></td><td><input type="text" name="equip_2_desc"></td></tr>
-              <tr><td><input type="text" name="equip_3_name"></td><td><input type="text" name="equip_3_id"></td><td><input type="text" name="equip_3_desc"></td></tr>
+              <tr>
+                <td><input type="text" name="equip_1_name"></td>
+                <td><input type="text" name="equip_1_id"></td>
+                <td><input type="text" name="equip_1_desc"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="equip_2_name"></td>
+                <td><input type="text" name="equip_2_id"></td>
+                <td><input type="text" name="equip_2_desc"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="equip_3_name"></td>
+                <td><input type="text" name="equip_3_id"></td>
+                <td><input type="text" name="equip_3_desc"></td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- Witnesses -->
+        <!-- 120px blank buffer after equipment/vehicle section -->
+        <div style="height: 125px;"></div>
+
+        <!-- Section: Witnesses -->
         <div class="section">
           <div class="section-title">Witnesses</div>
-          <p class="section-subtext">List anyone who directly witnessed the incident.</p>
+          <p class="section-subtext">List anyone who directly witnessed the incident or events leading up to it.</p>
           <table>
             <thead>
               <tr>
-                <th style="width:35%">Witness Name</th>
-                <th style="width:30%">Contact Information</th>
-                <th style="width:35%">Brief Statement / Notes</th>
+                <th style="width: 35%;">Witness Name</th>
+                <th style="width: 30%;">Contact Information</th>
+                <th style="width: 35%;">Brief Statement / Notes</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td><input type="text" name="wit_1_name"></td><td><input type="text" name="wit_1_contact"></td><td><input type="text" name="wit_1_notes"></td></tr>
-              <tr><td><input type="text" name="wit_2_name"></td><td><input type="text" name="wit_2_contact"></td><td><input type="text" name="wit_2_notes"></td></tr>
-              <tr><td><input type="text" name="wit_3_name"></td><td><input type="text" name="wit_3_contact"></td><td><input type="text" name="wit_3_notes"></td></tr>
+              <tr>
+                <td><input type="text" name="wit_1_name"></td>
+                <td><input type="text" name="wit_1_contact"></td>
+                <td><input type="text" name="wit_1_notes"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="wit_2_name"></td>
+                <td><input type="text" name="wit_2_contact"></td>
+                <td><input type="text" name="wit_2_notes"></td>
+              </tr>
+              <tr>
+                <td><input type="text" name="wit_3_name"></td>
+                <td><input type="text" name="wit_3_contact"></td>
+                <td><input type="text" name="wit_3_notes"></td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- Immediate Actions -->
+        <!-- Section: Immediate Actions -->
         <div class="section">
           <div class="section-title">Immediate Corrective Actions</div>
-          <p class="section-subtext">Describe any immediate actions taken to make the area safe.</p>
+          <p class="section-subtext">Describe any immediate actions taken to make the area safe or prevent further harm.</p>
           <textarea id="immediate_actions" name="immediate_actions"></textarea>
         </div>
 
-        <!-- Root Cause -->
+        <!-- Section: Root Cause -->
         <div class="section">
           <div class="section-title">Root Cause / Contributing Factors</div>
-          <p class="section-subtext">Identify underlying causes.</p>
+          <p class="section-subtext">Identify underlying causes (e.g., procedures, equipment, environment, human factors).</p>
           <textarea id="root_cause" name="root_cause"></textarea>
         </div>
 
-        <!-- Corrective Actions -->
+        <!-- Section: Recommended Actions -->
         <div class="section">
           <div class="section-title">Recommended / Planned Corrective Actions</div>
           <p class="section-subtext">Outline corrective or preventative actions, responsibilities, and timelines.</p>
           <textarea id="corrective_actions" name="corrective_actions"></textarea>
         </div>
 
-        <!-- Sign Off -->
+        <!-- Section: Sign-Off -->
         <div class="section">
           <div class="section-title">Sign-Off</div>
-          <p class="section-subtext">Sign using your finger or mouse. Enter your printed name below each signature.</p>
+          <p class="section-subtext">Confirm review and follow-up responsibilities. Type your name and a signature box will appear — sign with your finger, stylus or mouse.</p>
           <div class="grid-3">
-
-            <div class="sig-block" id="sig-block-emp">
-              <div class="sig-label-row">
-                <label>Employee Signature</label>
-                <button type="button" class="sig-clear" data-target="sig-emp">Clear</button>
+            <div>
+              <label for="employee_signature">Employee Name</label>
+              <input type="text" id="employee_signature" name="employee_signature" autocomplete="name">
+              <div class="sig-pad" id="employee_sigpad" hidden>
+                <div class="sig-pad-head"><span>Employee – Sign here</span><button type="button" class="sig-clear" data-sig="employee">Clear</button></div>
+                <canvas class="sig-canvas" id="employee_sigcanvas" aria-label="Employee signature pad"></canvas>
               </div>
-              <div class="sig-canvas-wrap" id="sig-wrap-emp">
-                <canvas id="sig-emp" width="400" height="100"></canvas>
-                <div class="sig-placeholder" id="sig-ph-emp">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  Sign here
-                </div>
-              </div>
-              <div class="sig-name-row">
-                <label for="employee_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
-                <input type="text" id="employee_signature" name="employee_signature" class="sig-name-input" placeholder="Full name">
-              </div>
-              <label for="employee_date" style="margin-top:4px">Date</label>
+            </div>
+            <div>
+              <label for="employee_date">Date</label>
               <input type="date" id="employee_date" name="employee_date">
             </div>
-
-            <div class="sig-block" id="sig-block-sup">
-              <div class="sig-label-row">
-                <label>Supervisor Signature</label>
-                <button type="button" class="sig-clear" data-target="sig-sup">Clear</button>
+          </div>
+          <div class="grid-3" style="margin-top: 10px;">
+            <div>
+              <label for="supervisor_signature">Supervisor Name</label>
+              <input type="text" id="supervisor_signature" name="supervisor_signature" autocomplete="name">
+              <div class="sig-pad" id="supervisor_sigpad" hidden>
+                <div class="sig-pad-head"><span>Supervisor – Sign here</span><button type="button" class="sig-clear" data-sig="supervisor">Clear</button></div>
+                <canvas class="sig-canvas" id="supervisor_sigcanvas" aria-label="Supervisor signature pad"></canvas>
               </div>
-              <div class="sig-canvas-wrap" id="sig-wrap-sup">
-                <canvas id="sig-sup" width="400" height="100"></canvas>
-                <div class="sig-placeholder" id="sig-ph-sup">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  Sign here
-                </div>
-              </div>
-              <div class="sig-name-row">
-                <label for="supervisor_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
-                <input type="text" id="supervisor_signature" name="supervisor_signature" class="sig-name-input" placeholder="Full name">
-              </div>
-              <label for="supervisor_date" style="margin-top:4px">Date</label>
+            </div>
+            <div>
+              <label for="supervisor_date">Date</label>
               <input type="date" id="supervisor_date" name="supervisor_date">
             </div>
-
-            <div class="sig-block" id="sig-block-hse">
-              <div class="sig-label-row">
-                <label>HSE Review Signature</label>
-                <button type="button" class="sig-clear" data-target="sig-hse">Clear</button>
+          </div>
+          <div class="grid-3" style="margin-top: 10px;">
+            <div>
+              <label for="hse_signature">HSE Reviewer Name</label>
+              <input type="text" id="hse_signature" name="hse_signature" autocomplete="name">
+              <div class="sig-pad" id="hse_sigpad" hidden>
+                <div class="sig-pad-head"><span>HSE Review – Sign here</span><button type="button" class="sig-clear" data-sig="hse">Clear</button></div>
+                <canvas class="sig-canvas" id="hse_sigcanvas" aria-label="HSE Review signature pad"></canvas>
               </div>
-              <div class="sig-canvas-wrap" id="sig-wrap-hse">
-                <canvas id="sig-hse" width="400" height="100"></canvas>
-                <div class="sig-placeholder" id="sig-ph-hse">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  Sign here
-                </div>
-              </div>
-              <div class="sig-name-row">
-                <label for="hse_signature" style="font-size:0.78rem;color:var(--muted)">Printed Name</label>
-                <input type="text" id="hse_signature" name="hse_signature" class="sig-name-input" placeholder="Full name">
-              </div>
-              <label for="hse_date" style="margin-top:4px">Date</label>
+            </div>
+            <div>
+              <label for="hse_date">Date</label>
               <input type="date" id="hse_date" name="hse_date">
             </div>
-
           </div>
         </div>
 
-        <!-- Photos -->
+        <!-- Incident Photos -->
         <div class="section">
           <div class="section-title">Incident Photos</div>
-          <p class="section-subtext">Attach photos related to the incident.</p>
+          <p class="section-subtext">Attach photos related to the incident. Thumbnails and descriptions are shown for review.</p>
           <label for="photos">Upload incident photos (you can select multiple):</label>
-          <input type="file" id="photos" name="photos[]" accept="image/*" multiple>
+          <input
+            type="file"
+            id="photos"
+            name="photos[]"
+            accept="image/*"
+            multiple
+          >
           <p class="hint">Accepted: JPG, PNG, HEIC. Large files may take longer to process.</p>
           <div id="photosPreview" class="photos-preview"></div>
         </div>
 
         <!-- Buttons -->
         <div class="btn-row">
-          <button type="reset" class="btn-secondary" id="resetBtn">Reset</button>
+          <button type="reset" class="btn-secondary">Reset</button>
           <button type="button" id="downloadPdfBtn" class="btn-primary">Download PDF</button>
         </div>
-
       </form>
     </div>
   </div>
+
 
   <!-- Validation Modal -->
   <div class="modal-overlay" id="validationModal">
@@ -610,1150 +876,961 @@
     </div>
   </div>
 
-  <!-- iOS PDF download overlay -->
-  <div id="iosDownloadOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,25,40,0.92);align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:88%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-      <div style="width:56px;height:56px;background:#eef6fb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#165f7d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </div>
-      <h2 style="margin:0 0 8px;font-family:sans-serif;font-size:17px;font-weight:700;color:#0b3045;">Your PDF is ready</h2>
-      <p style="margin:0 0 20px;font-family:sans-serif;font-size:14px;color:#6b7280;line-height:1.5;">Tap the button below to open it, then use <strong>Share &rarr; Save to Files</strong> to save it.</p>
-      <a id="iosDownloadLink" href="#" target="_blank"
-        style="display:block;background:linear-gradient(120deg,#2a7fa3,#0b3045);color:#fff;text-decoration:none;padding:14px 20px;border-radius:12px;font-family:sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;">
-        Open PDF
-      </a>
-      <button id="iosOverlayClose"
-        style="background:none;border:none;color:#9ca3af;font-family:sans-serif;font-size:14px;cursor:pointer;padding:8px;">
-        Cancel
-      </button>
-    </div>
-  </div>
+  <!-- PDF Library -->
+  <!-- jsPDF with multiple CDN fallbacks -->
+  <script>
+  (function() {
+    var cdns = [
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+      'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ];
+    var idx = 0;
+    function tryNext() {
+      if (idx >= cdns.length) {
+        window._jspdfLoadError = 'All jsPDF CDNs failed to load.';
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = cdns[idx++];
+      s.onload = function() { window._jspdfLoaded = true; };
+      s.onerror = function() { tryNext(); };
+      document.head.appendChild(s);
+    }
+    tryNext();
+  })();
+  </script>
 
   <script>
-  // ================================================================
-  // SIGNATURE PADS
-  // ================================================================
-  var sigPads = {};
+    /* ============================================================
+       Photo preview
+    ============================================================ */
+    const photosInput = document.getElementById('photos');
+    const photosPreview = document.getElementById('photosPreview');
+    let photoItems = [];
 
-  function initSigPad(id) {
-    var canvas = document.getElementById(id);
-    if (!canvas) return;
-
-    // Set canvas pixel dimensions to match its CSS display size * devicePixelRatio
-    function resize() {
-      var rect = canvas.getBoundingClientRect();
-      var dpr  = window.devicePixelRatio || 1;
-      // Only resize if dimensions actually changed to avoid clearing on scroll
-      var newW = Math.round(rect.width  * dpr);
-      var newH = Math.round(rect.height * dpr);
-      if (canvas.width === newW && canvas.height === newH) return;
-      // Save current drawing, resize, restore
-      var snap = canvas.toDataURL();
-      canvas.width  = newW;
-      canvas.height = newH;
-      var ctx = canvas.getContext('2d');
-      ctx.scale(dpr, dpr);
-      if (pad.hasDrawing) {
-        var img = new Image();
-        img.onload = function() { ctx.drawImage(img, 0, 0, rect.width, rect.height); };
-        img.src = snap;
-      }
+    function fileToDataURL(file) {
+      return new Promise(resolve => {
+        const r = new FileReader();
+        r.onload = e => resolve(e.target.result);
+        r.readAsDataURL(file);
+      });
     }
 
-    var pad = {
-      canvas: canvas,
-      hasDrawing: false,
-      drawing: false,
-      lastX: 0,
-      lastY: 0
-    };
-
-    var ctx = canvas.getContext('2d');
-
-    // Initial size - use a timeout so layout is complete
-    setTimeout(function() {
-      var rect = canvas.getBoundingClientRect();
-      var dpr  = window.devicePixelRatio || 1;
-      canvas.width  = Math.round(rect.width  * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-      ctx.scale(dpr, dpr);
-      ctx.strokeStyle = '#1a2535';
-      ctx.lineWidth   = 2.5;
-      ctx.lineCap     = 'round';
-      ctx.lineJoin    = 'round';
-    }, 50);
-
-    window.addEventListener('resize', resize);
-
-    function getXY(e) {
-      var r   = canvas.getBoundingClientRect();
-      var src = e.touches ? e.touches[0] : e;
-      return { x: src.clientX - r.left, y: src.clientY - r.top };
-    }
-
-    function onStart(e) {
-      e.preventDefault();
-      pad.drawing = true;
-      var p = getXY(e);
-      pad.lastX = p.x; pad.lastY = p.y;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      canvas.parentElement.classList.add('active');
-    }
-
-    function onMove(e) {
-      if (!pad.drawing) return;
-      e.preventDefault();
-      var p = getXY(e);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      pad.lastX = p.x; pad.lastY = p.y;
-      pad.hasDrawing = true;
-      // Hide placeholder
-      var ph = document.getElementById('sig-ph-' + id.replace('sig-', ''));
-      if (ph) ph.style.display = 'none';
-      // Clear error state
-      var block = canvas.closest('.sig-block');
-      if (block) block.classList.remove('field-error');
-    }
-
-    function onEnd(e) {
-      if (!pad.drawing) return;
-      e.preventDefault();
-      pad.drawing = false;
-      ctx.beginPath();
-      canvas.parentElement.classList.remove('active');
-    }
-
-    // Mouse events
-    canvas.addEventListener('mousedown',  onStart, false);
-    canvas.addEventListener('mousemove',  onMove,  false);
-    canvas.addEventListener('mouseup',    onEnd,   false);
-    canvas.addEventListener('mouseleave', onEnd,   false);
-    // Touch events - passive:false so we can preventDefault (stops page scroll while signing)
-    canvas.addEventListener('touchstart', onStart, { passive: false });
-    canvas.addEventListener('touchmove',  onMove,  { passive: false });
-    canvas.addEventListener('touchend',   onEnd,   { passive: false });
-    canvas.addEventListener('touchcancel',onEnd,   { passive: false });
-
-    pad.clear = function() {
-      var r   = canvas.getBoundingClientRect();
-      var dpr = window.devicePixelRatio || 1;
-      ctx.clearRect(0, 0, r.width * dpr, r.height * dpr);
-      pad.hasDrawing = false;
-      var ph = document.getElementById('sig-ph-' + id.replace('sig-', ''));
-      if (ph) ph.style.display = '';
-    };
-
-    pad.toDataURL = function() {
-      // Render onto a white background canvas before exporting
-      var off = document.createElement('canvas');
-      off.width  = canvas.width;
-      off.height = canvas.height;
-      var octx = off.getContext('2d');
-      octx.fillStyle = '#ffffff';
-      octx.fillRect(0, 0, off.width, off.height);
-      octx.drawImage(canvas, 0, 0);
-      return off.toDataURL('image/jpeg', 0.92);
-    };
-
-    sigPads[id] = pad;
-  }
-
-  // Init after DOM is painted
-  window.addEventListener('load', function() {
-    initSigPad('sig-emp');
-    initSigPad('sig-sup');
-    initSigPad('sig-hse');
-  });
-
-  // Clear buttons
-  document.addEventListener('click', function(e) {
-    if (e.target && e.target.classList.contains('sig-clear')) {
-      var target = e.target.getAttribute('data-target');
-      if (sigPads[target]) sigPads[target].clear();
-    }
-  });
-
-  // ================================================================
-  // PHOTO PREVIEW  (store dataURLs so PDF can access them)
-  // ================================================================
-  var photosInput   = document.getElementById('photos');
-  var photosPreview = document.getElementById('photosPreview');
-  var photoItems    = [];   // [{dataUrl, description}]
-
-  if (photosInput) {
-    photosInput.addEventListener('change', function() {
-      photosPreview.innerHTML = '';
-      photoItems = [];
-      var files = Array.prototype.slice.call(this.files);
-      files.forEach(function(file) {
-        if (!file.type || file.type.indexOf('image/') !== 0) return;
-        var item = { dataUrl: null, description: '' };
-        photoItems.push(item);
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          item.dataUrl = e.target.result;   // keep the dataURL for PDF export
-          var wrap = document.createElement('div');
-          wrap.className = 'photo-item';
-          var a = document.createElement('a');
-          a.href = e.target.result; a.target = '_blank';
-          var img = document.createElement('img');
+    async function compressImage(file, maxDim = 1800, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('FileReader failed'));
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Image decode failed: ' + file.name));
+          img.onload = () => {
+            try {
+              let w = img.width, h = img.height;
+              if (!w || !h) return reject(new Error('Zero-size image: ' + file.name));
+              const scale = Math.min(maxDim / w, maxDim / h, 1);
+              w = Math.round(w * scale); h = Math.round(h * scale);
+              const cv = document.createElement('canvas');
+              cv.width = w; cv.height = h;
+              cv.getContext('2d').drawImage(img, 0, 0, w, h);
+              const dataUrl = cv.toDataURL('image/jpeg', quality);
+              if (!dataUrl || dataUrl === 'data:,') return reject(new Error('Canvas toDataURL failed'));
+              resolve({ dataUrl, width: w, height: h });
+            } catch(err) { reject(err); }
+          };
           img.src = e.target.result;
-          a.appendChild(img); wrap.appendChild(a);
-          var inp = document.createElement('input');
-          inp.type = 'text'; inp.placeholder = 'Photo description';
-          inp.addEventListener('input', function() { item.description = this.value; });
-          wrap.appendChild(inp);
-          photosPreview.appendChild(wrap);
         };
         reader.readAsDataURL(file);
       });
-    });
-  }
-
-  // ================================================================
-  // MODAL
-  // ================================================================
-  document.getElementById('modalCloseBtn').addEventListener('click', function() {
-    document.getElementById('validationModal').classList.remove('active');
-  });
-  document.getElementById('validationModal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('active');
-  });
-
-  // Clear field error on correction
-  document.getElementById('incidentForm').addEventListener('input', function(e) {
-    var wrap = e.target.closest && e.target.closest('div');
-    if (wrap) wrap.classList.remove('field-error');
-  });
-  document.getElementById('incidentForm').addEventListener('change', function(e) {
-    var wrap = e.target.closest && e.target.closest('div');
-    if (wrap) wrap.classList.remove('field-error');
-  });
-
-  // iOS overlay close
-  document.getElementById('iosOverlayClose').addEventListener('click', function() {
-    document.getElementById('iosDownloadOverlay').style.display = 'none';
-  });
-  document.getElementById('iosDownloadOverlay').addEventListener('click', function(e) {
-    if (e.target === this) this.style.display = 'none';
-  });
-
-  // Reset button
-  document.getElementById('resetBtn').addEventListener('click', function() {
-    setTimeout(function() {
-      ['sig-emp','sig-sup','sig-hse'].forEach(function(id) {
-        if (sigPads[id]) sigPads[id].clear();
-      });
-      photoItems = [];
-      photosPreview.innerHTML = '';
-      document.getElementById('incident_other_wrap').style.display = 'none';
-      document.getElementById('incident_type_other_text').value = '';
-    }, 0);
-  });
-
-  // Other checkbox -- show/hide text input
-  document.getElementById('incident_type_other_cb').addEventListener('change', function() {
-    var wrap = document.getElementById('incident_other_wrap');
-    var inp  = document.getElementById('incident_type_other_text');
-    if (this.checked) {
-      wrap.style.display = 'block';
-      inp.focus();
-    } else {
-      wrap.style.display = 'none';
-      inp.value = '';
-    }
-  });
-
-  // ================================================================
-  // VALIDATION
-  // ================================================================
-  function clearFieldErrors() {
-    var els = document.querySelectorAll('.field-error');
-    for (var i = 0; i < els.length; i++) els[i].classList.remove('field-error');
-  }
-  function markError(ids) {
-    for (var i = 0; i < ids.length; i++) {
-      var el = document.getElementById(ids[i]);
-      if (el && el.closest) { var p = el.closest('div'); if (p) p.classList.add('field-error'); }
-    }
-  }
-  function g(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
-
-  function validateForm() {
-    clearFieldErrors();
-    var errors = [];
-
-    var incMissing = [];
-    if (!g('incident_date'))     incMissing.push('incident_date');
-    if (!g('incident_time'))     incMissing.push('incident_time');
-    if (!g('incident_location')) incMissing.push('incident_location');
-    if (!g('supervisor_name'))   incMissing.push('supervisor_name');
-    if (incMissing.length) { markError(incMissing); errors.push('Incident Information: date, time, location and supervisor are required'); }
-
-    var perMissing = [];
-    if (!g('employee_name'))     perMissing.push('employee_name');
-    if (!g('employee_position')) perMissing.push('employee_position');
-    if (!g('employee_branch'))   perMissing.push('employee_branch');
-    if (perMissing.length) { markError(perMissing); errors.push('Person Involved: employee name, position and division are required'); }
-
-    var typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
-    // If Other is checked, the specify field must also be filled
-    var otherCb   = document.getElementById('incident_type_other_cb');
-    var otherText = document.getElementById('incident_type_other_text');
-    if (otherCb && otherCb.checked && otherText && !otherText.value.trim()) {
-      otherText.closest('div').classList.add('field-error');
-      errors.push('Incident Classification: please specify the type of incident in the "Other" field');
-      typeChecked = false; // prevents duplicate error
-    }
-    var medChecked  = document.querySelector('input[name="medical_treatment"]:checked');
-    var lostChecked = document.querySelector('input[name="lost_time"]:checked');
-    var restChecked = document.querySelector('input[name="modified_duty"]:checked');
-    if (!typeChecked || !medChecked || !lostChecked || !restChecked) {
-      errors.push('Incident Classification: type, medical treatment, lost time and restricted duties must all be selected');
     }
 
-    if (!g('incident_description')) { markError(['incident_description']); errors.push('Description of Incident is required'); }
-    if (!g('immediate_actions'))    { markError(['immediate_actions']);    errors.push('Immediate Corrective Actions is required'); }
-    if (!g('root_cause'))           { markError(['root_cause']);           errors.push('Root Cause / Contributing Factors is required'); }
-    if (!g('corrective_actions'))   { markError(['corrective_actions']);   errors.push('Recommended / Planned Corrective Actions is required'); }
-
-    var empSigned = (sigPads['sig-emp'] && sigPads['sig-emp'].hasDrawing) || !!g('employee_signature');
-    var supSigned = (sigPads['sig-sup'] && sigPads['sig-sup'].hasDrawing) || !!g('supervisor_signature');
-    var hseSigned = (sigPads['sig-hse'] && sigPads['sig-hse'].hasDrawing) || !!g('hse_signature');
-    if (!empSigned && !supSigned && !hseSigned) {
-      ['sig-block-emp','sig-block-sup','sig-block-hse'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.classList.add('field-error');
-      });
-      errors.push('Sign-Off: at least one signature or printed name is required');
-    }
-
-    return errors;
-  }
-
-  // ================================================================
-  // PDF GENERATOR  (pure JS, no external libraries)
-  // ================================================================
-  function createPDFGenerator() {
-    var streams = [];
-    var pages   = [];
-    var objs    = [];
-    var imageXObjs = {};   // name -> {objIdx, w, h, jpegBytes}
-
-    function addObj(content) {
-      var n = objs.length + 1;
-      objs.push({ type: 'text', content: n + ' 0 obj\n' + content + '\nendobj' });
-      return n;
-    }
-
-    function pdfStr(s) {
-      s = (s || '').substring(0, 500);
-      return '(' + s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/\r?\n/g,' ') + ')';
-    }
-
-    var PW = 612, PH = 792, ML = 45, MR = 45, MT = 45, MB = 40;
-    var CW = PW - ML - MR;
-
-    function rgb(r,g,b) { return (r/255).toFixed(3)+' '+(g/255).toFixed(3)+' '+(b/255).toFixed(3); }
-    var C = {
-      navy:    rgb(15,40,60),   accent: rgb(22,95,125),
-      white:   '1 1 1',         fieldBg:rgb(250,251,253),
-      rule:    rgb(214,226,238),textMain:rgb(30,35,45),
-      textMute:rgb(110,120,135),textLbl:rgb(90,105,120),
-      rowAlt:  rgb(247,249,252)
-    };
-
-    var curPage = -1, ops = [], curY = 0;
-
-    function newPage() {
-      if (curPage >= 0) flushPage();
-      curPage++;
-      ops = [];
-      curY = PH - MT - 66;   // clear 52pt header + 14pt breathing room
-    }
-
-    function flushPage() {
-      var content = ops.join('\n');
-      var streamId = addObj('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream');
-      pages.push(streamId);
-    }
-
-    function checkSpace(needed) {
-      if (curY - needed < MB + 20) {
-        newPage();
-        drawPageHeader(curPage);
-        drawPageFooter();
-      }
-    }
-
-    function rect(x, y, w, h, fill, stroke, lw) {
-      var s = '';
-      if (fill)   s += fill + ' rg ';
-      if (stroke) s += stroke + ' RG ' + (lw||0.4) + ' w ';
-      s += x.toFixed(1)+' '+y.toFixed(1)+' '+w.toFixed(1)+' '+h.toFixed(1);
-      if (fill && stroke) s += ' re B';
-      else if (fill)      s += ' re f';
-      else                s += ' re S';
-      ops.push(s);
-    }
-
-    function line(x1,y1,x2,y2,color,lw) {
-      ops.push(color+' RG '+(lw||0.4)+' w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l S');
-    }
-
-    // Draw a checkbox (square) with optional checkmark
-    function drawCheckbox(x, y, size, checked) {
-      size = size || 7;
-      // Box
-      rect(x, y - size, size, size, '1 1 1', C.textMute, 0.5);
-      if (checked) {
-        // Checkmark: two lines forming a tick
-        ops.push(C.accent + ' RG 1.2 w ' +
-          (x + size*0.15).toFixed(1) + ' ' + (y - size*0.55).toFixed(1) + ' m ' +
-          (x + size*0.4).toFixed(1)  + ' ' + (y - size*0.82).toFixed(1) + ' l ' +
-          (x + size*0.88).toFixed(1) + ' ' + (y - size*0.15).toFixed(1) + ' l S');
-      }
-    }
-
-    // Draw a radio button (circle) with optional fill
-    function drawRadio(x, y, r, checked) {
-      r = r || 3.5;
-      var cx = x + r, cy = y - r;
-      // Outer circle (approximated with 4 bezier curves)
-      var k = r * 0.552;
-      ops.push('1 1 1 rg ' + C.textMute + ' RG 0.5 w ' +
-        (cx).toFixed(1) + ' ' + (cy+r).toFixed(1) + ' m ' +
-        (cx+k).toFixed(1)+' '+(cy+r).toFixed(1)+' '+(cx+r).toFixed(1)+' '+(cy+k).toFixed(1)+' '+(cx+r).toFixed(1)+' '+cy.toFixed(1)+' c ' +
-        (cx+r).toFixed(1)+' '+(cy-k).toFixed(1)+' '+(cx+k).toFixed(1)+' '+(cy-r).toFixed(1)+' '+cx.toFixed(1)+' '+(cy-r).toFixed(1)+' c ' +
-        (cx-k).toFixed(1)+' '+(cy-r).toFixed(1)+' '+(cx-r).toFixed(1)+' '+(cy-k).toFixed(1)+' '+(cx-r).toFixed(1)+' '+cy.toFixed(1)+' c ' +
-        (cx-r).toFixed(1)+' '+(cy+k).toFixed(1)+' '+(cx-k).toFixed(1)+' '+(cy+r).toFixed(1)+' '+cx.toFixed(1)+' '+(cy+r).toFixed(1)+' c B');
-      if (checked) {
-        // Filled inner dot
-        var ir = r * 0.5, ik = ir * 0.552;
-        ops.push(C.accent + ' rg ' +
-          cx.toFixed(1)+' '+(cy+ir).toFixed(1)+' m ' +
-          (cx+ik).toFixed(1)+' '+(cy+ir).toFixed(1)+' '+(cx+ir).toFixed(1)+' '+(cy+ik).toFixed(1)+' '+(cx+ir).toFixed(1)+' '+cy.toFixed(1)+' c ' +
-          (cx+ir).toFixed(1)+' '+(cy-ik).toFixed(1)+' '+(cx+ik).toFixed(1)+' '+(cy-ir).toFixed(1)+' '+cx.toFixed(1)+' '+(cy-ir).toFixed(1)+' c ' +
-          (cx-ik).toFixed(1)+' '+(cy-ir).toFixed(1)+' '+(cx-ir).toFixed(1)+' '+(cy-ik).toFixed(1)+' '+(cx-ir).toFixed(1)+' '+cy.toFixed(1)+' c ' +
-          (cx-ir).toFixed(1)+' '+(cy+ik).toFixed(1)+' '+(cx-ik).toFixed(1)+' '+(cy+ir).toFixed(1)+' '+cx.toFixed(1)+' '+(cy+ir).toFixed(1)+' c f');
-      }
-    }
-
-    // Draw a row of checkbox options inline
-    function drawCheckboxRow(options, x, y, fontSize) {
-      fontSize = fontSize || 7.5;
-      var itemGap = 5;
-      var boxSize = 7;
-      var cx = x;
-      options.forEach(function(opt) {
-        drawCheckbox(cx, y, boxSize, opt.checked);
-        text(opt.label, cx + boxSize + 3, y - 1, fontSize, C.textMain, false);
-        cx += boxSize + 3 + opt.label.length * fontSize * 0.52 + itemGap + 8;
-      });
-    }
-
-    // Draw a row of radio options inline
-    function drawRadioRow(options, x, y, fontSize) {
-      fontSize = fontSize || 7.5;
-      var itemGap = 5;
-      var r = 3.5;
-      var cx = x;
-      options.forEach(function(opt) {
-        drawRadio(cx, y, r, opt.checked);
-        text(opt.label, cx + r*2 + 3, y - 1, fontSize, C.textMain, false);
-        cx += r*2 + 3 + opt.label.length * fontSize * 0.52 + itemGap + 6;
-      });
-    }
-
-    function text(str, x, y, size, color, bold) {
-      if (!str) return;
-      ops.push('BT '+(bold?'/FB':'/F1')+' '+size+' Tf '+color+' rg '+x.toFixed(1)+' '+y.toFixed(1)+' Td '+pdfStr(str)+' Tj ET');
-    }
-
-    function wrapText(str, maxW, size) {
-      var cpl   = Math.floor(maxW / (size * 0.52));
-      var words = (str || '').split(' ');
-      var lines = [], cur = '';
-      words.forEach(function(w) {
-        if ((cur+' '+w).trim().length <= cpl) { cur = (cur+' '+w).trim(); }
-        else {
-          if (cur) lines.push(cur);
-          while (w.length > cpl) { lines.push(w.substring(0,cpl)); w = w.substring(cpl); }
-          cur = w;
-        }
-      });
-      if (cur) lines.push(cur);
-      return lines.length ? lines : [''];
-    }
-
-    function drawPageHeader(pageNum) {
-      var BAR_H = 52;
-      // Navy bar fills top of page
-      rect(0, PH - BAR_H, PW, BAR_H, C.navy, null, 0);
-      // Accent line at BOTTOM of bar
-      rect(0, PH - BAR_H - 2, PW, 2, C.accent, null, 0);
-
-      // VISTA bold + GEOMATICS regular -- vertically centred in bar
-      // Bar occupies PH-52 to PH (top of page in PDF = high Y values)
-      // Text baseline: PH-52 is bottom of bar, PH is top
-      // Center of bar = PH - 26. Put company name at PH-22 (upper line)
-      var vistaW = 15 * 0.58 * 5;
-      text('VISTA',     ML,           PH - 22, 15, C.white,          true);
-      text('GEOMATICS', ML + vistaW,  PH - 22, 15, '0.60 0.74 0.84', false);
-      // Subtitle one line below
-      text('Incident Report', ML, PH - 38, 9, '0.72 0.83 0.91', false);
-
-      // Right side: date + page number
-      var today = new Date().toLocaleDateString('en-CA');
-      var pg    = 'Page ' + (pageNum + 1);
-      text(today, PW - MR - today.length * 4.1, PH - 22, 7, '0.60 0.74 0.84', false);
-      text(pg,    PW - MR - pg.length    * 4.1, PH - 36, 7, '0.48 0.62 0.72', false);
-    }
-
-    function drawPageFooter() {
-      line(ML, MB+10, PW-MR, MB+10, C.rule, 0.5);
-      text('CONFIDENTIAL -- Vista Geomatics Incident Report', ML, MB, 6.5, C.textMute, false);
-      var r = 'For internal use only';
-      text(r, PW-MR-r.length*3.4, MB, 6.5, C.textMute, false);
-    }
-
-    function sectionHeading(title) {
-      checkSpace(22);
-      rect(ML, curY - 10, 3, 12, C.accent, null, 0);
-      text(title.toUpperCase(), ML + 8, curY - 1, 8, C.navy, true);
-      line(ML, curY - 13, PW - MR, curY - 13, C.rule, 0.5);
-      curY -= 18;
-    }
-
-    function drawField(x, y, w, label, value, fontSize) {
-      fontSize = fontSize || 8;
-      var lines  = wrapText(value || 'N/A', w - 10, fontSize);
-      var lineH  = fontSize * 1.45;
-      var pad    = 3;
-      var blockH = Math.max(16, lines.length * lineH + pad * 2);
-
-      // Label above box
-      text(label.toUpperCase(), x, y - 8, 6, C.textLbl, false);
-
-      // Field background box -- drawn below label
-      var boxTop = y - 10 - blockH;
-      rect(x, boxTop, w, blockH, C.fieldBg, C.rule, 0.3);
-
-      // Text lines: PDF Y origin is bottom-left, so first line is near TOP of box
-      // boxTop is the bottom of the box in PDF coords
-      // First line baseline = boxTop + blockH - pad - fontSize
-      lines.forEach(function(ln, i) {
-        var lineY = boxTop + blockH - pad - fontSize - i * lineH;
-        text(ln, x + 5, lineY, fontSize, C.textMain, false);
-      });
-
-      return 10 + blockH + 4;
-    }
-
-    function fieldRow(fields, gutter) {
-      gutter = gutter || 10;
-      var total = fields.reduce(function(s,f){return s+(f.flex||1);},0);
-      var unit  = (CW - gutter*(fields.length-1)) / total;
-      var maxH  = 0, x = ML;
-      fields.forEach(function(f) {
-        var w = unit*(f.flex||1);
-        var h = drawField(x, curY, w, f.label, f.value, f.size);
-        if (h > maxH) maxH = h;
-        x += w + gutter;
-      });
-      curY -= maxH;
-    }
-
-    function drawTable(headers, rows, colWidths) {
-      var ROW_H = 16, HEAD_H = 13;
-      var tableW = colWidths.reduce(function(a,b){return a+b;},0);
-      var ty = curY;
-      rect(ML, ty-HEAD_H, tableW, HEAD_H, '0.93 0.96 0.98', C.rule, 0.4);
-      var x = ML;
-      headers.forEach(function(h,i) {
-        text(h.toUpperCase(), x+4, ty-HEAD_H+4, 6.5, C.textLbl, true);
-        x += colWidths[i];
-        if (i < headers.length-1) line(x, ty, x, ty-HEAD_H, C.rule, 0.3);
-      });
-      ty -= HEAD_H;
-      var dataRows = rows.length ? rows : [['None recorded','','']];
-      var isEmpty  = !rows.length;
-      dataRows.forEach(function(row, ri) {
-        if (ri%2===1) rect(ML, ty-ROW_H, tableW, ROW_H, C.rowAlt, null, 0);
-        rect(ML, ty-ROW_H, tableW, ROW_H, null, C.rule, 0.3);
-        var cx = ML;
-        row.forEach(function(cell, ci) {
-          text((cell||'').substring(0,50), cx+4, ty-ROW_H+5, 7, isEmpty&&ci===0?C.textMute:C.textMain, false);
-          cx += colWidths[ci];
-          if (ci < row.length-1) line(cx, ty, cx, ty-ROW_H, C.rule, 0.3);
+    if (photosInput) {
+      photosInput.addEventListener('change', function () {
+        photosPreview.innerHTML = '';
+        photoItems = [];
+        Array.from(this.files).forEach(file => {
+          if (!file.type.startsWith('image/')) return;
+          const item = { file, description: '' };
+          photoItems.push(item);
+          const r = new FileReader();
+          r.onload = e => {
+            const wrap = document.createElement('div');
+            wrap.className = 'photo-item';
+            const a = document.createElement('a');
+            a.href = e.target.result; a.target = '_blank';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            a.appendChild(img); wrap.appendChild(a);
+            const inp = document.createElement('input');
+            inp.type = 'text'; inp.placeholder = 'Photo description';
+            inp.addEventListener('input', function () { item.description = this.value; });
+            wrap.appendChild(inp);
+            photosPreview.appendChild(wrap);
+          };
+          r.readAsDataURL(file);
         });
-        if (ri < dataRows.length-1) line(ML, ty-ROW_H, ML+tableW, ty-ROW_H, C.rule, 0.3);
-        ty -= ROW_H;
       });
-      curY = ty - 6;
     }
 
-    // -- Embed image (JPEG dataURL) as PDF XObject ------------------
-    function addImage(name, jpegDataUrl) {
-      if (!jpegDataUrl) return;
-      var b64 = jpegDataUrl.replace(/^data:image\/jpeg;base64,/, '');
-      try {
-        var bin = atob(b64);
-        var bytes = new Uint8Array(bin.length);
-        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-        // Read JPEG dimensions from SOF marker
-        var w = 100, h = 50;
-        for (var p = 2; p < bytes.length-9; p++) {
-          if (bytes[p]===0xFF && (bytes[p+1]===0xC0||bytes[p+1]===0xC2)) {
-            h = (bytes[p+5]<<8)|bytes[p+6];
-            w = (bytes[p+7]<<8)|bytes[p+8];
-            break;
-          }
-        }
-        var objNum = objs.length + 1;
-        imageXObjs[name] = { objNum: objNum, w: w, h: h, bytes: bytes };
-        objs.push({ type: 'img', name: name });
-      } catch(e) { /* skip bad image */ }
-    }
+    /* ============================================================
+       Signature pads — appear when the matching name is typed
+    ============================================================ */
+    const SIG_KEYS = ['employee', 'supervisor', 'hse'];
+    const sigPads = {};
 
-    // Draw an embedded image in the PDF stream
-    function drawImage(name, x, y, drawW, drawH) {
-      var info = imageXObjs[name];
-      if (!info) return;
-      ops.push('q '+drawW.toFixed(1)+' 0 0 '+drawH.toFixed(1)+' '+x.toFixed(1)+' '+(y-drawH).toFixed(1)+' cm /Img'+info.objNum+' Do Q');
-    }
+    function initSigPad(key) {
+      const nameInput = document.getElementById(key + '_signature');
+      const wrap      = document.getElementById(key + '_sigpad');
+      const canvas    = document.getElementById(key + '_sigcanvas');
+      if (!nameInput || !wrap || !canvas) return;
+      const ctx = canvas.getContext('2d');
+      let drawing = false, last = null, hasInk = false;
 
-    // -- Sign-off blocks --------------------------------------------
-    function drawSignOff(blocks) {
-      var sigH = 38, nameH = 16, dateH = 16, pad = 8;
-      var total = sigH + pad + nameH + pad + dateH + 4;
-      checkSpace(20 + total);
-      var gutter = 10;
-      var bw = (CW - gutter * (blocks.length - 1)) / blocks.length;
-      var bx = ML;
-      blocks.forEach(function(b) {
-        // Label
-        text(b.label.toUpperCase(), bx, curY - 7, 6, C.textLbl, false);
-        // Sig box
-        var by = curY - 10 - sigH;
-        rect(bx, by, bw, sigH, C.fieldBg, C.rule, 0.35);
-        if (b.imgName && imageXObjs[b.imgName]) {
-          drawImage(b.imgName, bx+2, by+sigH-2, bw-4, sigH-4);
-        }
-        // Underline
-        ops.push(C.accent+' RG 0.7 w '+(bx+3).toFixed(1)+' '+(by-2).toFixed(1)+' m '+(bx+bw-3).toFixed(1)+' '+(by-2).toFixed(1)+' l S');
-        // Printed name
-        text('PRINTED NAME', bx, by-10, 5.5, C.textLbl, false);
-        rect(bx, by-10-nameH, bw, nameH, C.fieldBg, C.rule, 0.3);
-        text(b.name||'', bx+4, by-10-nameH+5, 7.5, C.textMain, false);
-        // Date
-        text('DATE', bx, by-10-nameH-6, 5.5, C.textLbl, false);
-        rect(bx, by-10-nameH-6-dateH, bw, dateH, C.fieldBg, C.rule, 0.3);
-        text(b.date||'', bx+4, by-10-nameH-6-dateH+5, 7.5, C.textMain, false);
-        bx += bw + gutter;
-      });
-      curY -= (10 + total + 4);
-    }
-
-    // -- Checkbox --------------------------------------------------
-    // Draws a bordered square; if checked, fills with accent colour + white tick
-    function drawCheckbox(x, y, sz, checked) {
-      sz = sz || 8;
-      // White background + border
-      ops.push('1 1 1 rg '+C.rule+' RG 0.5 w '+x.toFixed(1)+' '+(y-sz).toFixed(1)+' '+sz.toFixed(1)+' '+sz.toFixed(1)+' re B');
-      if (checked) {
-        // Filled accent background
-        ops.push(C.accent+' rg '+x.toFixed(1)+' '+(y-sz).toFixed(1)+' '+sz.toFixed(1)+' '+sz.toFixed(1)+' re f');
-        // White tick mark: two line segments
-        var m  = sz * 0.18;
-        var x1 = x + m,          y1 = y - sz * 0.52;
-        var x2 = x + sz * 0.42,  y2 = y - sz + m;
-        var x3 = x + sz - m,     y3 = y - m;
-        ops.push('1 1 1 RG 1.2 w '+x1.toFixed(1)+' '+y1.toFixed(1)+' m '+x2.toFixed(1)+' '+y2.toFixed(1)+' l '+x3.toFixed(1)+' '+y3.toFixed(1)+' l S');
+      function styleCtx() {
+        ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111827';
       }
-    }
-
-    // -- Radio button ----------------------------------------------
-    // Draws a circle (approximated as rounded square); if selected, blue filled dot
-    function drawRadio(x, y, r, checked) {
-      r = r || 4;
-      var d = r * 2;
-      // Outer circle background (white + border)
-      ops.push('1 1 1 rg '+C.rule+' RG 0.5 w '+x.toFixed(1)+' '+(y-d).toFixed(1)+' '+d.toFixed(1)+' '+d.toFixed(1)+' re B');
-      if (checked) {
-        // Inner filled dot (smaller rect centred in the outer)
-        var margin = r * 0.35;
-        ops.push(C.accent+' rg '+(x+margin).toFixed(1)+' '+(y-d+margin).toFixed(1)+' '+(d-margin*2).toFixed(1)+' '+(d-margin*2).toFixed(1)+' re f');
+      // Size the bitmap to the on-screen box (only possible once visible).
+      // Keeps any existing ink when the size changes (rotation, resize).
+      function resize() {
+        const r = canvas.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const ratio = window.devicePixelRatio || 1;
+        const w = Math.floor(r.width * ratio), h = Math.floor(r.height * ratio);
+        if (canvas.width === w && canvas.height === h) return;
+        let prev = null;
+        if (hasInk) { prev = document.createElement('canvas'); prev.width = canvas.width; prev.height = canvas.height; prev.getContext('2d').drawImage(canvas, 0, 0); }
+        canvas.width = w; canvas.height = h;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        if (prev) ctx.drawImage(prev, 0, 0, w, h);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        styleCtx();
       }
-    }
-
-    // -- Checkbox grid (wraps onto rows) ---------------------------
-    function drawCheckGrid(options, bx, by, bw, cols, rowH) {
-      cols = cols || 4; rowH = rowH || 14;
-      var colW = bw / cols;
-      options.forEach(function(opt, i) {
-        var col = i % cols, row = Math.floor(i / cols);
-        var ox = bx + col * colW + 5;
-        var oy = by - row * rowH - 5;
-        drawCheckbox(ox, oy, 8, opt.checked);
-        text(opt.label, ox + 11, oy - 1, 7.5, opt.checked ? C.navy : C.textMain, opt.checked);
-      });
-    }
-
-    // -- Radio row (inline) ----------------------------------------
-    function drawRadioRow(options, rx, ry) {
-      var cx = rx;
-      options.forEach(function(opt) {
-        drawRadio(cx, ry, 4, opt.checked);
-        text(opt.label, cx + 10, ry - 2, 8, opt.checked ? C.navy : C.textMain, opt.checked);
-        cx += 10 + opt.label.length * 4.5 + 12;
-      });
-    }
-
-    // -- Labelled option block (for Yes/No etc) --------------------
-    function drawOptionBlock(x, y, w, label, options) {
-      var bH = 20;
-      text(label, x, y - 8, 6, C.textLbl, false);
-      rect(x, y - 10 - bH, w, bH, C.fieldBg, C.rule, 0.3);
-      drawRadioRow(options, x + 6, y - 16);
-      return 10 + bH + 4;
-    }
-
-    // -- Generate --------------------------------------------------
-    function generate(data) {
-      if (data.empSigImg) addImage('emp', data.empSigImg);
-      if (data.supSigImg) addImage('sup', data.supSigImg);
-      if (data.hseSigImg) addImage('hse', data.hseSigImg);
-      if (data.photos) {
-        data.photos.forEach(function(p,i){ if (p.jpegDataUrl) addImage('photo'+i, p.jpegDataUrl); });
+      function pos(e) {
+        const r = canvas.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
       }
+      canvas.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        resize();
+        drawing = true; last = pos(e);
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+        ctx.beginPath(); ctx.arc(last.x, last.y, 1.1, 0, Math.PI * 2); ctx.fillStyle = '#111827'; ctx.fill();
+        hasInk = true;
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (!drawing) return;
+        e.preventDefault();
+        const p = pos(e);
+        ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+        last = p;
+      });
+      const stop = () => { drawing = false; };
+      canvas.addEventListener('pointerup', stop);
+      canvas.addEventListener('pointercancel', stop);
+      canvas.addEventListener('pointerleave', stop);
 
-      // ============================================================
-      // PAGE 1  -- all content forced onto one page
-      // ============================================================
-      newPage(); drawPageHeader(0); drawPageFooter();
-      var G = 5;
+      function clear() {
+        ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.restore();
+        hasInk = false;
+      }
+      wrap.querySelector('.sig-clear').addEventListener('click', clear);
 
-      // -- Incident Information ------------------------------------
-      sectionHeading('Incident Information');
-      fieldRow([
-        {label:'Date of Incident', value:data.incidentDate},
-        {label:'Time of Incident', value:data.incidentTime},
-        {label:'Date Reported',    value:data.reportDate}
-      ]);
-      curY -= G;
-      fieldRow([
-        {label:'Location of Incident', value:data.location,   flex:2},
-        {label:'Supervisor',           value:data.supervisor, flex:1}
-      ]);
-      curY -= G;
+      function sync() {
+        const show = nameInput.value.trim().length > 0;
+        if (show && wrap.hidden) { wrap.hidden = false; requestAnimationFrame(resize); }
+        else if (!show && !wrap.hidden) { clear(); wrap.hidden = true; }
+      }
+      nameInput.addEventListener('input', sync);
+      nameInput.addEventListener('change', sync);
+      window.addEventListener('resize', () => { if (!wrap.hidden) resize(); });
 
-      // -- Person Involved -----------------------------------------
-      sectionHeading('Person Involved');
-      fieldRow([
-        {label:'Employee Name',    value:data.empName},
-        {label:'Position / Title', value:data.empPosition},
-        {label:'Division',         value:data.empBranch}
-      ]);
-      curY -= G;
-
-      // Phone + Employment Type radios side by side
-      var ph1 = (CW - 10) / 3;
-      var ph2 = CW - ph1 - 10;
-      drawField(ML, curY, ph1, 'Phone Number', data.empPhone);
-      var etH = 20;
-      text('EMPLOYMENT TYPE', ML + ph1 + 10, curY - 8, 6, C.textLbl, false);
-      rect(ML + ph1 + 10, curY - 10 - etH, ph2, etH, C.fieldBg, C.rule, 0.3);
-      if (data.empTypeOptions) drawRadioRow(data.empTypeOptions, ML + ph1 + 16, curY - 15);
-      curY -= (10 + etH + 4 + G);
-
-      // -- Incident Classification ---------------------------------
-      sectionHeading('Incident Classification');
-
-      // Checkbox grid for incident types
-      text('TYPE OF INCIDENT', ML, curY - 8, 6, C.textLbl, false);
-      var nTypes = data.incidentTypesList ? data.incidentTypesList.length : 7;
-      var nRows  = Math.ceil(nTypes / 4);
-      var cbH    = nRows * 13 + 6;
-      rect(ML, curY - 10 - cbH, CW, cbH, C.fieldBg, C.rule, 0.3);
-      if (data.incidentTypesList) drawCheckGrid(data.incidentTypesList, ML, curY - 12, CW, 4, 13);
-      curY -= (10 + cbH + 4 + G);
-
-      // Yes/No radio triplet
-      var rw = (CW - 16) / 3;
-      drawOptionBlock(ML,          curY, rw, 'MEDICAL TREATMENT REQUIRED?', data.medOptions  || []);
-      drawOptionBlock(ML + rw + 8, curY, rw, 'LOST TIME FROM WORK?',        data.lostOptions || []);
-      drawOptionBlock(ML +rw*2+16, curY, rw, 'RESTRICTED DUTIES?',          data.restOptions || []);
-      curY -= (10 + 20 + 4 + G);
-
-      // -- Description ---------------------------------------------
-      sectionHeading('Description of Incident');
-      fieldRow([{label:'Description', value:data.description, size:7.5}]);
-      curY -= G;
-
-      // -- Injury Details ------------------------------------------
-      sectionHeading('Injury Details (if applicable)');
-      fieldRow([
-        {label:'Body Part(s) Affected', value:data.bodyPart},
-        {label:'Nature of Injury',      value:data.natureInjury},
-        {label:'First Aid Provided By', value:data.firstAidBy}
-      ]);
-      curY -= G;
-      fieldRow([{label:'First Aid / Medical Treatment Details', value:data.firstAidDesc, size:7.5}]);
-      curY -= G;
-
-      // -- Equipment -----------------------------------------------
-      sectionHeading('Equipment / Vehicle / Property Involved');
-      drawTable(
-        ['Item / Equipment / Vehicle','Unit / Plate / ID','Description of Damage or Role'],
-        data.equipRows, [168, 124, CW - 292]
-      );
-      curY -= G;
-
-      // -- Witnesses -----------------------------------------------
-      sectionHeading('Witnesses');
-      drawTable(
-        ['Witness Name','Contact Information','Brief Statement / Notes'],
-        data.witnessRows, [170, 140, CW - 310]
-      );
-
-      // ============================================================
-      // PAGE 2
-      // ============================================================
-      newPage(); drawPageHeader(1); drawPageFooter();
-
-      sectionHeading('Immediate Corrective Actions');
-      fieldRow([{label:'Actions Taken', value:data.immediateActions, size:7.5}]);
-      curY -= G;
-
-      sectionHeading('Root Cause / Contributing Factors');
-      fieldRow([{label:'Root Cause', value:data.rootCause, size:7.5}]);
-      curY -= G;
-
-      sectionHeading('Recommended / Planned Corrective Actions');
-      fieldRow([{label:'Corrective Actions', value:data.correctiveActions, size:7.5}]);
-      curY -= G;
-
-      sectionHeading('Sign-Off');
-      drawSignOff([
-        {label:'Employee Signature',   name:data.empSig, date:data.empSigDate, imgName:data.empSigImg?'emp':null},
-        {label:'Supervisor Signature', name:data.supSig, date:data.supSigDate, imgName:data.supSigImg?'sup':null},
-        {label:'HSE Review Signature', name:data.hseSig, date:data.hseSigDate, imgName:data.hseSigImg?'hse':null}
-      ]);
-
-      checkSpace(32);
-      rect(ML, curY - 28, CW, 28, '0.96 0.98 0.99', C.rule, 0.4);
-      text('By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.', ML + 6, curY - 10, 7, C.textMute, false);
-      curY -= 34;
-
-      // ============================================================
-      // PHOTO PAGES -- one full page per photo
-      // ============================================================
-      if (data.photos && data.photos.length) {
-        data.photos.forEach(function(photo, i) {
-          newPage(); drawPageHeader(curPage); drawPageFooter();
-
-          // Title row
-          text('INCIDENT PHOTOS', ML, curY, 11, C.navy, true);
-          var lbl = 'Photo ' + (i+1) + ' of ' + data.photos.length;
-          text(lbl, PW - MR - lbl.length * 4.1, curY, 8, C.textMute, false);
-          line(ML, curY - 5, PW - MR, curY - 5, C.rule, 0.5);
-          curY -= 18;
-
-          // Caption bar height
-          var capH = 26;
-
-          // Available image area
-          var availH = curY - MB - capH - 8;
-          var availW = CW;
-
-          // Aspect-correct sizing
-          var info   = imageXObjs['photo' + i];
-          var drawW  = availW, drawH = availH;
-          if (info && info.w && info.h) {
-            var ratio = info.w / info.h;
-            if (availW / availH > ratio) {
-              drawH = availH;
-              drawW = drawH * ratio;
-            } else {
-              drawW = availW;
-              drawH = drawW / ratio;
+      sigPads[key] = {
+        clear, sync,
+        hide() { clear(); wrap.hidden = true; },
+        // Signature trimmed to the ink: { url, w, h }, or null if nothing was drawn
+        image() {
+          if (!hasInk || wrap.hidden || !canvas.width) return null;
+          const W = canvas.width, H = canvas.height;
+          const px = ctx.getImageData(0, 0, W, H).data;
+          let x0 = W, y0 = H, x1 = -1, y1 = -1;
+          for (let yy = 0; yy < H; yy++) {
+            for (let xx = 0; xx < W; xx++) {
+              if (px[(yy * W + xx) * 4 + 3] > 8) {
+                if (xx < x0) x0 = xx; if (xx > x1) x1 = xx;
+                if (yy < y0) y0 = yy; if (yy > y1) y1 = yy;
+              }
             }
           }
-          // Clamp
-          if (drawW > availW) { drawW = availW; drawH = drawW / (info ? info.w/info.h : 1); }
-          if (drawH > availH) { drawH = availH; drawW = drawH * (info ? info.w/info.h : 1); }
-
-          var imgX = ML + (availW - drawW) / 2;
-          var imgY = curY;  // top of image area
-
-          // Draw image with border
-          rect(imgX, imgY - drawH, drawW, drawH, C.fieldBg, C.rule, 0.5);
-          if (info) drawImage('photo' + i, imgX, imgY, drawW, drawH);
-
-          // Caption bar directly under image (not at bottom of page)
-          var capY = imgY - drawH - 4;
-          rect(ML, capY - capH, CW, capH, '0.91 0.95 0.99', C.rule, 0.3);
-          var cap = (photo.description || ('Photo ' + (i + 1))).substring(0, 100);
-          text(cap, ML + 10, capY - capH + 10, 9, C.textMain, false);
-        });
-      }
-
-      flushPage();
-
-      // ---- Build PDF binary ----------------------------------------
-      var fontId  = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
-      var fontBId = addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
-      var fontRes = '<< /F1 '+fontId+' 0 R /FB '+fontBId+' 0 R >>';
-
-      var xobjRes = '';
-      var imgNames = Object.keys(imageXObjs);
-      if (imgNames.length) {
-        xobjRes = ' /XObject << ' + imgNames.map(function(n){
-          return '/Img'+imageXObjs[n].objNum+' '+imageXObjs[n].objNum+' 0 R';
-        }).join(' ') + ' >>';
-      }
-
-      var pageObjIds = pages.map(function(sid) {
-        return addObj('<< /Type /Page /Parent 0 /MediaBox [0 0 612 792] /Contents '+sid+' 0 R /Resources << /Font '+fontRes+xobjRes+' >> >>');
-      });
-
-      var pagesId = objs.length + 1;
-      pageObjIds.forEach(function(pid) {
-        if (objs[pid-1].type === 'text') {
-          objs[pid-1].content = objs[pid-1].content.replace('/Parent 0 /', '/Parent '+pagesId+' 0 R /');
+          if (x1 < 0) return null;
+          const m = 6;
+          x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m);
+          x1 = Math.min(W - 1, x1 + m); y1 = Math.min(H - 1, y1 + m);
+          const out = document.createElement('canvas');
+          out.width = x1 - x0 + 1; out.height = y1 - y0 + 1;
+          out.getContext('2d').drawImage(canvas, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+          return { url: out.toDataURL('image/png'), w: out.width, h: out.height };
         }
-      });
-
-      var kids = pageObjIds.map(function(id){return id+' 0 R';}).join(' ');
-      var pagesObjId = addObj('<< /Type /Pages /Kids ['+kids+'] /Count '+pageObjIds.length+' >>');
-      var catId      = addObj('<< /Type /Catalog /Pages '+pagesObjId+' 0 R >>');
-
-      // Assemble bytes
-      var parts   = [];
-      var offsets = [];
-      var byteLen = 0;
-
-      function pushStr(s) {
-        var a = new Uint8Array(s.length);
-        for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 0xff;
-        parts.push(a); byteLen += a.length;
-      }
-      function pushBytes(b) { parts.push(b); byteLen += b.length; }
-
-      pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
-
-      objs.forEach(function(obj) {
-        offsets.push(byteLen);
-        if (obj.type === 'img') {
-          var info = imageXObjs[obj.name];
-          pushStr(info.objNum+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+info.w+' /Height '+info.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+info.bytes.length+' >>\nstream\n');
-          pushBytes(info.bytes);
-          pushStr('\nendstream\nendobj\n');
-        } else {
-          pushStr(obj.content + '\n');
-        }
-      });
-
-      var xrefPos = byteLen;
-      var xref = 'xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n';
-      offsets.forEach(function(o) { xref += ('0000000000'+o).slice(-10)+' 00000 n \n'; });
-      xref += 'trailer\n<< /Size '+(objs.length+1)+' /Root '+catId+' 0 R >>\nstartxref\n'+xrefPos+'\n%%EOF';
-      pushStr(xref);
-
-      var out = new Uint8Array(byteLen);
-      var pos = 0;
-      parts.forEach(function(p){ out.set(p,pos); pos+=p.length; });
-      return out;
-    }
-
-    return { generate: generate };
-  }
-
-  // ================================================================
-  // HELPERS for data collection
-  // ================================================================
-  function radioVal(name) {
-    var el = document.querySelector('input[name="'+name+'"]:checked');
-    return el ? el.value : 'N/A';
-  }
-  function checkVals(name) {
-    var els = document.querySelectorAll('input[name="'+name+'"]:checked');
-    if (!els.length) return 'N/A';
-    return Array.prototype.map.call(els, function(e) {
-      // For the "Other" incident type, append the user-specified text
-      if (name === 'incident_type' && e.value === 'Other') {
-        var otherText = document.getElementById('incident_type_other_text');
-        var spec = otherText ? otherText.value.trim() : '';
-        return spec ? 'Other: ' + spec : 'Other';
-      }
-      return e.value;
-    }).join(', ');
-  }
-  function tableRows(prefix, cols, count) {
-    var rows = [];
-    for (var r = 1; r <= count; r++) {
-      var cells = cols.map(function(c) {
-        var el = document.querySelector('input[name="'+prefix+r+'_'+c+'"]');
-        return el ? el.value.trim() : '';
-      });
-      if (cells.some(function(c){return c;})) rows.push(cells);
-    }
-    return rows;
-  }
-
-  // Convert any image dataURL to JPEG via offscreen canvas
-  function toJpeg(dataUrl, maxW, maxH) {
-    return new Promise(function(resolve) {
-      if (!dataUrl) { resolve(null); return; }
-      var img = new Image();
-      img.onload = function() {
-        var scale = Math.min(maxW/img.width, maxH/img.height, 1);
-        var w = Math.round(img.width*scale);
-        var h = Math.round(img.height*scale);
-        var cv = document.createElement('canvas');
-        cv.width = w; cv.height = h;
-        var ctx = cv.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0,0,w,h);
-        ctx.drawImage(img,0,0,w,h);
-        resolve(cv.toDataURL('image/jpeg', 0.88));
       };
-      img.onerror = function() { resolve(null); };
-      img.src = dataUrl;
-    });
-  }
+      sync();
+    }
+    SIG_KEYS.forEach(initSigPad);
 
-  // ================================================================
-  // DOWNLOAD HANDLER
-  // ================================================================
-  document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-    var errors = validateForm();
-    if (errors.length) {
-      var list = document.getElementById('validationList');
-      list.innerHTML = errors.map(function(e){ return '<li>'+e+'</li>'; }).join('');
-      document.getElementById('validationModal').classList.add('active');
-      return;
+    // Reset button clears and hides the pads too
+    document.querySelector('form').addEventListener('reset', () => {
+      SIG_KEYS.forEach(k => sigPads[k] && sigPads[k].hide());
+    });
+
+    /* ============================================================
+       PDF generation — polished programmatic layout, 8.5 × 11 in
+    ============================================================ */
+
+    /* ============================================================
+       Validation
+    ============================================================ */
+    // Modal close
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+      document.getElementById('validationModal').classList.remove('active');
+    });
+    document.getElementById('validationModal').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('active');
+    });
+
+    function clearFieldErrors() {
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
     }
 
-    var btn = document.getElementById('downloadPdfBtn');
-    btn.textContent = 'Generating...';
-    btn.disabled = true;
-
-    // Collect signature images
-    var empSigJpeg = (sigPads['sig-emp'] && sigPads['sig-emp'].hasDrawing) ? sigPads['sig-emp'].toDataURL() : null;
-    var supSigJpeg = (sigPads['sig-sup'] && sigPads['sig-sup'].hasDrawing) ? sigPads['sig-sup'].toDataURL() : null;
-    var hseSigJpeg = (sigPads['sig-hse'] && sigPads['sig-hse'].hasDrawing) ? sigPads['sig-hse'].toDataURL() : null;
-
-    // Convert all photos to JPEG (handles PNG, HEIC, etc)
-    var photoPromises = photoItems.map(function(item) {
-      return toJpeg(item.dataUrl, 1200, 1200).then(function(jpeg) {
-        return { jpegDataUrl: jpeg, description: item.description };
+    function markError(ids) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.closest('div') && el.closest('div').classList.add('field-error');
       });
+    }
+
+    function validateForm() {
+      clearFieldErrors();
+      const errors = [];
+
+      // ── Incident Information ──────────────────────────────────
+      const incidentMissing = [];
+      if (!document.getElementById('incident_date').value)    incidentMissing.push('incident_date');
+      if (!document.getElementById('incident_time').value)    incidentMissing.push('incident_time');
+      if (!document.getElementById('incident_location').value.trim()) incidentMissing.push('incident_location');
+      if (!document.getElementById('supervisor_name').value.trim())   incidentMissing.push('supervisor_name');
+      if (incidentMissing.length) {
+        markError(incidentMissing);
+        errors.push('Incident Information: date, time, location, and supervisor are required');
+      }
+
+      // ── Person Involved ───────────────────────────────────────
+      const personMissing = [];
+      if (!document.getElementById('employee_name').value.trim())     personMissing.push('employee_name');
+      if (!document.getElementById('employee_position').value.trim()) personMissing.push('employee_position');
+      if (!document.getElementById('employee_branch').value)          personMissing.push('employee_branch');
+      if (personMissing.length) {
+        markError(personMissing);
+        errors.push('Person Involved: employee name, position, and division are required');
+      }
+
+      // ── Incident Classification ───────────────────────────────
+      const typeChecked = document.querySelectorAll('input[name="incident_type"]:checked').length > 0;
+      const medChecked  = document.querySelector('input[name="medical_treatment"]:checked');
+      const lostChecked = document.querySelector('input[name="lost_time"]:checked');
+      const restChecked = document.querySelector('input[name="modified_duty"]:checked');
+      if (!typeChecked || !medChecked || !lostChecked || !restChecked) {
+        if (!typeChecked) {
+          const typeWrap = document.querySelector('input[name="incident_type"]').closest('.inline-options');
+          if (typeWrap) typeWrap.classList.add('field-error');
+        }
+        errors.push('Incident Classification: type of incident, medical treatment, lost time, and restricted duties must all be selected');
+      }
+
+      // ── Description of Incident ───────────────────────────────
+      if (!document.getElementById('incident_description').value.trim()) {
+        markError(['incident_description']);
+        errors.push('Description of Incident: a description is required');
+      }
+
+      // ── Immediate Corrective Actions ──────────────────────────
+      if (!document.getElementById('immediate_actions').value.trim()) {
+        markError(['immediate_actions']);
+        errors.push('Immediate Corrective Actions: this field is required');
+      }
+
+      // ── Root Cause ────────────────────────────────────────────
+      if (!document.getElementById('root_cause').value.trim()) {
+        markError(['root_cause']);
+        errors.push('Root Cause / Contributing Factors: this field is required');
+      }
+
+      // ── Recommended Corrective Actions ────────────────────────
+      if (!document.getElementById('corrective_actions').value.trim()) {
+        markError(['corrective_actions']);
+        errors.push('Recommended / Planned Corrective Actions: this field is required');
+      }
+
+      // ── Sign-Off: at least one person ─────────────────────────
+      const empSig  = document.getElementById('employee_signature').value.trim();
+      const supSig  = document.getElementById('supervisor_signature').value.trim();
+      const hseSig  = document.getElementById('hse_signature').value.trim();
+      if (!empSig && !supSig && !hseSig) {
+        markError(['employee_signature', 'supervisor_signature', 'hse_signature']);
+        errors.push('Sign-Off: at least one signature (employee, supervisor, or HSE) is required');
+      }
+
+      return errors;
+    }
+
+
+    /* Clear field-error highlight on user correction */
+    document.querySelector('form').addEventListener('input', function(e) {
+      const wrap = e.target.closest('div');
+      if (wrap && wrap.classList.contains('field-error')) wrap.classList.remove('field-error');
+    });
+    document.querySelector('form').addEventListener('change', function(e) {
+      const wrap = e.target.closest('div');
+      if (wrap && wrap.classList.contains('field-error')) wrap.classList.remove('field-error');
+      // also clear inline-options highlight
+      const opts = e.target.closest('.inline-options');
+      if (opts && opts.classList.contains('field-error')) opts.classList.remove('field-error');
     });
 
-    // Convert signatures to JPEG too (they come back as PNG from canvas)
-    var sigPromises = [
-      toJpeg(empSigJpeg, 400, 100),
-      toJpeg(supSigJpeg, 400, 100),
-      toJpeg(hseSigJpeg, 400, 100)
-    ];
+    document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+      // ── Validate before generating ──────────────────────────
+      const errors = validateForm();
+      if (errors.length) {
+        const list = document.getElementById('validationList');
+        list.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+        document.getElementById('validationModal').classList.add('active');
+        return;
+      }
 
-    Promise.all([Promise.all(photoPromises), Promise.all(sigPromises)]).then(function(results) {
-      var photos   = results[0];
-      var sigJpegs = results[1];
+      const btn = document.getElementById('downloadPdfBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Generating…';
+      btn.disabled = true;
 
-      // Collect all incident type options with their checked state
-      var allIncidentTypes = [
-        'Injury / Illness','First Aid Only','Near Miss','Property Damage',
-        'Vehicle / Motor Vehicle','Environmental','Other'
-      ];
-      var checkedTypes = {};
-      document.querySelectorAll('input[name="incident_type"]:checked').forEach(function(el){ checkedTypes[el.value] = true; });
-      var otherSpecify = g('incident_type_other_text');
-      var incidentTypesList = allIncidentTypes.map(function(t) {
-        return { label: t === 'Other' && otherSpecify ? 'Other: ' + otherSpecify : t, checked: !!checkedTypes[t] };
+      try {
+      // Wait for jsPDF to finish loading (CDN may still be in flight)
+      const jsPDF = await new Promise((resolve, reject) => {
+        const deadline = Date.now() + 12000; // 12 second timeout
+        function check() {
+          if (window.jspdf && window.jspdf.jsPDF) {
+            resolve(window.jspdf.jsPDF);
+          } else if (window._jspdfLoadError || Date.now() > deadline) {
+            reject(new Error('PDF library failed to load. Please check your internet connection and try again.'));
+          } else {
+            setTimeout(check, 100);
+          }
+        }
+        check();
       });
 
-      var data = {
-        incidentDate:  g('incident_date'),      incidentTime: g('incident_time'),
-        reportDate:    g('report_date'),         location:     g('incident_location'),
-        supervisor:    g('supervisor_name'),     empName:      g('employee_name'),
-        empPosition:   g('employee_position'),   empBranch:    g('employee_branch'),
-        empPhone:      g('employee_phone'),      empType:      radioVal('employment_type'),
-        incidentTypes: checkVals('incident_type'),
-        incidentTypesList: incidentTypesList,
+      /* ================================================================
+         POLISHED PDF LAYOUT — Letter 8.5 × 11 in (points)
+         Flows across pages automatically; every option is printed with
+         its checkbox so the export reads like a completed paper form.
+      ================================================================ */
+      const PW = 612, PH = 792;
+      const ML = 36, MR = 36;
+      const CW = PW - ML - MR;            // 540pt content width
+      const FOOT_Y = PH - 26;             // footer rule
+      const BOTTOM = PH - 36;             // last usable y for content
+
+      const C = {
+        navy:   [16, 22, 34],   accent: [37, 99, 235],  accentL: [59, 130, 246],
+        white:  [255, 255, 255], text:  [28, 33, 43],   muted:  [118, 130, 146],
+        label:  [86, 102, 120],  rule:  [205, 216, 229], ruleL: [226, 233, 242],
+        fill:   [248, 250, 252], band:  [241, 245, 249], check: [24, 48, 79],
+        boxOff: [150, 162, 178]
+      };
+
+      const pdf = new jsPDF({ unit: 'pt', format: [PW, PH], compress: true });
+
+      // Montserrat (SIL Open Font License) — embedded subset so the VISTAGEOMATICS
+      // wordmark matches the on-screen header and works offline in the field.
+      const MONT_BOLD_TTF = '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AHMAZQByAHIAYQB0ACAAUAByAG8AagBlAGMAdAAgAEEAdQB0AGgAbwByAHMAIAAoAGgAdAB0AHAAcwA6AC8ALwBnAGkAdABoAHUAYgAuAGMAbwBtAC8ASgB1AGwAaQBlAHQAYQBVAGwAYQAvAE0AbwBuAHQAcwBlAHIAcgBhAHQAKQBNAG8AbgB0AHMAZQByAHIAYQB0AEIAbwBsAGQAOQAuADAAMAAwADsAVQBMAEEAOwBNAG8AbgB0AHMAZQByAHIAYQB0AC0AQgBvAGwAZABNAG8AbgB0AHMAZQByAHIAYQB0ACAAQgBvAGwAZABWAGUAcgBzAGkAbwBuACAAOQAuADAAMAAwADsAIAB0AHQAZgBhAHUAdABvAGgAaQBuAHQAIAAoAHYAMQAuADgALgA0AC4ANwAtADUAZAA1AGIAKQBNAG8AbgB0AHMAZQByAHIAYQB0AC0AQgBvAGwAZABKAHUAbABpAGUAdABhACAAVQBsAGEAbgBvAHYAcwBrAHkAaAB0AHQAcAA6AC8ALwB3AHcAdwAuAHoAawB5AHMAawB5AC4AYwBvAG0ALgBhAHIALwBUAGgAaQBzACAARgBvAG4AdAAgAFMAbwBmAHQAdwBhAHIAZQAgAGkAcwAgAGwAaQBjAGUAbgBzAGUAZAAgAHUAbgBkAGUAcgAgAHQAaABlACAAUwBJAEwAIABPAHAAZQBuACAARgBvAG4AdAAgAEwAaQBjAGUAbgBzAGUALAAgAFYAZQByAHMAaQBvAG4AIAAxAC4AMQAuACAAVABoAGkAcwAgAGwAaQBjAGUAbgBzAGUAIABpAHMAIABhAHYAYQBpAGwAYQBiAGwAZQAgAHcAaQB0AGgAIABhACAARgBBAFEAIABhAHQAOgAgAGgAdAB0AHAAcwA6AC8ALwBvAHAAZQBuAGYAbwBuAHQAbABpAGMAZQBuAHMAZQAuAG8AcgBnAGgAdAB0AHAAcwA6AC8ALwBvAHAAZQBuAGYAbwBuAHQAbABpAGMAZQBuAHMAZQAuAG8AcgBnAAMAAAAAAAD/nAAyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAB//8ADwABAAAADAAAAAAAAAACAAMAAQAjAAEAJQAlAAEAJwA2AAEAAAABAAAACgAcAB4AAURGTFQACAAEAAAAAP//AAAAAAAAAAEAAAAKACwALgADREZMVAAUY3lybAAebGF0bgAeAAQAAAAA//8AAAAAAAAAAAAA';
+      const MONT_REG_TTF  = 'AAEAAAAOAIAAAwBgR0RFRgBeAIIAABx4AAAAIkdQT1NEdkx1AAAcnAAAACBHU1VCI34kjAAAHLwAAAAwT1MvMlLXA1QAABdwAAAAYGNtYXADwSO4AAAX0AAAAIxnYXNwAAAAEAAAHHAAAAAIZ2x5Zs5GH6AAAADsAAAUOGhlYWQkHYc/AAAV4AAAADZoaGVhCHUGVAAAF0wAAAAkaG10eK+3EEkAABYYAAABNGxvY2HE+slRAAAVRAAAAJxtYXhwAGYAygAAFSQAAAAgbmFtZV6+hSsAABhcAAAD9HBvc3T/nwAyAAAcUAAAACAAAgAoAAACIwK8AAMABwAAMxEhESUhESEoAfv+VQFb/qUCvP1ERgIwAAIAAgAAAssCvAAHAAoAADMBMwEjJyEHNyEDAgFASQFATlP+eVRvAVGpArz9RLu79wF4AAADAHIAAAK7ArwADgAXACAAADMRITIWFRQGBxYWFRQGIyczMjY1NCYjIzUzMjY1NCYjI3IBLnWBOy9DTISD+PdcYmJc999UXV1U3wK8XlY8UBIQWEdZYj0/RUQ/PUA/P0AAAAEANP/6AqMCwgAfAAAFIi4CNTQ+AjMyFhcHJiYjIgYGFRQWFjMyNjcXBgYBok+FYzc3Y4ZPTYUuLytoPFSGTk6GVDxoKy8uhgY1YIJNTYJgNTMzLywnTINTU4NMKCwvMzQAAgByAAADBgK8AAoAFQAAMxEhMhYWFRQGBiMnMzI2NjU0JiYjI3IBHXCpXl6pcNPPXYlMTIldzwK8WZ5nZ55ZQEmBVFSBSQAAAQByAAACYQK8AAsAADMRIRUhFSEVIREhFXIB4P5qAWr+lgGlArxA+T/+/EAAAAEAcgAAAlICvAAJAAAzESEVIREhFSERcgHg/moBav6WArxA/u1A/tcAAAEANP/6AqoCwgAhAAAFIi4CNTQ+AjMyFhcHJiYjIgYGFRQWFjMyNjc1MxEGBgGlUIdjNzdkh1BPhi8uLGo9V4dOTodWMl0oRzKGBjVggk1NgmA1MzIvLCZLhFNTg0wZHuv+9S0sAAEAcgAAArsCvAALAAAhESERIxEzESERMxECcv5KSkoBtkkBQ/69Arz+yAE4/UQAAAEAcgAAALwCvAADAAAzETMRckoCvP1EAAH//P/6AYkCvAAOAAAXIiYnNxYzMjURITUhERS9O2cfKztcgv8AAUkGNDAyVpoBqED+G90AAAEAcgAAAsECvAALAAAzETMRATMBASMBBxVySgGbVf7RAURY/uKPArz+WQGn/sP+gQFKk7cAAAEAcgAAAkQCvAAFAAAzETMRIRVySgGIArz9hEAAAAEAcgAAA0kCvAAMAAAzETMBATMRIxEBIwERcj0BMAEtPUf+7SP+7QK8/fkCB/1EAi/+KgHS/dUAAQByAAACuwK8AAkAADMRMwERMxEjARFyPQHDST3+PgK8/cgCOP1EAjj9yAACADT/+gMTAsIAEwAjAAAFIi4CNTQ+AjMyHgIVFA4CJzI2NjU0JiYjIgYGFRQWFgGkUIZjNzdjhlBPhmM3N2OGT1SFTEyFVFWFTU2FBjVggk1NgmA1NWCCTU2CYDVCS4RTU4RLS4RTU4RLAAACAHIAAAKWArwACgATAAAzESEyFhUUBiMjFREzMjY1NCYjI3IBBoWZmYW8umltbWm6Arx/cXB/3QEeW1NUXAAAAgA0/3UDMwLCAB0ALQAABSImJy4DNTQ+AjMyHgIVFAYGBxYWMzI3FwYlMjY2NTQmJiMiBgYVFBYWAok9cEVMgmA1N2OGUE+GYzdJg1QnSyVONyRC/rNUhUxMhVRVhU1NhYs9SAI3YIBLTYJgNTVggk1ZkmIQKiY/K1DHTINTU4NMTINTU4NMAAIAcgAAAqECvAAPABgAADMRITIWFRQGBxcjJwYjIxURMzI2NTQmIyNyAQaFmVRMq1GgGx28umltbWm6Arx/cVJxGfDhA94BHVxTVFwAAAEAL//6AjgCwgArAAAFIiYnNxYWMzI2NTQuBTU0NjYzMhYXByYmIyIGFRQeBRUUBgYBM0+OJx0lfUViWi5NXFxNLzdyWTt0KhktZS5gWS9NXFtNLzhzBjMoOSUwSDQpMR0WGSpFODNYNSEdOx4cSjUpMR4VGilENzNXNQABAAQAAAI6ArwABwAAMxEjNSEVIxH69gI29gJ8QED9hAAAAQBs//oCqwK8ABEAAAUiJjURMxEUFjMyNjURMxEUBgGMhppKcGZncEiZBpqXAZH+cnx2dnwBjv5vl5oAAQADAAACuAK8AAYAACEBMwEBMwEBOf7KUAEMAQ5L/soCvP2gAmD9RAAAAQAlAAAEMwK8AAwAACEDMxMTMxMTMwMjAwMBEexMytFFzs1H7E7NzgK8/aYCWv2jAl39RAJU/awAAAEAEQAAAn8CvAALAAAzAQMzExMzAwEjAwMRAQr5VdPSUPgBC1bi4QFoAVT+4gEe/q7+lgE0/swAAQABAAACegK8AAgAACE1ATMTEzMBFQEZ/uhP8PBK/ujyAcr+eAGI/jbyAAABAC0AAAJrArwACQAAMzUBITUhFQEhFS0B0P43Aiv+MQHbMwJJQDP9t0AAAAIAN//7AfACEgAbACYAACE1BgYjIiY1NDY2MzM1NCYjIgYHJzY2MzIWFREnNSMiBhUUFjMyNgGsGFxBWWcnWUunS0ozXCAgKHA+Zm9HpUw7Rj88VlIoL1VEKEQpIENIIhw1IiVmZv66nlY2KC02NwACAGP/+wJ4AuYAEgAiAAAFIiYnFSMRMxE2NjMyFhYVFAYGJzI2NjU0JiYjIgYGFRQWFgFyQWogREchaD9Ld0REd1A4WDQ0WDg4WTMzWQU4NGcC5v7EMzVDeFBQeEQ/M109PVw0NFw9PV0zAAABAC7/+wILAhIAHQAABSImJjU0NjYzMhYXByYmIyIGBhUUFhYzMjY3FwYGAT1PekZGek9DbB81G1AuOlk0NFk6LlAbNR9sBUV5Tk55RDQ0JCgmM1w+PlwzJSgkMzUAAgAu//sCQwLmABIAIgAABSImJjU0NjYzMhYXETMRIzUGBicyNjY1NCYmIyIGBhUUFhYBNEt2RUV2Sz9pIEdEIGo7N1kzM1k3OFkzM1kFRHhQUHhDNTMBPP0aZzQ4PzNdPT1cNDRcPT1dMwAAAgAu//sCLgISABoAIwAABSImJjU0NjYzMhYWFRQGFSEeAjMyNjcXBgYBIS4CIyIGBgFCUnxGQ3RKSnNCAf5HBDdbOjBTHigkaP70AXUEMlIzM1EyBUV5Tk55REN5TwULBjZTLiIjLiosASs0Ti0sTwAAAQARAAABdwLrABUAADMRIzUzNTQ2MzIWFwcmIyIVFTMVIxFvXl5STR05ExggLl2ioAHSPEFGVhARNRpjPjz+LgAAAgAu/zkCSgISAB4ALgAABSImJzcWFjMyNjU1BgYjIiYmNTQ2NjMyFhc1MxEUBgMyNjY1NCYmIyIGBhUUFhYBQ0iEKSQlbT1kXiFrQUt4RUV4S0JtIUSFiDpaNDRaOjpaMzNaxyonNiEnXmFCMTRBc0xLc0A1M2T+Moh/ARoxVzk5VjExVjk5VzEAAQBjAAACRwLmABMAADMRMxE2NjMyFhURIxE0JiMiBhURY0cdZUNgeEdTS1RkAub+zC4ycHH+zwEqU1VkWv7s//8AUwAAALsC5gImACQAAAAHAEz/WwAAAAEAYwAAAKoCDgADAAAzETMRY0cCDv3y////pv85AMAC5gImACYAAAAHAEz/YAAAAAH/pv85AK8CDgANAAAXIiYnNxYzMjURMxEUBhUgOxQZHzNXR0/HEBI2G2MCNf3LSVcAAQBjAAACUQLmAAsAADMRMxEBMwcTIwMHFWNHATpY4PVX1HwC5v4JAR/X/skBCHKWAAABAGMAAACqAuYAAwAAMxEzEWNHAub9GgABAGMAAAPHAhIAIgAAMxEzFTY2MzIWFzY2MzIWFREjETQmIyIGFREjETQmIyIGFRFjRBxjQkFjFxxtR2B0R1BHUV9HUEhQYAIOYDA0ODczPHBx/s8BKlNVZFr+7AEqU1VkWv7sAAABAGMAAAJHAhIAEwAAMxEzFTY2MzIWFREjETQmIyIGFRFjRBxnRWB4R1NLVGQCDmEwNXBx/s8BKlNVZFr+7AAAAgAu//sCRQISAA8AHwAABSImJjU0NjYzMhYWFRQGBicyNjY1NCYmIyIGBhUUFhYBOk15RkZ5TU14RkZ4TThYMzNYODhZMzNZBUV5Tk55RER5Tk55RT8zXT09XDQ0XD09XTMAAAIAY/8+AngCEgASACIAAAUiJicRIxEzFTY2MzIWFhUUBgYnMjY2NTQmJiMiBgYVFBYWAXI/aCFHRCBqQUt3RER3UDhYNDRYODhZMzNZBTYz/toC0Gg1N0N5T1B4RD8zXD49XDQ0XD0+XDMAAAIALv8+AkMCEgASACIAAAUiJiY1NDY2MzIWFzUzESMRBgYnMjY2NTQmJiMiBgYVFBYWATRLdkVFdktBaiBERyBpOTdZMzNZNzhZMzNZBUR4UE95Qzc1aP0wASYzNj8zXD49XDQ0XD0+XDMAAAEAYwAAAWwCEgANAAAzETMVNjMVIiYjIgYVEWNEM5IFCARTXgIOZmpFAWVd/vQAAAEAGv/7AckCEgApAAAXIiYnNxYWMzI2NTQuBTU0NjMyFhcHJiYjIgYVBh4FFRQG8EF0ISAfZDhLQiU9SUg9JWxkM2YhHyNQKEdCASU9SUk9JXIFJRw4GSIvJx0hEQwQHzYtQVUbFjkYFTIlHiITDBEdNStEUgABABH/+wF4AoEAFQAABSImNREjNTM1MxUzFSMRFDMyNxcGBgEJSlBeXkegoFsvHxkVOwVRSAE+PHNzPP7GYBszExIAAAEAXv/7Aj0CDgATAAAFIiY1ETMRFBYzMjY1ETMRIzUGBgE8ZXlHU0tTYEdEG2MFcHIBMf7WVFVlWgEU/fJfLzUAAAEAAQAAAh0CDgAGAAAzAzMTEzMD6ulKxcdG6gIO/kABwP3yAAEACAAAA2cCDgAMAAAzAzMTEzMTEzMDIwMDzsZEpKo9qKdBx0OlpwIO/kIBvv5CAb798gGu/lIAAQATAAACAwIOAAsAADMTAzMXNzMDEyMnBxPQxlCenk7G0lGnqAEOAQDOzv8A/vLb2wAB/+f/OQIdAg4AEgAAFyImJzcWMzI2NzcDMxMTMwEGBmclQxghKDgjMxcX60rGxkb++SFWxxgYNSgnMTMCDf5BAb/9s046AAABACoAAAHWAg4ACQAAMzUBITUhFQEhFSoBS/67AaD+tQFRLwGjPC/+XDsAAAIANP/6AmMCwgAPABsAAAUiJiY1NDY2MzIWFhUUBgYnMjY1NCYjIgYVFBYBS1F+SEh+UVF+SUl+UVxyclxbc3MGVZ9wcJ9VVZ9wcJ9VQpWNjZWVjY2VAAABAAkAAAD2ArwABQAAMxEjNTMRrqXtAnxA/UQAAQASAAACEgLCABkAADM1AT4CNTQmIyIHJzY2MzIWFRQGBgcHIRUnASMoKA5TUXxDMyl/UGp+EjIv7gGBMwEdJzwyGD1GTiwwNGVYIkFKLupAAAEACf/6AgMCvAAbAAAFIiYnNxYWMzI2NTQmIyM1NyE1IRUHFhYVFAYGAQVMhykjInJFV11cYTLB/psBwsZxcDlwBjEpOSMuTEE/TDXzQDP5Bm1UOl43AAABACgAAAKHArwADgAANzUBMwEhNTMVMxUjFSM1KAFzUP6aATBGjIxIuDQB0P48oqJAuLgAAQAW//oCDwK8ABwAAAUiJic3FhYzMjY1NCYmIyMTIRUhBzMyFhYVFAYGARFMhygjIXNDWV0rZlmVJAF//sAYWmqAOThxBjEpOSMuT0AtQSQBX0DfNF0+PGA4AAACADT/+gJCAsIAHgAsAAAFIiY1NDY2MzIWFwcmJiMiBhUUFhc2NjMyFhYVFAYGJzI2NTQmIyIGBhUUFhYBU4yTUZBfL1YhHRtGJ3GHAQIac0lGajw/bEdMX19RNlAuKlMGuKZ3oVISFDoSD5CPDB0QOj40XkBBYTU9UkZFUihGKydEKwABACAAAAIiArwACAAAMwEhFSM1IRUBrwEf/plHAgL+2wJ8g8Mz/XcAAwAw//oCTgLCABgAJAAwAAAFIiY1NDY3JjU0NjYzMhYWFRQGBxYWFRQGJzI2NTQmIyIGFRQWEzI2NTQmIyIGFRQWAT5+kEZBbj1uSkpvPjo2QkeSfl1paV1daGhdUlxfT09eWwZsXT9XFitvOVMtLVM5N04VFlg+XWw9S0JBS0tBQksBUkQ5PENDOzpEAAIAH//6Ai0CwgAeACwAABciJic3FhYzMjY1NCYnBgYjIiYmNTQ2NjMyFhUUBgYDMjY2NTQmJiMiBhUUFu0vViEdG0YncYcBAhpzSUZqPD9sRIyTUZA2NlAuKlI9TF9fBhIUOhIPkI8MHRA6PjReQEFhNbimd6FSAVwoRisnRCtSRkVSAAEANf/7AKAAaAALAAAXIiY1NDYzMhYVFAZqFh8fFhYgIAUfGBcfHxcYHwAAAQA2/24AoABoAA4AABc3JiY1NDYzMhYVFAYHBzgiEBQeFxceBwcqkpEFGxMXHyAWDRgVigAAAQBJANgAtAFGAAsAADciJjU0NjMyFhUUBn4WHx8WFx8f2B8YGB8fGBgfAAAB/+f/nAFyA0oAAwAABwEzARkBSkH+tmQDrvxSAAABADwA8AFCAS4AAwAANzUhFTwBBvA+PgABAAAA9gH0ASkAAwAANTUhFQH09jMzAAABAAAA9gPoASkAAwAANTUhFQPo9jMzAAABAGj/PgEgAuYADQAAFyYmNTQ2NzMGBhUUFhfcNz09N0Q7Nzc7wlvviorxWWfnhobnZwAAAQAo/z4A4QLmAA0AABc2NjU0JiczFhYVFAYHKDw3NzxEOD09OMJn54aG52dZ8YqK71sAAAMAMf/1ApACwQAdACcANAAABScGIyImJjU0NjcmJjU0NjMyFhUUBgcXNjcXBgcXJycOAhUUFjMyAzY2NTQmIyIGFRQWFgJnYVqQRGs8UGAzJWBRSllGVsAgDzoTK2S00zhAGl1MdXxMOzUxNToNIgtkXy1QNT5lNzRJKUNSSkE1UzHFOE4SXkNnYNkgNjUfOUUBcSs+JicwNSoUJS4AAQD4AoEBYALmAAsAAAEiJjU0NjMyFhUUBgEsFh4eFhYeHgKBHhUUHhwVFh4AAAEAAABNAHQADwBUAAUAAQAAAAAAAAAAAAAAAAAEAAEAAAAUAC4AXwCQALQAywDgARMBKwE3AVIBbQF8AZgBrgHkAgQCSAJvAq0CvgLcAvEDDgMqA0ADVgOOA8QD8wQpBGIEgwTIBOgE9AUABQwFJQU+BUoFfQWdBc8GBQY7BlMGjgawBtEG4wb/BxgHPAdSB34HjAe1B+EH+wgpCGsIfwjGCQgJCAkeCTkJTwleCWoJdgmCCZwJtgoFChwAAQAAAAkAAE3Yo7pfDzz1AA8D6AAAAADc9gCsAAAAAONSQ4H+eP41BjID+gAAAAYAAgAAAAAAAAJLACgCzQACAvIAcgLFADQDOgByAp0AcgJ5AHIDBQA0Ay0AcgEuAHIB9f/8AscAcgJNAHIDuwByAy0AcgNHADQCzgByA0cANALTAHICZwAvAj4ABAMYAGwCugADBFcAJQKQABECewABAosALQJOADcCpgBjAjMALgKmAC4CXAAuAVMAEQKuAC4CpQBjAQ0AUwENAGMBEv+mARL/pgJWAGMBDQBjBCUAYwKlAGMCcwAuAqYAYwKmAC4BkQBjAekAGgGWABECoQBeAh4AAQNvAAgCFgATAh7/5wH/ACoClgA0AWkACQI4ABICNAAJApUAKAI2ABYCYQA0Ak0AIAJ+ADACYQAfAQYAAADUADUA1AA2APwASQFP/+cBfgA8AfQAAAPoAAABSQBoAUkAKAKdADEAAAD4AAEAAAPI/wUAAAZR/nj8yQYyA+gAAAAAAAAAAAAAAAAAAABNAAQCfgGQAAUAAAKKAlgAAABLAooCWAAAAV4AMgE7AAAAAAAAAAAAAAAAgAAAAwAAAAAAAAAAAAAAAFVMQSAAwAAgIBQDyP8FAAAEVQHFAAAAAQAAAAACDgK8AAAAIAADAAAAAgAAAAMAAAAUAAMAAQAAABQABAB4AAAAGAAQAAMACAAgACYAKQAvADkAWgBpAGoAegC3IBT//wAAACAAJgAoACwAMABBAGEAagBrALcgE///ACEAJQAhAAAAB//A/7r/u/+8/43gNAABAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAEMARgBCAEUAAAANAKIAAwABBAkAAACwAAAAAwABBAkAAQAUALAAAwABBAkAAgAOAMQAAwABBAkAAwA4ANIAAwABBAkABAAkAQoAAwABBAkABQBUAS4AAwABBAkABgAkAYIAAwABBAkACAAiAaYAAwABBAkACQAiAaYAAwABBAkACwAyAcgAAwABBAkADAAyAcgAAwABBAkADQEiAfoAAwABBAkADgA2AxwAQwBvAHAAeQByAGkAZwBoAHQAIAAyADAAMQAxACAAVABoAGUAIABNAG8AbgB0AHMAZQByAHIAYQB0ACAAUAByAG8AagBlAGMAdAAgAEEAdQB0AGgAbwByAHMAIAAoAGgAdAB0AHAAcwA6AC8ALwBnAGkAdABoAHUAYgAuAGMAbwBtAC8ASgB1AGwAaQBlAHQAYQBVAGwAYQAvAE0AbwBuAHQAcwBlAHIAcgBhAHQAKQBNAG8AbgB0AHMAZQByAHIAYQB0AFIAZQBnAHUAbABhAHIAOQAuADAAMAAwADsAVQBMAEEAOwBNAG8AbgB0AHMAZQByAHIAYQB0AC0AUgBlAGcAdQBsAGEAcgBNAG8AbgB0AHMAZQByAHIAYQB0ACAAUgBlAGcAdQBsAGEAcgBWAGUAcgBzAGkAbwBuACAAOQAuADAAMAAwADsAIAB0AHQAZgBhAHUAdABvAGgAaQBuAHQAIAAoAHYAMQAuADgALgA0AC4ANwAtADUAZAA1AGIAKQBNAG8AbgB0AHMAZQByAHIAYQB0AC0AUgBlAGcAdQBsAGEAcgBKAHUAbABpAGUAdABhACAAVQBsAGEAbgBvAHYAcwBrAHkAaAB0AHQAcAA6AC8ALwB3AHcAdwAuAHoAawB5AHMAawB5AC4AYwBvAG0ALgBhAHIALwBUAGgAaQBzACAARgBvAG4AdAAgAFMAbwBmAHQAdwBhAHIAZQAgAGkAcwAgAGwAaQBjAGUAbgBzAGUAZAAgAHUAbgBkAGUAcgAgAHQAaABlACAAUwBJAEwAIABPAHAAZQBuACAARgBvAG4AdAAgAEwAaQBjAGUAbgBzAGUALAAgAFYAZQByAHMAaQBvAG4AIAAxAC4AMQAuACAAVABoAGkAcwAgAGwAaQBjAGUAbgBzAGUAIABpAHMAIABhAHYAYQBpAGwAYQBiAGwAZQAgAHcAaQB0AGgAIABhACAARgBBAFEAIABhAHQAOgAgAGgAdAB0AHAAcwA6AC8ALwBvAHAAZQBuAGYAbwBuAHQAbABpAGMAZQBuAHMAZQAuAG8AcgBnAGgAdAB0AHAAcwA6AC8ALwBvAHAAZQBuAGYAbwBuAHQAbABpAGMAZQBuAHMAZQAuAG8AcgBnAAMAAAAAAAD/nAAyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAB//8ADwABAAAADAAAAAAAAAACAAMAAQAjAAEAJQAlAAEAJwA2AAEAAAABAAAACgAcAB4AAURGTFQACAAEAAAAAP//AAAAAAAAAAEAAAAKACwALgADREZMVAAUY3lybAAebGF0bgAeAAQAAAAA//8AAAAAAAAAAAAA';
+      let hasMontserrat = false;
+      try {
+        pdf.addFileToVFS('Montserrat-Bold.ttf', MONT_BOLD_TTF);
+        pdf.addFont('Montserrat-Bold.ttf', 'Montserrat', 'bold');
+        pdf.addFileToVFS('Montserrat-Regular.ttf', MONT_REG_TTF);
+        pdf.addFont('Montserrat-Regular.ttf', 'Montserrat', 'normal');
+        hasMontserrat = true;
+      } catch (e) { hasMontserrat = false; }
+
+      // White wordmark: VISTA bold + GEOMATICS regular (Montserrat)
+      function wordmark(x, baseY, size) {
+        const fam = hasMontserrat ? 'Montserrat' : 'helvetica';
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(size);
+        pdf.setFont(fam, 'bold');   pdf.text('VISTA', x, baseY);
+        const vw = pdf.getTextWidth('VISTA');
+        pdf.setFont(fam, 'normal'); pdf.text('GEOMATICS', x + vw, baseY);
+      }
+
+      /* ---- small helpers ------------------------------------------ */
+      const font  = (bold, size, color) => { pdf.setFont('helvetica', bold ? 'bold' : 'normal'); pdf.setFontSize(size); pdf.setTextColor(...color); };
+      const fillC = c => pdf.setFillColor(...c);
+      const drawC = c => pdf.setDrawColor(...c);
+      const lw    = w => pdf.setLineWidth(w);
+
+      function val(id) {
+        const el = document.getElementById(id);
+        return el ? (el.value || '').trim() : '';
+      }
+      function radioVal(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : '';
+      }
+      function checkedVals(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(e => e.value);
+      }
+      function tableInputs(namePrefix, cols, rows) {
+        const result = [];
+        for (let r = 1; r <= rows; r++) {
+          const row = cols.map(c => {
+            const el = document.querySelector(`input[name="${namePrefix}${r}_${c}"]`);
+            return el ? (el.value || '').trim() : '';
+          });
+          if (row.some(v => v)) result.push(row);
+        }
+        return result;
+      }
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      function fmtDate(s) {
+        const m = (s || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        return m ? `${m[3]} ${MONTHS[+m[2] - 1]} ${m[1]}` : (s || '');
+      }
+
+      /* ---- logo --------------------------------------------------- */
+      let _logoDataUrl = null;
+      let _logoW = 0, _logoH = 0;
+      async function loadLogo() {
+        if (_logoDataUrl) return;
+        try {
+          // Fetch the image as a blob to avoid canvas cross-origin tainting,
+          // then draw it from a local object URL — works on Safari / iPad.
+          const imgEl = document.querySelector('.header-logo');
+          if (!imgEl) return;
+
+          const src = imgEl.src || imgEl.getAttribute('src');
+          if (!src) return;
+
+          // Fetch as blob (same-origin or relative path — always allowed)
+          const resp = await fetch(src);
+          if (!resp.ok) return;
+          const blob = await resp.blob();
+          const objectUrl = URL.createObjectURL(blob);
+
+          // Load into a fresh Image from the blob URL
+          await new Promise((resolve) => {
+            const fresh = new Image();
+            fresh.onload = () => {
+              try {
+                const cv = document.createElement('canvas');
+                cv.width  = fresh.naturalWidth;
+                cv.height = fresh.naturalHeight;
+                cv.getContext('2d').drawImage(fresh, 0, 0);
+                _logoDataUrl = cv.toDataURL('image/png');
+                _logoW = fresh.naturalWidth;
+                _logoH = fresh.naturalHeight;
+              } catch(e) {
+                // canvas taint — skip logo silently
+              }
+              URL.revokeObjectURL(objectUrl);
+              resolve();
+            };
+            fresh.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(); };
+            fresh.src = objectUrl;
+          });
+        } catch(e) {
+          // Missing file, network error, or security error — skip logo silently
+          _logoDataUrl = null;
+        }
+      }
+
+      /* ---- collect values ----------------------------------------- */
+      const F = {
+        incidentDate:  fmtDate(val('incident_date')),
+        incidentTime:  val('incident_time'),
+        reportDate:    fmtDate(val('report_date')),
+        location:      val('incident_location'),
+        supervisor:    val('supervisor_name'),
+        empName:       val('employee_name'),
+        empPosition:   val('employee_position'),
+        empBranch:     val('employee_branch'),
+        empPhone:      val('employee_phone'),
+        empType:       radioVal('employment_type'),
+        incidentTypes: checkedVals('incident_type'),
         medTreatment:  radioVal('medical_treatment'),
         lostTime:      radioVal('lost_time'),
         restrictedDuty:radioVal('modified_duty'),
-        empTypeOptions: [
-          {label:'Full-time', checked: radioVal('employment_type')==='Full-time'},
-          {label:'Part-time', checked: radioVal('employment_type')==='Part-time'},
-          {label:'Contractor', checked: radioVal('employment_type')==='Contractor'}
-        ],
-        medOptions:  [{label:'Yes',checked:radioVal('medical_treatment')==='Yes'},{label:'No',checked:radioVal('medical_treatment')==='No'}],
-        lostOptions: [{label:'Yes',checked:radioVal('lost_time')==='Yes'},{label:'No',checked:radioVal('lost_time')==='No'}],
-        restOptions: [{label:'Yes',checked:radioVal('modified_duty')==='Yes'},{label:'No',checked:radioVal('modified_duty')==='No'}],
-        description:   g('incident_description'),
-        bodyPart:      g('body_part'),           natureInjury: g('nature_of_injury'),
-        firstAidBy:    g('first_aid_by'),        firstAidDesc: g('first_aid_description'),
-        equipRows:     tableRows('equip_', ['name','id','desc'], 3),
-        witnessRows:   tableRows('wit_', ['name','contact','notes'], 3),
-        immediateActions:  g('immediate_actions'),
-        rootCause:         g('root_cause'),
-        correctiveActions: g('corrective_actions'),
-        empSig:     g('employee_signature'),     empSigDate: g('employee_date'),
-        supSig:     g('supervisor_signature'),   supSigDate: g('supervisor_date'),
-        hseSig:     g('hse_signature'),          hseSigDate: g('hse_date'),
-        empSigImg:  sigJpegs[0],
-        supSigImg:  sigJpegs[1],
-        hseSigImg:  sigJpegs[2],
-        photos:     photos.filter(function(p){ return p.jpegDataUrl; })
+        description:   val('incident_description'),
+        bodyPart:      val('body_part'),
+        natureInjury:  val('nature_of_injury'),
+        firstAidBy:    val('first_aid_by'),
+        firstAidDesc:  val('first_aid_description'),
+        equipRows:     tableInputs('equip_', ['name','id','desc'], 3),
+        witnessRows:   tableInputs('wit_', ['name','contact','notes'], 3),
+        immediateActions: val('immediate_actions'),
+        rootCause:        val('root_cause'),
+        correctiveActions:val('corrective_actions'),
+        empSig:    val('employee_signature'),  empSigDate: fmtDate(val('employee_date')),
+        supSig:    val('supervisor_signature'),supSigDate: fmtDate(val('supervisor_date')),
+        hseSig:    val('hse_signature'),       hseSigDate: fmtDate(val('hse_date')),
       };
 
-      try {
-        var pdfBytes = createPDFGenerator().generate(data);
-        var blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        var url  = URL.createObjectURL(blob);
-        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      const photos = photoItems.length ? photoItems
+        : (photosInput && photosInput.files.length
+            ? Array.from(photosInput.files).filter(f => f.type.startsWith('image/')).map(f => ({ file: f, description: '' }))
+            : []);
+
+      /* ---- page furniture ----------------------------------------- */
+      function drawLogo(barH, maxW) {
+        if (!_logoDataUrl) return;
+        try {
+          const scale = Math.min((barH - 14) / _logoH, maxW / _logoW);
+          const dw = _logoW * scale, dh = _logoH * scale;
+          pdf.addImage(_logoDataUrl, 'PNG', PW - MR - dw, (barH - dh) / 2, dw, dh);
+        } catch (e) { _logoDataUrl = null; }
+      }
+
+      function drawMainHeader() {
+        const H = 62;
+        fillC(C.navy); pdf.rect(0, 0, PW, H, 'F');
+        fillC(C.accent); pdf.rect(0, H, PW, 3, 'F');
+        wordmark(ML, 31, 17);
+        font(false, 7, [160, 172, 190]); pdf.text('INCIDENT REPORT FORM', ML, 45);
+        drawLogo(H, 110);
+
+        // Title band with key dates
+        const TY = H + 3, TH = 38;
+        fillC(C.band); pdf.rect(0, TY, PW, TH, 'F');
+        drawC(C.ruleL); lw(0.6); pdf.line(0, TY + TH, PW, TY + TH);
+        font(true, 15, C.navy); pdf.text('INCIDENT REPORT', ML, TY + 24);
+
+        const meta = [['DATE OF INCIDENT', F.incidentDate || '—'], ['TIME', F.incidentTime || '—'], ['DATE REPORTED', F.reportDate || '—']];
+        let mx = PW - MR;
+        for (let i = meta.length - 1; i >= 0; i--) {
+          const [lbl, v] = meta[i];
+          font(true, 9, C.text); const w1 = pdf.getTextWidth(v);
+          font(true, 5.6, C.label); const w2 = pdf.getTextWidth(lbl);
+          const w = Math.max(w1, w2);
+          font(true, 5.6, C.label); pdf.text(lbl, mx - w, TY + 15);
+          font(true, 9, C.text);    pdf.text(v,   mx - w, TY + 27);
+          if (i > 0) { drawC(C.rule); lw(0.5); pdf.line(mx - w - 12, TY + 9, mx - w - 12, TY + 30); }
+          mx -= w + 24;
+        }
+        return TY + TH + 14;
+      }
+
+      function drawContHeader() {
+        const H = 30;
+        fillC(C.navy); pdf.rect(0, 0, PW, H, 'F');
+        fillC(C.accent); pdf.rect(0, H, PW, 2, 'F');
+        wordmark(ML, 19.5, 10.5);
+        const right = ['INCIDENT REPORT', F.empName, F.incidentDate].filter(Boolean).join('   ·   ');
+        font(false, 7, [160, 172, 190]); pdf.text(right, PW - MR, 19, { align: 'right' });
+        return H + 2 + 16;
+      }
+
+      function drawFooters() {
+        const total = pdf.getNumberOfPages();
+        for (let i = 1; i <= total; i++) {
+          pdf.setPage(i);
+          drawC(C.ruleL); lw(0.6); pdf.line(ML, FOOT_Y, PW - MR, FOOT_Y);
+          font(true, 6.5, C.muted);  pdf.text('CONFIDENTIAL', ML, FOOT_Y + 11);
+          const cw = pdf.getTextWidth('CONFIDENTIAL');
+          font(false, 6.5, C.muted); pdf.text('  —  Vista Geomatics Incident Report  ·  For internal use only', ML + cw, FOOT_Y + 11);
+          pdf.text(`Page ${i} of ${total}`, PW - MR, FOOT_Y + 11, { align: 'right' });
+        }
+      }
+
+      /* ---- flow control ------------------------------------------- */
+      await loadLogo();
+      let y = drawMainHeader();
+      function newPage() { pdf.addPage([PW, PH]); y = drawContHeader(); }
+      function ensure(h) { if (y + h > BOTTOM) newPage(); }
+
+      /* ---- section heading (numbered navy bar) -------------------- */
+      let secNo = 0;
+      function section(title, note, opts = {}) {
+        ensure(opts.keepWith || 60);
+        if (!opts.unnumbered) secNo++;
+        const H = 17;
+        fillC(C.navy); pdf.rect(ML, y, CW, H, 'F');
+        fillC(C.accent); pdf.rect(ML, y + H, CW, 1.6, 'F');
+        let tx = ML + 8;
+        if (!opts.unnumbered) {
+          fillC(C.accent); pdf.rect(ML, y, 20, H, 'F');
+          font(true, 8.5, C.white); pdf.text(String(secNo), ML + 10, y + 11.8, { align: 'center' });
+          tx = ML + 28;
+        }
+        font(true, 8.5, C.white); pdf.text(title.toUpperCase(), tx, y + 11.8);
+        if (note) { font(false, 6.3, [203, 213, 225]); pdf.text(note, ML + CW - 8, y + 11.5, { align: 'right' }); }
+        y += H + 1.6 + 5;
+      }
+
+      /* ---- checkbox / radio glyphs -------------------------------- */
+      const BOX = 7.5;
+      function cbox(x, by, on, round) {
+        lw(0.7);
+        if (round) {
+          drawC(on ? C.check : C.boxOff); fillC(C.white);
+          pdf.circle(x + BOX / 2, by + BOX / 2, BOX / 2, 'FD');
+          if (on) { fillC(C.check); pdf.circle(x + BOX / 2, by + BOX / 2, 2.1, 'F'); }
+        } else {
+          drawC(on ? C.check : C.boxOff); fillC(on ? C.check : C.white);
+          pdf.rect(x, by, BOX, BOX, 'FD');
+          if (on) {
+            drawC(C.white); lw(1.15);
+            pdf.line(x + 1.6, by + 3.9, x + 3.1, by + 5.6);
+            pdf.line(x + 3.1, by + 5.6, x + 6.0, by + 1.9);
+          }
+        }
+      }
+
+      // Lays out option chips inside a cell; returns rows used (measure mode when draw=false)
+      function layoutOptions(options, selected, round, x, w, oy, draw) {
+        let ox = x + 7, rows = 1;
+        options.forEach(([v, l]) => {
+          const on = selected.includes(v);
+          font(on, 7.8, on ? C.text : C.muted);
+          const tw = BOX + 4 + pdf.getTextWidth(l) + 13;
+          if (ox + tw - 13 > x + w - 6 && ox > x + 7) { ox = x + 7; oy += 13; rows++; }
+          if (draw) {
+            cbox(ox, oy, on, round);
+            font(on, 7.8, on ? C.text : C.muted);
+            pdf.text(l, ox + BOX + 4, oy + 6.4);
+          }
+          ox += tw;
+        });
+        return rows;
+      }
+      function optionsCell(label, options, selected, round, flex) {
+        return { label, flex, options, selected, round };
+      }
+
+      /* ---- bordered field grid (label top-left, value below) ------ */
+      const VAL_SIZE = 8.6, VAL_LH = 11;
+      function cellRow(cells, minH) {
+        const total = cells.reduce((s, c) => s + (c.flex || 1), 0);
+        const widths = cells.map(c => CW * (c.flex || 1) / total);
+        let h = minH || 30;
+        const lines = cells.map((c, i) => {
+          if (c.options) {
+            const rows = layoutOptions(c.options, c.selected, c.round, 0, widths[i], 0, false);
+            h = Math.max(h, 17 + rows * 13);
+            return null;
+          }
+          pdf.setFontSize(VAL_SIZE);
+          const ls = c.value ? pdf.splitTextToSize(c.value, widths[i] - 14) : [];
+          h = Math.max(h, 19 + ls.length * VAL_LH);
+          return ls;
+        });
+        ensure(h);
+        let x = ML;
+        cells.forEach((c, i) => {
+          const w = widths[i];
+          fillC(C.white); drawC(C.rule); lw(0.6); pdf.rect(x, y, w, h, 'FD');
+          font(true, 5.8, C.label); pdf.text(c.label.toUpperCase(), x + 7, y + 9.5);
+          if (c.options) {
+            layoutOptions(c.options, c.selected, c.round, x, w, y + 15, true);
+          } else if (lines[i].length) {
+            font(false, VAL_SIZE, C.text);
+            pdf.text(lines[i], x + 7, y + 21.5, { lineHeightFactor: VAL_LH / VAL_SIZE });
+          }
+          x += w;
+        });
+        y += h;
+      }
+
+      /* ---- full-width text block that can continue onto next page -- */
+      function textBlock(label, text, minH) {
+        pdf.setFontSize(VAL_SIZE);
+        let lines = text ? pdf.splitTextToSize(text, CW - 16) : [];
+        let first = true, guard = 0;
+        while (guard++ < 50) {
+          const room = BOTTOM - y;
+          const fit = Math.floor((room - 26) / VAL_LH);
+          const need = Math.max(first ? minH : 0, 26 + Math.min(lines.length, Math.max(fit, 0)) * VAL_LH);
+          if (y + need > BOTTOM || (fit < 3 && lines.length > Math.max(fit, 0))) { newPage(); continue; }
+          const chunk = lines.splice(0, Math.max(fit, 0));
+          const h = Math.max(first ? minH : 0, 26 + chunk.length * VAL_LH);
+          fillC(C.white); drawC(C.rule); lw(0.6); pdf.rect(ML, y, CW, h, 'FD');
+          font(true, 5.8, C.label); pdf.text((first ? label : label + ' (continued)').toUpperCase(), ML + 7, y + 9.5);
+          if (chunk.length) {
+            font(false, VAL_SIZE, C.text);
+            pdf.text(chunk, ML + 7, y + 21.5, { lineHeightFactor: VAL_LH / VAL_SIZE });
+          }
+          y += h;
+          first = false;
+          if (!lines.length) break;
+          newPage();
+        }
+      }
+
+      /* ---- data table --------------------------------------------- */
+      function dataTable(headers, rows, fracs) {
+        const widths = fracs.map(f => CW * f);
+        const HEAD = 15, SIZE = 8.2;
+        function head() {
+          let x = ML;
+          headers.forEach((hd, i) => {
+            fillC(C.band); drawC(C.rule); lw(0.6); pdf.rect(x, y, widths[i], HEAD, 'FD');
+            font(true, 6, C.label); pdf.text(hd.toUpperCase(), x + 7, y + 9.8);
+            x += widths[i];
+          });
+          y += HEAD;
+        }
+        ensure(HEAD + 20); head();
+        if (!rows.length) {
+          fillC(C.white); drawC(C.rule); lw(0.6); pdf.rect(ML, y, CW, 20, 'FD');
+          font(false, 7.8, C.muted); pdf.text('None reported', ML + 7, y + 13);
+          y += 20; return;
+        }
+        rows.forEach((r, ri) => {
+          const ls = r.map((cell, i) => { pdf.setFontSize(SIZE); return cell ? pdf.splitTextToSize(cell, widths[i] - 14) : []; });
+          const h = Math.max(20, 10 + Math.max(...ls.map(l => l.length)) * 10.5);
+          if (y + h > BOTTOM) { newPage(); head(); }
+          let x = ML;
+          ls.forEach((l, i) => {
+            fillC(ri % 2 ? C.fill : C.white); drawC(C.rule); lw(0.6); pdf.rect(x, y, widths[i], h, 'FD');
+            if (l.length) { font(i === 0, SIZE, C.text); pdf.text(l, x + 7, y + 13, { lineHeightFactor: 10.5 / SIZE }); }
+            x += widths[i];
+          });
+          y += h;
+        });
+      }
+
+      const GAP = 12;
+      const YN = [['yes', 'Yes'], ['no', 'No']];
+
+      /* ================================================================
+         CONTENT
+      ================================================================ */
+      // 1 — Incident Information
+      section('Incident Information', 'When and where the incident occurred');
+      cellRow([
+        { label: 'Date of Incident', value: F.incidentDate },
+        { label: 'Time of Incident', value: F.incidentTime },
+        { label: 'Date Reported',    value: F.reportDate },
+      ]);
+      cellRow([
+        { label: 'Location of Incident', value: F.location, flex: 2 },
+        { label: 'Supervisor',           value: F.supervisor, flex: 1 },
+      ]);
+      y += GAP;
+
+      // 2 — Person Involved
+      section('Person Involved', 'Worker or individual directly involved');
+      cellRow([
+        { label: 'Employee Name',      value: F.empName },
+        { label: 'Position / Job Title', value: F.empPosition },
+        { label: 'Phone Number',       value: F.empPhone },
+      ]);
+      cellRow([
+        optionsCell('Division', [['Municipal','Municipal'],['Construction','Construction'],['Oil and Gas','Oil and Gas'],['Office','Office']], [F.empBranch], true, 1.25),
+        optionsCell('Employment Type', [['full_time','Full-time'],['part_time','Part-time'],['contractor','Contractor']], [F.empType], true, 1),
+      ]);
+      y += GAP;
+
+      // 3 — Classification
+      section('Incident Classification', 'All categories that apply');
+      cellRow([
+        optionsCell('Type of Incident', [
+          ['injury','Injury / Illness'], ['first_aid','First Aid Only'], ['near_miss','Near Miss'],
+          ['property_damage','Property Damage'], ['vehicle','Vehicle / Motor Vehicle'],
+          ['environmental','Environmental'], ['other','Other']
+        ], F.incidentTypes, false, 1),
+      ]);
+      cellRow([
+        optionsCell('Medical Treatment Required?', YN, [F.medTreatment], true),
+        optionsCell('Lost Time from Work?',        YN, [F.lostTime], true),
+        optionsCell('Restricted Duties?',          YN, [F.restrictedDuty], true),
+      ]);
+      y += GAP;
+
+      // 4 — Description
+      section('Description of Incident', 'Factual account, including events leading up to it', { keepWith: 90 });
+      textBlock('What happened', F.description, 70);
+      y += GAP;
+
+      // 5 — Injury details
+      section('Injury Details', 'Complete if an injury or illness occurred', { keepWith: 100 });
+      cellRow([
+        { label: 'Body Part(s) Affected', value: F.bodyPart },
+        { label: 'Nature of Injury',      value: F.natureInjury },
+        { label: 'First Aid Provided By', value: F.firstAidBy },
+      ]);
+      textBlock('First Aid / Medical Treatment Details', F.firstAidDesc, 40);
+      y += GAP;
+
+      // 6 — Equipment
+      section('Equipment / Vehicle / Property Involved', null, { keepWith: 80 });
+      dataTable(['Item / Equipment / Vehicle', 'Unit / Plate / ID', 'Description of Damage or Role in Incident'], F.equipRows, [0.30, 0.22, 0.48]);
+      y += GAP;
+
+      // 7 — Witnesses
+      section('Witnesses', null, { keepWith: 80 });
+      dataTable(['Witness Name', 'Contact Information', 'Brief Statement / Notes'], F.witnessRows, [0.30, 0.26, 0.44]);
+      y += GAP;
+
+      // 8–10 — Actions
+      section('Immediate Corrective Actions', 'Actions taken to make the area safe', { keepWith: 80 });
+      textBlock('Actions taken', F.immediateActions, 44);
+      y += GAP;
+
+      section('Root Cause / Contributing Factors', 'Procedures, equipment, environment, human factors', { keepWith: 80 });
+      textBlock('Root cause', F.rootCause, 44);
+      y += GAP;
+
+      section('Recommended / Planned Corrective Actions', 'Actions, responsibilities and timelines', { keepWith: 80 });
+      textBlock('Corrective actions', F.correctiveActions, 44);
+      y += GAP;
+
+      // 11 — Sign-off
+      section('Sign-Off', 'Review and follow-up responsibilities', { keepWith: 150 });
+      (function signBlocks() {
+        const g = 10, w = (CW - 2 * g) / 3, h = 100;
+        ensure(h + 40);
+        [
+          ['Employee',   F.empSig, F.empSigDate, 'employee'],
+          ['Supervisor', F.supSig, F.supSigDate, 'supervisor'],
+          ['HSE Review', F.hseSig, F.hseSigDate, 'hse'],
+        ].forEach(([title, name, date, key], i) => {
+          const x = ML + i * (w + g);
+          fillC(C.white); drawC(C.rule); lw(0.6); pdf.rect(x, y, w, h, 'FD');
+          fillC(C.band); pdf.rect(x, y, w, 15, 'F');
+          drawC(C.rule); lw(0.6); pdf.line(x, y + 15, x + w, y + 15);
+          font(true, 7.2, C.navy); pdf.text(title.toUpperCase(), x + w / 2, y + 10.2, { align: 'center' });
+
+          // Supervisor & HSE sign after submission — always print a visible
+          // signature box for them so the exported report can be signed.
+          const alwaysBox = (key === 'supervisor' || key === 'hse');
+          if (alwaysBox) {
+            fillC(C.fill); drawC(C.rule); lw(0.5);
+            pdf.rect(x + 8, y + 19, w - 16, 28, 'FD');
+          }
+
+          // Drawn signature (scaled to fit above the signature line)
+          const pad = sigPads[key];
+          const sig = pad ? pad.image() : null;
+          if (sig) {
+            try {
+              const boxW = w - 16, boxH = 27;
+              const k = Math.min(boxW / sig.w, boxH / sig.h);
+              const dw = sig.w * k, dh = sig.h * k;
+              pdf.addImage(sig.url, 'PNG', x + 10, y + 46 - dh, dw, dh, undefined, 'FAST');
+            } catch (_) {}
+          }
+          if (alwaysBox && !sig) {
+            font(false, 6, [176, 186, 200]);
+            pdf.text('Sign here', x + w - 12, y + 43.5, { align: 'right' });
+          }
+          drawC(C.accent); lw(0.7); pdf.line(x + 8, y + 47, x + w - 8, y + 47);
+          font(true, 5.6, C.label); pdf.text('SIGNATURE', x + 8, y + 53.5);
+
+          if (name) { font(false, 8.6, C.text); pdf.text(pdf.splitTextToSize(name, w - 16)[0], x + 8, y + 65); }
+          drawC(C.rule); lw(0.6); pdf.line(x + 8, y + 68, x + w - 8, y + 68);
+          font(true, 5.6, C.label); pdf.text('NAME', x + 8, y + 74.5);
+
+          if (date) { font(false, 8.4, C.text); pdf.text(date, x + 8, y + 85); }
+          drawC(C.rule); lw(0.6); pdf.line(x + 8, y + 88, x + w - 8, y + 88);
+          font(true, 5.6, C.label); pdf.text('DATE', x + 8, y + 94);
+        });
+        y += h + 8;
+
+        const cert = 'By signing above, all parties confirm that the information in this report is accurate to the best of their knowledge and that corrective actions will be followed up as outlined.';
+        pdf.setFontSize(7);
+        const cl = pdf.splitTextToSize(cert, CW - 22);
+        const chh = 10 + cl.length * 9;
+        ensure(chh);
+        fillC(C.band); pdf.rect(ML, y, CW, chh, 'F');
+        fillC(C.accent); pdf.rect(ML, y, 2.5, chh, 'F');
+        font(false, 7, C.label); pdf.text(cl, ML + 11, y + 11.5, { lineHeightFactor: 9 / 7 });
+        y += chh;
+      })();
+
+      /* ================================================================
+         PHOTO PAGES — 4 per page, 2 × 2 grid
+      ================================================================ */
+      if (photos.length) {
+        const perPage = 4;
+        const pages = Math.ceil(photos.length / perPage);
+        for (let p = 0; p < pages; p++) {
+          newPage();
+          section(pages > 1 ? `Incident Photos (${p + 1} of ${pages})` : 'Incident Photos', `${photos.length} photo${photos.length === 1 ? '' : 's'} attached`, { unnumbered: true, keepWith: 0 });
+
+          const slice = photos.slice(p * perPage, (p + 1) * perPage);
+          const G = 12;
+          const cellW = (CW - G) / 2;
+          const cellH = (BOTTOM - y - G) / 2;
+          const CAP_H = 24;
+
+          for (let i = 0; i < slice.length; i++) {
+            const item = slice[i];
+            const cx = ML + (i % 2) * (cellW + G);
+            const cy = y + Math.floor(i / 2) * (cellH + G);
+            const imgH = cellH - CAP_H;
+
+            fillC(C.fill); drawC(C.rule); lw(0.6); pdf.rect(cx, cy, cellW, cellH, 'FD');
+            try {
+              const { dataUrl, width, height } = await compressImage(item.file, 1800, 0.82);
+              const ratio = Math.min((cellW - 16) / width, (imgH - 12) / height);
+              const dw = width * ratio, dh = height * ratio;
+              pdf.addImage(dataUrl, 'JPEG', cx + (cellW - dw) / 2, cy + (imgH - dh) / 2, dw, dh);
+            } catch (e) {
+              font(false, 7.5, C.muted); pdf.text('[Image unavailable]', cx + cellW / 2, cy + imgH / 2, { align: 'center' });
+            }
+            fillC(C.band); pdf.rect(cx, cy + imgH, cellW, CAP_H, 'F');
+            drawC(C.rule); lw(0.6); pdf.line(cx, cy + imgH, cx + cellW, cy + imgH);
+            const n = p * perPage + i + 1;
+            font(true, 7, C.navy); pdf.text(`PHOTO ${n}`, cx + 7, cy + imgH + 10);
+            font(false, 7.2, C.text);
+            const desc = pdf.splitTextToSize(item.description || '', cellW - 14);
+            if (desc[0]) pdf.text(desc[0], cx + 7, cy + imgH + 19.5);
+            drawC(C.rule); lw(0.6); pdf.rect(cx, cy, cellW, cellH, 'S');
+          }
+        }
+      }
+
+      drawFooters();
+
+      // ── iPad / Safari-safe save ──────────────────────────────
+      // pdf.save() uses a synthetic <a> click which Safari blocks inside
+      // async functions. Instead get a blob and open/download it directly.
+      const blob = pdf.output('blob');
+      const url  = URL.createObjectURL(blob);
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-        if (isIOS) {
-          // iOS Safari ignores <a download> and blocks window.open from async contexts.
-          // The ONLY reliable method: show the user a real tappable <a href> link.
-          // A user-initiated tap on an <a href=blobUrl> opens Safari's native PDF viewer.
-          var overlay = document.getElementById('iosDownloadOverlay');
-          var link    = document.getElementById('iosDownloadLink');
-          link.href   = url;
-          overlay.style.display = 'flex';
-          // Revoke after 10 minutes
-          setTimeout(function(){ URL.revokeObjectURL(url); }, 600000);
-        } else {
-          // Desktop / Android: standard programmatic download
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'Vista-Incident-Report.pdf';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
-        }
-      } catch(err) {
-        alert('Could not generate PDF: ' + (err.message || String(err)));
+      if (isIOS) {
+        // iOS Safari: open in new tab — user can then use Share → Save to Files
+        window.open(url, '_blank');
+      } else {
+        // All other browsers: trigger download normally
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Vista-Incident-Report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
-      btn.textContent = 'Download PDF';
-      btn.disabled = false;
-    }).catch(function(err) {
-      alert('Could not prepare images: ' + (err.message || String(err)));
-      btn.textContent = 'Download PDF';
-      btn.disabled = false;
-    });
-  });
-  </script>
 
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+
+      } catch (err) {
+        console.error('PDF generation error:', err);
+        const detail = (err && err.stack) ? err.stack : (err && err.message) ? err.message : String(err);
+        alert('Could not generate PDF:\n\n' + detail);
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
