@@ -850,6 +850,8 @@
         <div class="btn-row">
           <button type="reset" class="btn-secondary">Reset</button>
           <button type="button" id="downloadPdfBtn" class="btn-primary">Download PDF</button>
+          <button type="button" id="sharePdfBtn" class="btn-secondary">Share PDF</button>
+          <span id="pdfStatus" role="status" aria-live="polite" style="width:100%;text-align:right;font-size:.85rem"></span>
         </div>
       </form>
     </div>
@@ -1194,7 +1196,7 @@
       if (opts && opts.classList.contains('field-error')) opts.classList.remove('field-error');
     });
 
-    document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+    async function exportIncidentPdf(mode = 'download') {
       // ── Validate before generating ──────────────────────────
       const errors = validateForm();
       if (errors.length) {
@@ -1204,7 +1206,12 @@
         return;
       }
 
-      const btn = document.getElementById('downloadPdfBtn');
+      const btn = document.getElementById(mode === 'share' ? 'sharePdfBtn' : 'downloadPdfBtn');
+      const status = document.getElementById('pdfStatus');
+      status.textContent = 'Preparing PDF, please wait…';
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      // Reserve a tab synchronously on iOS, before any awaits, to avoid popup blocking.
+      const previewTab = (isIOS && mode === 'download') ? window.open('', '_blank') : null;
       const originalText = btn.textContent;
       btn.textContent = 'Generating…';
       btn.disabled = true;
@@ -1782,6 +1789,7 @@
               const dw = width * ratio, dh = height * ratio;
               pdf.addImage(dataUrl, 'JPEG', cx + (cellW - dw) / 2, cy + (imgH - dh) / 2, dw, dh);
             } catch (e) {
+              throw new Error('Could not process photo ' + (p * perPage + i + 1) + ' (' + item.file.name + '). Try converting it to JPEG or selecting a smaller photo. ' + e.message);
               font(false, 7.5, C.muted); pdf.text('[Image unavailable]', cx + cellW / 2, cy + imgH / 2, { align: 'center' });
             }
             fillC(C.band); pdf.rect(cx, cy + imgH, cellW, CAP_H, 'F');
@@ -1798,31 +1806,47 @@
 
       drawFooters();
 
-      // ── iPad / Safari-safe save ──────────────────────────────
-      // pdf.save() uses a synthetic <a> click which Safari blocks inside
-      // async functions. Instead get a blob and open/download it directly.
       const blob = pdf.output('blob');
-      const url  = URL.createObjectURL(blob);
-
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isIOS) {
-        // iOS Safari: open in new tab — user can then use Share → Save to Files
-        window.open(url, '_blank');
-      } else {
-        // All other browsers: trigger download normally
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Vista-Incident-Report.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      const filename = 'Vista-Incident-Report.pdf';
+      const url = URL.createObjectURL(blob);
+      if (mode === 'share' && navigator.share && navigator.canShare) {
+        const file = new File([blob], filename, { type: 'application/pdf' });
+        if (navigator.canShare({ files: [file] })) {
+          if (previewTab && !previewTab.closed) previewTab.close();
+          try {
+            await navigator.share({ files: [file], title: 'Vista Incident Report' });
+            status.textContent = 'PDF shared or saved using your device.';
+          } catch (shareErr) {
+            if (shareErr.name !== 'AbortError') throw shareErr;
+            status.textContent = 'Sharing cancelled. Report remains in the form.';
+          }
+          URL.revokeObjectURL(url);
+          return;
+        }
       }
-
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      if (isIOS) {
+        // Safari cannot force a Files download. Display the PDF and show Save to Files instructions.
+        const tab = previewTab || window.open('', '_blank');
+        if (tab) {
+          tab.location.href = url;
+          status.textContent = 'PDF opened. Tap Share, then Save to Files to keep it on this iPad.';
+        } else {
+          const link = document.createElement('a');
+          link.href = url; link.target = '_blank'; link.rel = 'noopener';
+          link.textContent = 'Open PDF to save to Files';
+          status.replaceChildren(link);
+        }
+      } else {
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+        status.textContent = 'PDF download requested. Check your Downloads folder.';
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 300000);
 
       } catch (err) {
+        if (previewTab && !previewTab.closed) previewTab.close();
+        status.textContent = 'PDF failed: ' + (err.message || String(err));
         console.error('PDF generation error:', err);
         const detail = (err && err.stack) ? err.stack : (err && err.message) ? err.message : String(err);
         alert('Could not generate PDF:\n\n' + detail);
@@ -1830,7 +1854,9 @@
         btn.textContent = originalText;
         btn.disabled = false;
       }
-    });
+    }
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => exportIncidentPdf('download'));
+    document.getElementById('sharePdfBtn').addEventListener('click', () => exportIncidentPdf('share'));
   </script>
 </body>
 </html>
